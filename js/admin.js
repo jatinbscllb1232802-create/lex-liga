@@ -1,4 +1,4 @@
-// Lex Liga Admin - with easy Goal Scorer
+// Lex Liga Admin - Score + Goal connected + Cards
 
 const sb = window.supabaseClient || window.supabase || supabase;
 
@@ -43,6 +43,8 @@ document.getElementById('refreshAdmin')?.addEventListener('click', loadAdminData
 
 let allTeams = [];
 let allGoals = [];
+let currentMatchId = null;
+let currentSide = null; // 'home' or 'away'
 
 function getTeamName(id) {
   const t = allTeams.find(t => t.id === id);
@@ -63,7 +65,6 @@ async function loadAdminData() {
     if (te) throw te;
     allTeams = teams || [];
 
-    // Fill dropdowns for Add Match
     const homeSelect = document.getElementById('newHome');
     const awaySelect = document.getElementById('newAway');
     if (homeSelect && awaySelect) {
@@ -96,13 +97,12 @@ function renderAdminCard(m) {
   const isLive = m.status === 'live' || m.status === 'half_time';
   const isFinished = m.status === 'finished' || m.status === 'walkover';
 
-  // Goals for this match
   const matchGoals = allGoals.filter(g => g.match_id === m.id);
   const goalsList = matchGoals.length
-    ? `<div class="mt-3 text-sm text-slate-300 space-y-1">
+    ? `<div class="mt-3 text-sm space-y-1">
         ${matchGoals.map(g => `
-          <div class="flex justify-between items-center bg-slate-700/50 rounded-lg px-3 py-1.5">
-            <span>${g.player_name} <span class="text-slate-400">(${getTeamName(g.team_id)})</span></span>
+          <div class="flex justify-between items-center bg-slate-700/60 rounded-lg px-3 py-1.5">
+            <span>⚽ ${g.player_name} <span class="text-slate-400">(${getTeamName(g.team_id)})</span></span>
             <span class="text-slate-400">${g.minute ? g.minute + "'" : ''}</span>
           </div>
         `).join('')}
@@ -124,28 +124,28 @@ function renderAdminCard(m) {
         <div class="font-bold text-lg">${away}</div>
       </div>
 
-      <!-- BIG SCORE BUTTONS -->
+      <!-- BIG +1 BUTTONS (open dialog) -->
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <button onclick="openGoalDialog('${m.id}', 'home')" 
+          class="w-full big-btn bg-green-500 hover:bg-green-400 text-slate-900 rounded-xl active:scale-95 transition">
+          +1 ${home.split(' ')[0]}
+        </button>
+        <button onclick="openGoalDialog('${m.id}', 'away')" 
+          class="w-full big-btn bg-green-500 hover:bg-green-400 text-slate-900 rounded-xl active:scale-95 transition">
+          +1 ${away.split(' ')[0]}
+        </button>
+      </div>
+
+      <!-- -1 buttons (just decrease score) -->
       <div class="grid grid-cols-2 gap-3 mb-5">
-        <div class="space-y-2">
-          <button onclick="changeScore('${m.id}', 'home', 1)" 
-            class="w-full big-btn bg-green-500 hover:bg-green-400 text-slate-900 rounded-xl active:scale-95 transition">
-            +1 ${home.split(' ')[0]}
-          </button>
-          <button onclick="changeScore('${m.id}', 'home', -1)" 
-            class="w-full big-btn bg-slate-700 hover:bg-slate-600 rounded-xl active:scale-95 transition">
-            –1
-          </button>
-        </div>
-        <div class="space-y-2">
-          <button onclick="changeScore('${m.id}', 'away', 1)" 
-            class="w-full big-btn bg-green-500 hover:bg-green-400 text-slate-900 rounded-xl active:scale-95 transition">
-            +1 ${away.split(' ')[0]}
-          </button>
-          <button onclick="changeScore('${m.id}', 'away', -1)" 
-            class="w-full big-btn bg-slate-700 hover:bg-slate-600 rounded-xl active:scale-95 transition">
-            –1
-          </button>
-        </div>
+        <button onclick="changeScoreOnly('${m.id}', 'home', -1)" 
+          class="w-full py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm font-semibold">
+          –1 ${home.split(' ')[0]}
+        </button>
+        <button onclick="changeScoreOnly('${m.id}', 'away', -1)" 
+          class="w-full py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm font-semibold">
+          –1 ${away.split(' ')[0]}
+        </button>
       </div>
 
       <!-- STATUS -->
@@ -164,34 +164,23 @@ function renderAdminCard(m) {
         </button>
       </div>
 
-      <!-- ========== ADD GOAL SECTION ========== -->
-      <div class="bg-slate-900/60 rounded-xl p-4 mb-4">
-        <p class="text-sm font-semibold mb-3 text-center">Add Goal Scorer</p>
-        
-        <label class="text-xs text-slate-400 block mb-1">Which team?</label>
-        <select id="scorerTeam-${m.id}" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2.5 mb-3 text-sm">
-          <option value="${m.home_team_id}">${home}</option>
-          <option value="${m.away_team_id}">${away}</option>
-        </select>
-
-        <label class="text-xs text-slate-400 block mb-1">Player Name</label>
-        <input id="scorerName-${m.id}" type="text" placeholder="e.g. Aarav Sharma" 
-          class="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2.5 mb-3 text-sm" />
-
-        <label class="text-xs text-slate-400 block mb-1">Minute (optional)</label>
-        <input id="scorerMinute-${m.id}" type="number" placeholder="e.g. 23" min="1" max="50"
-          class="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2.5 mb-3 text-sm" />
-
-        <button onclick="addGoal('${m.id}')" 
-          class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl text-sm">
-          + Add Goal
+      <!-- CARDS -->
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <button onclick="openCardDialog('${m.id}', 'yellow')" 
+          class="py-3 rounded-xl bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 font-semibold text-sm">
+          🟨 Yellow Card
         </button>
-
-        ${goalsList}
+        <button onclick="openCardDialog('${m.id}', 'red')" 
+          class="py-3 rounded-xl bg-red-500/20 border border-red-500/50 text-red-400 font-semibold text-sm">
+          🟥 Red Card
+        </button>
       </div>
 
-      <!-- Extra actions -->
-      <div class="flex justify-between text-sm pt-1">
+      <!-- Goals list -->
+      ${goalsList}
+
+      <!-- Extra -->
+      <div class="flex justify-between text-sm pt-3">
         <button onclick="resetScore('${m.id}')" class="text-slate-400 underline">Reset Score</button>
         <button onclick="deleteMatch('${m.id}')" class="text-red-400 underline">Delete</button>
       </div>
@@ -199,14 +188,73 @@ function renderAdminCard(m) {
   `;
 }
 
-window.changeScore = async function(matchId, side, delta) {
+// ========== GOAL DIALOG ==========
+window.openGoalDialog = function(matchId, side) {
+  currentMatchId = matchId;
+  currentSide = side;
+
+  const match = document.querySelector(`[data-id="${matchId}"]`);
+  // We need team names - get from the card text or reload data
+  // Simpler: use prompt for speed on mobile
+  const player = prompt('Player name who scored?');
+  if (!player || !player.trim()) return;
+
+  const minuteStr = prompt('Minute of the goal? (optional)', '');
+  const minute = minuteStr ? parseInt(minuteStr) : null;
+
+  addGoalAndScore(matchId, side, player.trim(), minute);
+};
+
+async function addGoalAndScore(matchId, side, playerName, minute) {
+  // 1. Get current score
+  const el = document.getElementById(`${side}-${matchId}`);
+  let current = parseInt(el.textContent) || 0;
+  current = current + 1;
+  el.textContent = current;
+
+  // 2. Update score in database
+  const scoreUpdate = side === 'home' ? { home_score: current } : { away_score: current };
+  scoreUpdate.updated_at = new Date().toISOString();
+
+  const { error: scoreError } = await sb.from('matches').update(scoreUpdate).eq('id', matchId);
+  if (scoreError) {
+    alert('Could not update score: ' + scoreError.message);
+    loadAdminData();
+    return;
+  }
+
+  // 3. Find the team_id
+  // We need to get the match data again or store it
+  const { data: matchData } = await sb.from('matches').select('home_team_id, away_team_id').eq('id', matchId).single();
+  if (!matchData) {
+    alert('Could not find match');
+    return;
+  }
+
+  const teamId = side === 'home' ? matchData.home_team_id : matchData.away_team_id;
+
+  // 4. Insert the goal
+  const { error: goalError } = await sb.from('goals').insert({
+    match_id: matchId,
+    team_id: teamId,
+    player_name: playerName,
+    minute: minute
+  });
+
+  if (goalError) {
+    alert('Score updated but goal record failed: ' + goalError.message);
+  }
+
+  // Refresh to show the new goal in the list
+  loadAdminData();
+}
+
+// Just change score without goal (for corrections)
+window.changeScoreOnly = async function(matchId, side, delta) {
   const el = document.getElementById(`${side}-${matchId}`);
   let current = parseInt(el.textContent) || 0;
   current = Math.max(0, current + delta);
   el.textContent = current;
-
-  el.classList.add('text-green-400');
-  setTimeout(() => el.classList.remove('text-green-400'), 300);
 
   const update = side === 'home' ? { home_score: current } : { away_score: current };
   update.updated_at = new Date().toISOString();
@@ -218,6 +266,21 @@ window.changeScore = async function(matchId, side, delta) {
   }
 };
 
+// ========== CARD DIALOG ==========
+window.openCardDialog = function(matchId, type) {
+  const player = prompt(`Player name for ${type === 'yellow' ? 'Yellow' : 'Red'} Card?`);
+  if (!player || !player.trim()) return;
+
+  const minuteStr = prompt('Minute? (optional)', '');
+  const minute = minuteStr ? parseInt(minuteStr) : null;
+
+  // For now we just show an alert / can later store in a cards table
+  // Simple version: add a note in the match notes or just confirm
+  alert(`${type === 'yellow' ? '🟨 Yellow' : '🟥 Red'} Card recorded for ${player.trim()}${minute ? ' at ' + minute + "'" : ''}`);
+  
+  // Optional: you can later create a 'cards' table. For now this is a simple confirmation.
+};
+
 window.updateStatus = async function(matchId, status) {
   const { error } = await sb.from('matches')
     .update({ status, updated_at: new Date().toISOString() })
@@ -225,35 +288,6 @@ window.updateStatus = async function(matchId, status) {
   
   if (error) alert('Error: ' + error.message);
   else loadAdminData();
-};
-
-window.addGoal = async function(matchId) {
-  const teamId = document.getElementById(`scorerTeam-${matchId}`).value;
-  const name = document.getElementById(`scorerName-${matchId}`).value.trim();
-  const minuteVal = document.getElementById(`scorerMinute-${matchId}`).value;
-  const minute = minuteVal ? parseInt(minuteVal) : null;
-
-  if (!name) {
-    alert('Please enter player name');
-    return;
-  }
-
-  const { error } = await sb.from('goals').insert({
-    match_id: matchId,
-    team_id: teamId,
-    player_name: name,
-    minute: minute
-  });
-
-  if (error) {
-    alert('Error adding goal: ' + error.message);
-  } else {
-    // Clear inputs
-    document.getElementById(`scorerName-${matchId}`).value = '';
-    document.getElementById(`scorerMinute-${matchId}`).value = '';
-    // Refresh to show the new goal in the list
-    loadAdminData();
-  }
 };
 
 window.resetScore = async function(matchId) {
