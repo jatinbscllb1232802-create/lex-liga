@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fixtures & Standings – Lex Liga Futsal</title>
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: { DEFAULT: '#22c55e' } } } } }
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+  <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-700">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="w-9 h-9 rounded-full bg-primary flex items-center justify-center font-bold text-slate-900">LL</a>
+        <div>
+          <h1 class="font-bold text-lg leading-tight">Lex Liga Futsal</h1>
+          <p class="text-xs text-slate-400">Fixtures & Standings</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="themeToggle" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm">☀️</button>
+        <a href="index.html" class="text-sm font-medium text-primary hover:underline">Live</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6 space-y-10">
+    <div class="flex items-center justify-between text-sm text-slate-400">
+      <span id="lastUpdated">Loading...</span>
+      <button id="refreshBtn" class="text-primary hover:underline text-sm font-medium">Refresh</button>
+    </div>
+
+    <!-- Full Standings -->
+    <section>
+      <h2 class="text-xl font-bold mb-4">Standings</h2>
+      <div id="fullStandings" class="space-y-6">
+        <p class="text-slate-400 text-sm">Loading standings...</p>
+      </div>
+    </section>
+
+    <!-- All Fixtures -->
+    <section>
+      <h2 class="text-xl font-bold mb-4">All Matches</h2>
+      <div id="allFixtures" class="space-y-3">
+        <p class="text-slate-400 text-sm">Loading fixtures...</p>
+      </div>
+    </section>
+
+    <!-- Rules & Format -->
+    <section class="bg-slate-800 rounded-xl p-5">
+      <h2 class="text-lg font-bold mb-3">Rules & Format</h2>
+      <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+        <li>Group stage followed by knockout rounds</li>
+        <li>3 points for a win, 1 for a draw</li>
+        <li>Matches are 2 × 20 minutes (Futsal rules)</li>
+        <li>Top teams from each group advance</li>
+        <li>Fair play is mandatory – yellow/red cards will be recorded</li>
+      </ul>
+    </section>
+
+    <!-- Fair Play / Awards -->
+    <section class="bg-slate-800 rounded-xl p-5">
+      <h2 class="text-lg font-bold mb-3">Awards</h2>
+      <div class="grid sm:grid-cols-2 gap-3 text-sm">
+        <div class="bg-slate-700/50 rounded-lg p-3">
+          <p class="font-semibold text-primary">Golden Boot</p>
+          <p class="text-slate-400">Top goal scorer of the tournament</p>
+        </div>
+        <div class="bg-slate-700/50 rounded-lg p-3">
+          <p class="font-semibold text-primary">Fair Play Award</p>
+          <p class="text-slate-400">Best disciplined team</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-800 mt-12 py-6 text-center text-sm text-slate-500">
+    Lex Liga Futsal • College Tournament
+  </footer>
+
+  <script src="js/supabase-config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
