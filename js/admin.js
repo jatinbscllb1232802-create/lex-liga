@@ -1,4 +1,4 @@
-// Lex Liga Admin logic
+// Lex Liga Admin - Simplified version
 
 const sb = window.supabaseClient || window.supabase || supabase;
 
@@ -50,10 +50,10 @@ function getTeamName(id) {
 
 async function loadAdminData() {
   const container = document.getElementById('adminMatches');
-  container.innerHTML = '<p class="text-slate-400 text-sm">Loading...</p>';
+  container.innerHTML = '<p class="text-slate-400 text-sm text-center py-8">Loading matches...</p>';
 
   if (!sb || typeof sb.from !== 'function') {
-    container.innerHTML = '<p class="text-red-400 text-sm">Supabase client not ready. Please hard-refresh the page.</p>';
+    container.innerHTML = '<p class="text-red-400 text-sm text-center">Supabase not ready. Please hard-refresh.</p>';
     return;
   }
 
@@ -62,6 +62,7 @@ async function loadAdminData() {
     if (te) throw te;
     allTeams = teams || [];
 
+    // Fill dropdowns
     const homeSelect = document.getElementById('newHome');
     const awaySelect = document.getElementById('newAway');
     if (homeSelect && awaySelect) {
@@ -74,71 +75,82 @@ async function loadAdminData() {
     if (error) throw error;
 
     if (!matches || matches.length === 0) {
-      container.innerHTML = '<p class="text-slate-400 text-sm">No matches yet. Add one below.</p>';
+      container.innerHTML = '<p class="text-slate-400 text-sm text-center py-6">No matches yet.<br>Add one below.</p>';
       return;
     }
 
     container.innerHTML = matches.map(m => renderAdminCard(m)).join('');
   } catch (err) {
     console.error(err);
-    container.innerHTML = `<p class="text-red-400 text-sm">Error: ${err.message || err}</p>`;
+    container.innerHTML = `<p class="text-red-400 text-sm text-center">Error: ${err.message || err}</p>`;
   }
 }
 
 function renderAdminCard(m) {
   const home = getTeamName(m.home_team_id);
   const away = getTeamName(m.away_team_id);
+  const isLive = m.status === 'live' || m.status === 'half_time';
+  const isFinished = m.status === 'finished' || m.status === 'walkover';
 
   return `
-    <div class="bg-slate-800 rounded-xl p-4 border border-slate-700" data-id="${m.id}">
-      <div class="flex items-center justify-between mb-3">
-        <span class="text-xs text-slate-400">${m.group_name || ''}</span>
-        <select onchange="updateStatus('${m.id}', this.value)" 
-          class="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-xs">
-          <option value="not_started" ${m.status === 'not_started' ? 'selected' : ''}>Not started</option>
-          <option value="live" ${m.status === 'live' ? 'selected' : ''}>Live</option>
-          <option value="half_time" ${m.status === 'half_time' ? 'selected' : ''}>Half-time</option>
-          <option value="finished" ${m.status === 'finished' ? 'selected' : ''}>Finished</option>
-          <option value="walkover" ${m.status === 'walkover' ? 'selected' : ''}>Walkover</option>
-          <option value="cancelled" ${m.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-        </select>
+    <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700" data-id="${m.id}">
+      
+      <!-- Teams + Score -->
+      <div class="text-center mb-5">
+        <div class="text-xs text-slate-400 mb-2">${m.group_name || ''}</div>
+        <div class="font-bold text-lg mb-1">${home}</div>
+        <div class="text-4xl font-extrabold my-2 tracking-tight">
+          <span id="home-${m.id}">${m.home_score ?? 0}</span>
+          <span class="text-slate-500 mx-2">–</span>
+          <span id="away-${m.id}">${m.away_score ?? 0}</span>
+        </div>
+        <div class="font-bold text-lg">${away}</div>
       </div>
 
-      <div class="flex items-center justify-between gap-2 mb-4">
-        <div class="flex-1 text-right font-semibold text-sm truncate">${home}</div>
-        
-        <div class="flex items-center gap-2">
-          <button onclick="changeScore('${m.id}', 'home', -1)" class="score-btn bg-slate-700 hover:bg-slate-600">−</button>
-          <span class="score text-2xl w-8 text-center" id="home-${m.id}">${m.home_score ?? 0}</span>
-          <button onclick="changeScore('${m.id}', 'home', 1)" class="score-btn bg-primary text-slate-900 hover:bg-green-400">+</button>
+      <!-- BIG SCORE BUTTONS -->
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <div class="space-y-2">
+          <button onclick="changeScore('${m.id}', 'home', 1)" 
+            class="w-full big-btn bg-green-500 hover:bg-green-400 text-slate-900 rounded-xl active:scale-95 transition">
+            +1 ${home.split(' ')[0]}
+          </button>
+          <button onclick="changeScore('${m.id}', 'home', -1)" 
+            class="w-full big-btn bg-slate-700 hover:bg-slate-600 rounded-xl active:scale-95 transition">
+            –1
+          </button>
         </div>
-
-        <span class="text-slate-500">–</span>
-
-        <div class="flex items-center gap-2">
-          <button onclick="changeScore('${m.id}', 'away', -1)" class="score-btn bg-slate-700 hover:bg-slate-600">−</button>
-          <span class="score text-2xl w-8 text-center" id="away-${m.id}">${m.away_score ?? 0}</span>
-          <button onclick="changeScore('${m.id}', 'away', 1)" class="score-btn bg-primary text-slate-900 hover:bg-green-400">+</button>
+        <div class="space-y-2">
+          <button onclick="changeScore('${m.id}', 'away', 1)" 
+            class="w-full big-btn bg-green-500 hover:bg-green-400 text-slate-900 rounded-xl active:scale-95 transition">
+            +1 ${away.split(' ')[0]}
+          </button>
+          <button onclick="changeScore('${m.id}', 'away', -1)" 
+            class="w-full big-btn bg-slate-700 hover:bg-slate-600 rounded-xl active:scale-95 transition">
+            –1
+          </button>
         </div>
-
-        <div class="flex-1 font-semibold text-sm truncate">${away}</div>
       </div>
 
-      <div class="flex gap-2 mb-3">
-        <select id="scorerTeam-${m.id}" class="bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs flex-1">
-          <option value="${m.home_team_id}">${home}</option>
-          <option value="${m.away_team_id}">${away}</option>
-        </select>
-        <input id="scorerName-${m.id}" type="text" placeholder="Player name" 
-          class="bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs flex-1" />
-        <button onclick="addGoal('${m.id}')" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded text-xs font-medium">
-          + Goal
+      <!-- SIMPLE STATUS BUTTONS -->
+      <div class="grid grid-cols-3 gap-2 mb-4">
+        <button onclick="updateStatus('${m.id}', 'not_started')" 
+          class="status-btn rounded-xl ${m.status === 'not_started' ? 'bg-blue-600 text-white' : 'bg-slate-700'}">
+          Upcoming
+        </button>
+        <button onclick="updateStatus('${m.id}', 'live')" 
+          class="status-btn rounded-xl ${isLive ? 'bg-red-600 text-white' : 'bg-slate-700'}">
+          LIVE
+        </button>
+        <button onclick="updateStatus('${m.id}', 'finished')" 
+          class="status-btn rounded-xl ${isFinished ? 'bg-slate-500 text-white' : 'bg-slate-700'}">
+          Finished
         </button>
       </div>
 
-      <div class="flex gap-2">
-        <button onclick="resetScore('${m.id}')" class="text-xs text-slate-400 hover:text-white underline">Reset score</button>
-        <button onclick="deleteMatch('${m.id}')" class="text-xs text-red-400 hover:text-red-300 underline ml-auto">Delete</button>
+      <!-- Extra actions -->
+      <div class="flex justify-between text-sm">
+        <button onclick="resetScore('${m.id}')" class="text-slate-400 underline">Reset Score</button>
+        <button onclick="deleteMatch('${m.id}')" class="text-red-400 underline">Delete</button>
       </div>
     </div>
   `;
@@ -150,65 +162,57 @@ window.changeScore = async function(matchId, side, delta) {
   current = Math.max(0, current + delta);
   el.textContent = current;
 
+  // Visual feedback
+  el.classList.add('text-green-400');
+  setTimeout(() => el.classList.remove('text-green-400'), 300);
+
   const update = side === 'home' ? { home_score: current } : { away_score: current };
   update.updated_at = new Date().toISOString();
 
   const { error } = await sb.from('matches').update(update).eq('id', matchId);
   if (error) {
-    alert('Error saving score: ' + error.message);
+    alert('Could not save: ' + error.message);
     loadAdminData();
   }
 };
 
 window.updateStatus = async function(matchId, status) {
-  const { error } = await sb.from('matches').update({ status, updated_at: new Date().toISOString() }).eq('id', matchId);
-  if (error) alert('Error: ' + error.message);
-};
-
-window.addGoal = async function(matchId) {
-  const teamId = document.getElementById(`scorerTeam-${matchId}`).value;
-  const name = document.getElementById(`scorerName-${matchId}`).value.trim();
-  if (!name) {
-    alert('Enter player name');
-    return;
-  }
-
-  const { error } = await sb.from('goals').insert({
-    match_id: matchId,
-    team_id: teamId,
-    player_name: name
-  });
-
+  const { error } = await sb.from('matches')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('id', matchId);
+  
   if (error) {
-    alert('Error adding goal: ' + error.message);
+    alert('Error: ' + error.message);
   } else {
-    document.getElementById(`scorerName-${matchId}`).value = '';
+    // Refresh to show the new active button
     loadAdminData();
   }
 };
 
 window.resetScore = async function(matchId) {
-  if (!confirm('Reset both scores to 0?')) return;
-  const { error } = await sb.from('matches').update({ home_score: 0, away_score: 0, updated_at: new Date().toISOString() }).eq('id', matchId);
+  if (!confirm('Reset score to 0-0?')) return;
+  const { error } = await sb.from('matches')
+    .update({ home_score: 0, away_score: 0, updated_at: new Date().toISOString() })
+    .eq('id', matchId);
   if (error) alert(error.message);
   else loadAdminData();
 };
 
 window.deleteMatch = async function(matchId) {
-  if (!confirm('Delete this match permanently?')) return;
+  if (!confirm('Delete this match?')) return;
   const { error } = await sb.from('matches').delete().eq('id', matchId);
   if (error) alert(error.message);
   else loadAdminData();
 };
 
+// Add new match
 document.getElementById('addMatchBtn')?.addEventListener('click', async () => {
   const home = document.getElementById('newHome').value;
   const away = document.getElementById('newAway').value;
   const group = document.getElementById('newGroup').value.trim();
-  const status = document.getElementById('newStatus').value;
 
   if (home === away) {
-    alert('Home and Away teams must be different');
+    alert('Please choose two different teams');
     return;
   }
 
@@ -216,15 +220,17 @@ document.getElementById('addMatchBtn')?.addEventListener('click', async () => {
     home_team_id: home,
     away_team_id: away,
     group_name: group || null,
-    status,
+    status: 'not_started',
     home_score: 0,
     away_score: 0,
     kickoff_time: new Date().toISOString()
   });
 
-  if (error) alert('Error: ' + error.message);
-  else {
+  if (error) {
+    alert('Error: ' + error.message);
+  } else {
     document.getElementById('newGroup').value = '';
+    alert('Match added!');
     loadAdminData();
   }
 });
