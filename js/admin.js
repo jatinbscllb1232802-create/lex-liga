@@ -1,4 +1,4 @@
-// Lex Liga Admin - Score + Goal connected + Cards
+// Lex Liga Admin - Fixed cards, reset clears goals, better live support
 
 const sb = window.supabaseClient || window.supabase || supabase;
 
@@ -43,8 +43,7 @@ document.getElementById('refreshAdmin')?.addEventListener('click', loadAdminData
 
 let allTeams = [];
 let allGoals = [];
-let currentMatchId = null;
-let currentSide = null; // 'home' or 'away'
+let allCards = [];
 
 function getTeamName(id) {
   const t = allTeams.find(t => t.id === id);
@@ -79,6 +78,14 @@ async function loadAdminData() {
     const { data: goals } = await sb.from('goals').select('*');
     allGoals = goals || [];
 
+    // Cards (if table exists)
+    try {
+      const { data: cards } = await sb.from('cards').select('*');
+      allCards = cards || [];
+    } catch (e) {
+      allCards = [];
+    }
+
     if (!matches || matches.length === 0) {
       container.innerHTML = '<p class="text-slate-400 text-sm text-center py-6">No matches yet.<br>Add one below.</p>';
       return;
@@ -97,9 +104,11 @@ function renderAdminCard(m) {
   const isLive = m.status === 'live' || m.status === 'half_time';
   const isFinished = m.status === 'finished' || m.status === 'walkover';
 
+  // Goals only
   const matchGoals = allGoals.filter(g => g.match_id === m.id);
   const goalsList = matchGoals.length
     ? `<div class="mt-3 text-sm space-y-1">
+        <p class="text-xs text-slate-400 mb-1">Goals</p>
         ${matchGoals.map(g => `
           <div class="flex justify-between items-center bg-slate-700/60 rounded-lg px-3 py-1.5">
             <span>⚽ ${g.player_name} <span class="text-slate-400">(${getTeamName(g.team_id)})</span></span>
@@ -109,10 +118,23 @@ function renderAdminCard(m) {
        </div>`
     : '';
 
+  // Cards only (separate)
+  const matchCards = allCards.filter(c => c.match_id === m.id);
+  const cardsList = matchCards.length
+    ? `<div class="mt-3 text-sm space-y-1">
+        <p class="text-xs text-slate-400 mb-1">Cards</p>
+        ${matchCards.map(c => `
+          <div class="flex justify-between items-center bg-slate-700/60 rounded-lg px-3 py-1.5">
+            <span>${c.card_type === 'yellow' ? '🟨' : '🟥'} ${c.player_name}</span>
+            <span class="text-slate-400">${c.minute ? c.minute + "'" : ''}</span>
+          </div>
+        `).join('')}
+       </div>`
+    : '';
+
   return `
     <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700" data-id="${m.id}">
       
-      <!-- Teams + Score -->
       <div class="text-center mb-5">
         <div class="text-xs text-slate-400 mb-2">${m.group_name || ''}</div>
         <div class="font-bold text-lg mb-1">${home}</div>
@@ -124,7 +146,7 @@ function renderAdminCard(m) {
         <div class="font-bold text-lg">${away}</div>
       </div>
 
-      <!-- BIG +1 BUTTONS (open dialog) -->
+      <!-- +1 buttons (goal + score) -->
       <div class="grid grid-cols-2 gap-3 mb-4">
         <button onclick="openGoalDialog('${m.id}', 'home')" 
           class="w-full big-btn bg-green-500 hover:bg-green-400 text-slate-900 rounded-xl active:scale-95 transition">
@@ -136,7 +158,7 @@ function renderAdminCard(m) {
         </button>
       </div>
 
-      <!-- -1 buttons (just decrease score) -->
+      <!-- -1 buttons -->
       <div class="grid grid-cols-2 gap-3 mb-5">
         <button onclick="changeScoreOnly('${m.id}', 'home', -1)" 
           class="w-full py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm font-semibold">
@@ -176,26 +198,19 @@ function renderAdminCard(m) {
         </button>
       </div>
 
-      <!-- Goals list -->
       ${goalsList}
+      ${cardsList}
 
-      <!-- Extra -->
       <div class="flex justify-between text-sm pt-3">
-        <button onclick="resetScore('${m.id}')" class="text-slate-400 underline">Reset Score</button>
+        <button onclick="resetScore('${m.id}')" class="text-slate-400 underline">Reset Score + Goals</button>
         <button onclick="deleteMatch('${m.id}')" class="text-red-400 underline">Delete</button>
       </div>
     </div>
   `;
 }
 
-// ========== GOAL DIALOG ==========
+// ========== GOAL ==========
 window.openGoalDialog = function(matchId, side) {
-  currentMatchId = matchId;
-  currentSide = side;
-
-  const match = document.querySelector(`[data-id="${matchId}"]`);
-  // We need team names - get from the card text or reload data
-  // Simpler: use prompt for speed on mobile
   const player = prompt('Player name who scored?');
   if (!player || !player.trim()) return;
 
@@ -206,13 +221,11 @@ window.openGoalDialog = function(matchId, side) {
 };
 
 async function addGoalAndScore(matchId, side, playerName, minute) {
-  // 1. Get current score
   const el = document.getElementById(`${side}-${matchId}`);
   let current = parseInt(el.textContent) || 0;
   current = current + 1;
   el.textContent = current;
 
-  // 2. Update score in database
   const scoreUpdate = side === 'home' ? { home_score: current } : { away_score: current };
   scoreUpdate.updated_at = new Date().toISOString();
 
@@ -223,17 +236,11 @@ async function addGoalAndScore(matchId, side, playerName, minute) {
     return;
   }
 
-  // 3. Find the team_id
-  // We need to get the match data again or store it
   const { data: matchData } = await sb.from('matches').select('home_team_id, away_team_id').eq('id', matchId).single();
-  if (!matchData) {
-    alert('Could not find match');
-    return;
-  }
+  if (!matchData) return;
 
   const teamId = side === 'home' ? matchData.home_team_id : matchData.away_team_id;
 
-  // 4. Insert the goal
   const { error: goalError } = await sb.from('goals').insert({
     match_id: matchId,
     team_id: teamId,
@@ -245,11 +252,9 @@ async function addGoalAndScore(matchId, side, playerName, minute) {
     alert('Score updated but goal record failed: ' + goalError.message);
   }
 
-  // Refresh to show the new goal in the list
   loadAdminData();
 }
 
-// Just change score without goal (for corrections)
 window.changeScoreOnly = async function(matchId, side, delta) {
   const el = document.getElementById(`${side}-${matchId}`);
   let current = parseInt(el.textContent) || 0;
@@ -266,19 +271,32 @@ window.changeScoreOnly = async function(matchId, side, delta) {
   }
 };
 
-// ========== CARD DIALOG ==========
-window.openCardDialog = function(matchId, type) {
+// ========== CARDS (separate table) ==========
+window.openCardDialog = async function(matchId, type) {
   const player = prompt(`Player name for ${type === 'yellow' ? 'Yellow' : 'Red'} Card?`);
   if (!player || !player.trim()) return;
 
   const minuteStr = prompt('Minute? (optional)', '');
   const minute = minuteStr ? parseInt(minuteStr) : null;
 
-  // For now we just show an alert / can later store in a cards table
-  // Simple version: add a note in the match notes or just confirm
-  alert(`${type === 'yellow' ? '🟨 Yellow' : '🟥 Red'} Card recorded for ${player.trim()}${minute ? ' at ' + minute + "'" : ''}`);
-  
-  // Optional: you can later create a 'cards' table. For now this is a simple confirmation.
+  // Try to insert into cards table
+  const { error } = await sb.from('cards').insert({
+    match_id: matchId,
+    player_name: player.trim(),
+    card_type: type,
+    minute: minute
+  });
+
+  if (error) {
+    // If table doesn't exist yet
+    if (error.message && error.message.includes('does not exist')) {
+      alert('Cards table not created yet.\n\nPlease run the SQL I will give you in Supabase, then try again.');
+    } else {
+      alert('Error saving card: ' + error.message);
+    }
+  } else {
+    loadAdminData();
+  }
 };
 
 window.updateStatus = async function(matchId, status) {
@@ -290,17 +308,41 @@ window.updateStatus = async function(matchId, status) {
   else loadAdminData();
 };
 
+// RESET = score + delete all goals of this match
 window.resetScore = async function(matchId) {
-  if (!confirm('Reset score to 0-0?')) return;
-  const { error } = await sb.from('matches')
+  if (!confirm('Reset score to 0-0 and clear all goals of this match?')) return;
+
+  // 1. Reset score
+  const { error: scoreErr } = await sb.from('matches')
     .update({ home_score: 0, away_score: 0, updated_at: new Date().toISOString() })
     .eq('id', matchId);
-  if (error) alert(error.message);
-  else loadAdminData();
+
+  if (scoreErr) {
+    alert(scoreErr.message);
+    return;
+  }
+
+  // 2. Delete all goals of this match
+  const { error: goalsErr } = await sb.from('goals').delete().eq('match_id', matchId);
+  if (goalsErr) {
+    console.warn('Could not clear goals:', goalsErr);
+  }
+
+  // 3. Optionally clear cards too
+  try {
+    await sb.from('cards').delete().eq('match_id', matchId);
+  } catch (e) {}
+
+  loadAdminData();
 };
 
 window.deleteMatch = async function(matchId) {
-  if (!confirm('Delete this match?')) return;
+  if (!confirm('Delete this match and all its goals/cards?')) return;
+
+  // Delete related goals first
+  await sb.from('goals').delete().eq('match_id', matchId);
+  try { await sb.from('cards').delete().eq('match_id', matchId); } catch(e) {}
+
   const { error } = await sb.from('matches').delete().eq('id', matchId);
   if (error) alert(error.message);
   else loadAdminData();
