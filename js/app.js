@@ -1,6 +1,5 @@
 // Lex Liga Futsal - Public pages logic
 
-// Get the client (works with the robust config)
 const sb = window.supabaseClient || window.supabase || supabase;
 
 let lastFetchTime = null;
@@ -8,7 +7,6 @@ let allTeams = [];
 let allMatches = [];
 let allGoals = [];
 
-// Theme toggle
 function initTheme() {
   const saved = localStorage.getItem('theme');
   if (saved === 'light') {
@@ -61,7 +59,7 @@ function renderMatchCard(match) {
     ? `<div class="mt-2 text-xs text-slate-400 space-y-0.5">
         ${matchGoals.map(g => {
           const teamName = getTeamName(g.team_id);
-          return `<div>${g.player_name}${g.minute ? ` ${g.minute}'` : ''} <span class="text-slate-500">(${teamName})</span></div>`;
+          return `<div>⚽ ${g.player_name}${g.minute ? ` ${g.minute}'` : ''} <span class="text-slate-500">(${teamName})</span></div>`;
         }).join('')}
        </div>`
     : '';
@@ -190,15 +188,25 @@ async function loadData() {
       updatedEl.textContent = `Updated ${lastFetchTime.toLocaleTimeString()}`;
     }
 
-    // HOME PAGE
+    const liveMatches = allMatches.filter(m => m.status === 'live' || m.status === 'half_time');
+
+    // HOME PAGE - Live Now
     const liveContainer = document.getElementById('liveMatches');
     if (liveContainer) {
-      const live = allMatches.filter(m => m.status === 'live' || m.status === 'half_time');
-      liveContainer.innerHTML = live.length
-        ? live.map(m => renderMatchCard(m)).join('')
+      liveContainer.innerHTML = liveMatches.length
+        ? liveMatches.map(m => renderMatchCard(m)).join('')
         : '<p class="text-slate-400 text-sm">No live matches right now</p>';
     }
 
+    // FIXTURES PAGE - Live Now (at the top)
+    const liveFixturesContainer = document.getElementById('liveMatchesFixtures');
+    if (liveFixturesContainer) {
+      liveFixturesContainer.innerHTML = liveMatches.length
+        ? liveMatches.map(m => renderMatchCard(m)).join('')
+        : '<p class="text-slate-400 text-sm">No live matches right now</p>';
+    }
+
+    // Recent Results (Home)
     const recentContainer = document.getElementById('recentResults');
     if (recentContainer) {
       const finished = allMatches
@@ -210,6 +218,7 @@ async function loadData() {
         : '<p class="text-slate-400 text-sm">No results yet</p>';
     }
 
+    // Quick Standings (Home)
     const quickEl = document.getElementById('quickStandings');
     if (quickEl) {
       const standings = calculateStandings();
@@ -224,6 +233,7 @@ async function loadData() {
       }
     }
 
+    // Top Scorers
     const scorersEl = document.getElementById('topScorers');
     if (scorersEl) {
       const goalCount = {};
@@ -261,7 +271,7 @@ async function loadData() {
       }
     }
 
-    // FIXTURES PAGE
+    // Full Standings (Fixtures page)
     const fullStandingsEl = document.getElementById('fullStandings');
     if (fullStandingsEl) {
       const standings = calculateStandings();
@@ -276,6 +286,7 @@ async function loadData() {
       }
     }
 
+    // All Matches (Fixtures page)
     const allFixturesEl = document.getElementById('allFixtures');
     if (allFixturesEl) {
       allFixturesEl.innerHTML = allMatches.length
@@ -291,7 +302,7 @@ async function loadData() {
 }
 
 function showError(msg) {
-  const els = ['liveMatches', 'recentResults', 'quickStandings', 'topScorers', 'fullStandings', 'allFixtures'];
+  const els = ['liveMatches', 'liveMatchesFixtures', 'recentResults', 'quickStandings', 'topScorers', 'fullStandings', 'allFixtures'];
   els.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.innerHTML = `<p class="text-red-400 text-sm">Error: ${msg}</p>`;
@@ -307,6 +318,5 @@ function startAutoRefresh() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
-  // Small delay to ensure scripts are fully ready
   setTimeout(startAutoRefresh, 100);
 });
