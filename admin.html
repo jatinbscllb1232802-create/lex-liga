@@ -2,69 +2,82 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>Admin – Lex Liga Futsal</title>
   <meta name="robots" content="noindex, nofollow" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config = { darkMode: 'class' }</script>
   <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .big-btn {
+      min-height: 52px;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .status-btn {
+      min-height: 44px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen">
-  <!-- Login Gate -->
+
+  <!-- LOGIN -->
   <div id="loginScreen" class="min-h-screen flex items-center justify-center px-4">
     <div class="bg-slate-800 rounded-2xl p-8 w-full max-w-sm border border-slate-700">
       <h1 class="text-xl font-bold mb-1 text-center">Lex Liga Admin</h1>
-      <p class="text-sm text-slate-400 text-center mb-6">Enter password to continue</p>
+      <p class="text-sm text-slate-400 text-center mb-6">Enter password</p>
       <input id="passwordInput" type="password" placeholder="Password" 
-        class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:border-primary" />
-      <button id="loginBtn" class="w-full bg-primary hover:bg-green-600 text-slate-900 font-bold py-3 rounded-lg transition">
-        Unlock Admin
+        class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-4 mb-4 text-lg focus:outline-none focus:border-green-500" />
+      <button id="loginBtn" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">
+        Unlock
       </button>
       <p id="loginError" class="text-red-400 text-sm mt-3 text-center hidden">Wrong password</p>
     </div>
   </div>
 
-  <!-- Admin Panel -->
+  <!-- ADMIN -->
   <div id="adminPanel" class="hidden">
-    <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-700">
-      <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+    <header class="sticky top-0 z-50 bg-slate-900 border-b border-slate-700">
+      <div class="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         <div>
-          <h1 class="font-bold">Admin Panel</h1>
+          <h1 class="font-bold text-lg">Admin</h1>
           <p class="text-xs text-slate-400">Lex Liga Futsal</p>
         </div>
-        <div class="flex gap-3 items-center">
-          <a href="index.html" class="text-sm text-primary hover:underline">View Live</a>
-          <button id="logoutBtn" class="text-sm text-slate-400 hover:text-white">Logout</button>
+        <div class="flex gap-4 items-center">
+          <a href="index.html" class="text-sm text-green-400">Live Site</a>
+          <button id="logoutBtn" class="text-sm text-slate-400">Logout</button>
         </div>
       </div>
     </header>
 
-    <main class="max-w-3xl mx-auto px-4 py-6 space-y-6">
+    <main class="max-w-lg mx-auto px-4 py-5 space-y-5 pb-20">
       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-bold">Matches</h2>
-        <button id="refreshAdmin" class="text-sm text-primary hover:underline">Refresh</button>
+        <h2 class="font-bold text-lg">Matches</h2>
+        <button id="refreshAdmin" class="text-sm text-green-400 font-medium">Refresh</button>
       </div>
 
-      <div id="adminMatches" class="space-y-4">
-        <p class="text-slate-400 text-sm">Loading matches...</p>
+      <div id="adminMatches" class="space-y-5">
+        <p class="text-slate-400 text-sm">Loading...</p>
       </div>
 
-      <div class="bg-slate-800 rounded-xl p-5 border border-slate-700">
-        <h3 class="font-semibold mb-3">Add New Match</h3>
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <select id="newHome" class="bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm"></select>
-          <select id="newAway" class="bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm"></select>
-        </div>
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <input id="newGroup" type="text" placeholder="Group (e.g. Group A)" class="bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm" />
-          <select id="newStatus" class="bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm">
-            <option value="not_started">Not started</option>
-            <option value="live">Live</option>
-            <option value="finished">Finished</option>
-          </select>
-        </div>
-        <button id="addMatchBtn" class="w-full bg-primary hover:bg-green-600 text-slate-900 font-bold py-2.5 rounded-lg text-sm">
+      <!-- ADD MATCH (simple) -->
+      <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 mt-8">
+        <h3 class="font-bold mb-4 text-center">+ Add New Match</h3>
+        
+        <label class="text-xs text-slate-400 mb-1 block">Home Team</label>
+        <select id="newHome" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-3 text-base"></select>
+        
+        <label class="text-xs text-slate-400 mb-1 block">Away Team</label>
+        <select id="newAway" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-3 text-base"></select>
+        
+        <label class="text-xs text-slate-400 mb-1 block">Group (optional)</label>
+        <input id="newGroup" type="text" placeholder="e.g. Group A" 
+          class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-4 text-base" />
+        
+        <button id="addMatchBtn" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">
           Add Match
         </button>
       </div>
