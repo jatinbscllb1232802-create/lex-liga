@@ -12,7 +12,6 @@
     tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: { DEFAULT: '#22c55e' } } } } }
   </script>
   <link rel="stylesheet" href="css/styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen">
   <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-700">
@@ -37,7 +36,6 @@
       <button id="refreshBtn" class="text-primary hover:underline text-sm font-medium">Refresh</button>
     </div>
 
-    <!-- Full Standings -->
     <section>
       <h2 class="text-xl font-bold mb-4">Standings</h2>
       <div id="fullStandings" class="space-y-6">
@@ -45,7 +43,6 @@
       </div>
     </section>
 
-    <!-- All Fixtures -->
     <section>
       <h2 class="text-xl font-bold mb-4">All Matches</h2>
       <div id="allFixtures" class="space-y-3">
@@ -53,7 +50,6 @@
       </div>
     </section>
 
-    <!-- Rules & Format -->
     <section class="bg-slate-800 rounded-xl p-5">
       <h2 class="text-lg font-bold mb-3">Rules & Format</h2>
       <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
@@ -65,7 +61,6 @@
       </ul>
     </section>
 
-    <!-- Fair Play / Awards -->
     <section class="bg-slate-800 rounded-xl p-5">
       <h2 class="text-lg font-bold mb-3">Awards</h2>
       <div class="grid sm:grid-cols-2 gap-3 text-sm">
@@ -85,6 +80,7 @@
     Lex Liga Futsal • College Tournament
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
   <script src="js/supabase-config.js"></script>
   <script src="js/app.js"></script>
 </body>
