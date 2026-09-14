@@ -35,4 +35,4 @@ try {
 window.supabaseClient = supabase;
 
 // Admin password
-const ADMIN_PASSWORD = 'lexliga2026';
+const ADMIN_PASSWORD = 'lexliga@2026';
