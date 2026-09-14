@@ -1,4 +1,6 @@
-// Lex Liga Admin logic (simplified)
+// Lex Liga Admin logic
+
+const sb = window.supabaseClient || window.supabase || supabase;
 
 const loginScreen = document.getElementById('loginScreen');
 const adminPanel = document.getElementById('adminPanel');
@@ -50,12 +52,16 @@ async function loadAdminData() {
   const container = document.getElementById('adminMatches');
   container.innerHTML = '<p class="text-slate-400 text-sm">Loading...</p>';
 
+  if (!sb || typeof sb.from !== 'function') {
+    container.innerHTML = '<p class="text-red-400 text-sm">Supabase client not ready. Please hard-refresh the page.</p>';
+    return;
+  }
+
   try {
-    const { data: teams, error: te } = await supabase.from('teams').select('*').order('name');
+    const { data: teams, error: te } = await sb.from('teams').select('*').order('name');
     if (te) throw te;
     allTeams = teams || [];
 
-    // Fill dropdowns
     const homeSelect = document.getElementById('newHome');
     const awaySelect = document.getElementById('newAway');
     if (homeSelect && awaySelect) {
@@ -64,11 +70,7 @@ async function loadAdminData() {
       awaySelect.innerHTML = opts;
     }
 
-    const { data: matches, error } = await supabase
-      .from('matches')
-      .select('*')
-      .order('kickoff_time', { ascending: true });
-
+    const { data: matches, error } = await sb.from('matches').select('*').order('kickoff_time', { ascending: true });
     if (error) throw error;
 
     if (!matches || matches.length === 0) {
@@ -78,8 +80,8 @@ async function loadAdminData() {
 
     container.innerHTML = matches.map(m => renderAdminCard(m)).join('');
   } catch (err) {
-    container.innerHTML = `<p class="text-red-400">Error: ${err.message || err}</p>`;
     console.error(err);
+    container.innerHTML = `<p class="text-red-400 text-sm">Error: ${err.message || err}</p>`;
   }
 }
 
@@ -151,7 +153,7 @@ window.changeScore = async function(matchId, side, delta) {
   const update = side === 'home' ? { home_score: current } : { away_score: current };
   update.updated_at = new Date().toISOString();
 
-  const { error } = await supabase.from('matches').update(update).eq('id', matchId);
+  const { error } = await sb.from('matches').update(update).eq('id', matchId);
   if (error) {
     alert('Error saving score: ' + error.message);
     loadAdminData();
@@ -159,10 +161,7 @@ window.changeScore = async function(matchId, side, delta) {
 };
 
 window.updateStatus = async function(matchId, status) {
-  const { error } = await supabase
-    .from('matches')
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq('id', matchId);
+  const { error } = await sb.from('matches').update({ status, updated_at: new Date().toISOString() }).eq('id', matchId);
   if (error) alert('Error: ' + error.message);
 };
 
@@ -174,7 +173,7 @@ window.addGoal = async function(matchId) {
     return;
   }
 
-  const { error } = await supabase.from('goals').insert({
+  const { error } = await sb.from('goals').insert({
     match_id: matchId,
     team_id: teamId,
     player_name: name
@@ -190,17 +189,14 @@ window.addGoal = async function(matchId) {
 
 window.resetScore = async function(matchId) {
   if (!confirm('Reset both scores to 0?')) return;
-  const { error } = await supabase
-    .from('matches')
-    .update({ home_score: 0, away_score: 0, updated_at: new Date().toISOString() })
-    .eq('id', matchId);
+  const { error } = await sb.from('matches').update({ home_score: 0, away_score: 0, updated_at: new Date().toISOString() }).eq('id', matchId);
   if (error) alert(error.message);
   else loadAdminData();
 };
 
 window.deleteMatch = async function(matchId) {
   if (!confirm('Delete this match permanently?')) return;
-  const { error } = await supabase.from('matches').delete().eq('id', matchId);
+  const { error } = await sb.from('matches').delete().eq('id', matchId);
   if (error) alert(error.message);
   else loadAdminData();
 };
@@ -216,7 +212,7 @@ document.getElementById('addMatchBtn')?.addEventListener('click', async () => {
     return;
   }
 
-  const { error } = await supabase.from('matches').insert({
+  const { error } = await sb.from('matches').insert({
     home_team_id: home,
     away_team_id: away,
     group_name: group || null,
