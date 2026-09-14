@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fixtures & Standings – Lex Liga Futsal</title>
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="theme-color" content="#0b1120" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,19 +13,19 @@
   </script>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen">
-  <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-700">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+<body class="min-h-screen">
+  <header class="sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 py-3.5 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <a href="index.html" class="w-9 h-9 rounded-full bg-primary flex items-center justify-center font-bold text-slate-900">LL</a>
+        <a href="index.html" class="logo-circle w-10 h-10 rounded-full flex items-center justify-center font-bold text-slate-900 text-sm">LL</a>
         <div>
-          <h1 class="font-bold text-lg leading-tight">Lex Liga Futsal</h1>
+          <h1 class="font-bold text-lg leading-tight tracking-tight">Lex Liga Futsal</h1>
           <p class="text-xs text-slate-400">Fixtures & Standings</p>
         </div>
       </div>
       <div class="flex items-center gap-3">
-        <button id="themeToggle" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm">☀️</button>
-        <a href="index.html" class="text-sm font-medium text-primary hover:underline">Live</a>
+        <button id="themeToggle" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-sm transition">☀️</button>
+        <a href="index.html" class="text-sm font-semibold text-primary hover:text-green-400 transition">Live</a>
       </div>
     </div>
   </header>
@@ -33,13 +33,12 @@
   <main class="max-w-5xl mx-auto px-4 py-6 space-y-10">
     <div class="flex items-center justify-between text-sm text-slate-400">
       <span id="lastUpdated">Loading...</span>
-      <button id="refreshBtn" class="text-primary hover:underline text-sm font-medium">Refresh</button>
+      <button id="refreshBtn" class="text-primary hover:text-green-400 text-sm font-semibold transition">Refresh</button>
     </div>
 
-    <!-- LIVE NOW (at the top) -->
+    <!-- LIVE NOW -->
     <section>
       <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
         Live Now
       </h2>
       <div id="liveMatchesFixtures" class="space-y-3">
@@ -61,7 +60,7 @@
       </div>
     </section>
 
-    <section class="bg-slate-800 rounded-xl p-5">
+    <section class="bg-slate-800/80 rounded-2xl p-5 border border-slate-700/50">
       <h2 class="text-lg font-bold mb-3">Rules & Format</h2>
       <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
         <li>Group stage followed by knockout rounds</li>
@@ -72,23 +71,27 @@
       </ul>
     </section>
 
-    <section class="bg-slate-800 rounded-xl p-5">
+    <section class="bg-slate-800/80 rounded-2xl p-5 border border-slate-700/50">
       <h2 class="text-lg font-bold mb-3">Awards</h2>
       <div class="grid sm:grid-cols-2 gap-3 text-sm">
-        <div class="bg-slate-700/50 rounded-lg p-3">
-          <p class="font-semibold text-primary">Golden Boot</p>
-          <p class="text-slate-400">Top goal scorer of the tournament</p>
+        <div class="bg-slate-700/40 rounded-xl p-4 border border-slate-600/30">
+          <p class="font-semibold text-primary">🏆 Golden Boot</p>
+          <p class="text-slate-400 mt-1">Top goal scorer of the tournament</p>
         </div>
-        <div class="bg-slate-700/50 rounded-lg p-3">
-          <p class="font-semibold text-primary">Fair Play Award</p>
-          <p class="text-slate-400">Best disciplined team</p>
+        <div class="bg-slate-700/40 rounded-xl p-4 border border-slate-600/30">
+          <p class="font-semibold text-primary">🤝 Fair Play Award</p>
+          <p class="text-slate-400 mt-1">Best disciplined team</p>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="border-t border-slate-800 mt-12 py-6 text-center text-sm text-slate-500">
-    Lex Liga Futsal • College Tournament
+  <footer class="border-t border-slate-800/80 mt-12 py-6 text-center text-sm text-slate-500">
+    <div class="flex items-center justify-center gap-2 mb-1">
+      <span class="w-2 h-2 rounded-full bg-primary"></span>
+      Lex Liga Futsal
+    </div>
+    College Tournament
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
