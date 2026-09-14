@@ -54,6 +54,20 @@ function statusBadge(status) {
 function renderMatchCard(match) {
   const home = getTeamName(match.home_team_id);
   const away = getTeamName(match.away_team_id);
+  const homeScore = match.home_score ?? 0;
+  const awayScore = match.away_score ?? 0;
+
+  // Winner text
+  let winnerHtml = '';
+  if (match.status === 'finished' || match.status === 'walkover') {
+    if (homeScore > awayScore) {
+      winnerHtml = `<div class="text-center text-xs text-green-400 font-semibold mt-1">Winner: ${home}</div>`;
+    } else if (awayScore > homeScore) {
+      winnerHtml = `<div class="text-center text-xs text-green-400 font-semibold mt-1">Winner: ${away}</div>`;
+    } else {
+      winnerHtml = `<div class="text-center text-xs text-slate-400 font-semibold mt-1">Draw</div>`;
+    }
+  }
 
   // Split goals by team
   const homeGoals = allGoals.filter(g => g.match_id === match.id && g.team_id === match.home_team_id);
@@ -97,7 +111,7 @@ function renderMatchCard(match) {
 
         <!-- Score -->
         <div class="score text-2xl sm:text-3xl px-3 min-w-[70px] text-center font-extrabold pt-0.5">
-          ${match.home_score ?? 0} – ${match.away_score ?? 0}
+          ${homeScore} – ${awayScore}
         </div>
 
         <!-- Away side -->
@@ -107,11 +121,14 @@ function renderMatchCard(match) {
         </div>
       </div>
 
+      <!-- Winner -->
+      ${winnerHtml}
+
       <!-- Cards -->
       ${cardsHtml}
 
       <div class="mt-3 flex justify-end">
-        <button onclick="shareMatch('${home.replace(/'/g, "\\'")}', '${away.replace(/'/g, "\\'")}', ${match.home_score ?? 0}, ${match.away_score ?? 0}, '${match.status}')"
+        <button onclick="shareMatch('${home.replace(/'/g, "\\'")}', '${away.replace(/'/g, "\\'")}', ${homeScore}, ${awayScore}, '${match.status}')"
           class="text-xs text-primary hover:underline">Share</button>
       </div>
     </div>
@@ -214,7 +231,6 @@ async function loadData() {
     if (ge) throw ge;
     allGoals = goals || [];
 
-    // Load cards (if table exists)
     try {
       const { data: cards } = await sb.from('cards').select('*');
       allCards = cards || [];
@@ -230,7 +246,6 @@ async function loadData() {
 
     const liveMatches = allMatches.filter(m => m.status === 'live' || m.status === 'half_time');
 
-    // HOME - Live Now
     const liveContainer = document.getElementById('liveMatches');
     if (liveContainer) {
       liveContainer.innerHTML = liveMatches.length
@@ -238,7 +253,6 @@ async function loadData() {
         : '<p class="text-slate-400 text-sm">No live matches right now</p>';
     }
 
-    // FIXTURES - Live Now
     const liveFixturesContainer = document.getElementById('liveMatchesFixtures');
     if (liveFixturesContainer) {
       liveFixturesContainer.innerHTML = liveMatches.length
@@ -246,7 +260,6 @@ async function loadData() {
         : '<p class="text-slate-400 text-sm">No live matches right now</p>';
     }
 
-    // Recent Results
     const recentContainer = document.getElementById('recentResults');
     if (recentContainer) {
       const finished = allMatches
@@ -258,7 +271,6 @@ async function loadData() {
         : '<p class="text-slate-400 text-sm">No results yet</p>';
     }
 
-    // Quick Standings
     const quickEl = document.getElementById('quickStandings');
     if (quickEl) {
       const standings = calculateStandings();
@@ -273,7 +285,6 @@ async function loadData() {
       }
     }
 
-    // Top Scorers
     const scorersEl = document.getElementById('topScorers');
     if (scorersEl) {
       const goalCount = {};
@@ -311,7 +322,6 @@ async function loadData() {
       }
     }
 
-    // Full Standings
     const fullStandingsEl = document.getElementById('fullStandings');
     if (fullStandingsEl) {
       const standings = calculateStandings();
@@ -326,7 +336,6 @@ async function loadData() {
       }
     }
 
-    // All Matches
     const allFixturesEl = document.getElementById('allFixtures');
     if (allFixturesEl) {
       allFixturesEl.innerHTML = allMatches.length
