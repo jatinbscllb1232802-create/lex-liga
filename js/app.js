@@ -1,4 +1,7 @@
-// Lex Liga Futsal - Public pages logic (simplified reliable queries)
+// Lex Liga Futsal - Public pages logic
+
+// Get the client (works with the robust config)
+const sb = window.supabaseClient || window.supabase || supabase;
 
 let lastFetchTime = null;
 let allTeams = [];
@@ -31,7 +34,6 @@ function initTheme() {
   }
 }
 
-// Helpers
 function getTeamName(id) {
   const t = allTeams.find(t => t.id === id);
   return t ? t.name : 'TBD';
@@ -162,17 +164,23 @@ function renderStandingsTable(standings, groupName) {
 }
 
 async function loadData() {
+  if (!sb || typeof sb.from !== 'function') {
+    const msg = 'Supabase client is not ready. Please hard-refresh the page.';
+    console.error(msg);
+    showError(msg);
+    return;
+  }
+
   try {
-    // Simple separate queries (more reliable)
-    const { data: teams, error: te } = await supabase.from('teams').select('*').order('name');
+    const { data: teams, error: te } = await sb.from('teams').select('*').order('name');
     if (te) throw te;
     allTeams = teams || [];
 
-    const { data: matches, error: me } = await supabase.from('matches').select('*').order('kickoff_time', { ascending: true });
+    const { data: matches, error: me } = await sb.from('matches').select('*').order('kickoff_time', { ascending: true });
     if (me) throw me;
     allMatches = matches || [];
 
-    const { data: goals, error: ge } = await supabase.from('goals').select('*');
+    const { data: goals, error: ge } = await sb.from('goals').select('*');
     if (ge) throw ge;
     allGoals = goals || [];
 
@@ -182,7 +190,7 @@ async function loadData() {
       updatedEl.textContent = `Updated ${lastFetchTime.toLocaleTimeString()}`;
     }
 
-    // ===== HOME PAGE =====
+    // HOME PAGE
     const liveContainer = document.getElementById('liveMatches');
     if (liveContainer) {
       const live = allMatches.filter(m => m.status === 'live' || m.status === 'half_time');
@@ -202,7 +210,6 @@ async function loadData() {
         : '<p class="text-slate-400 text-sm">No results yet</p>';
     }
 
-    // Quick standings
     const quickEl = document.getElementById('quickStandings');
     if (quickEl) {
       const standings = calculateStandings();
@@ -217,7 +224,6 @@ async function loadData() {
       }
     }
 
-    // Top scorers
     const scorersEl = document.getElementById('topScorers');
     if (scorersEl) {
       const goalCount = {};
@@ -255,7 +261,7 @@ async function loadData() {
       }
     }
 
-    // ===== FIXTURES PAGE =====
+    // FIXTURES PAGE
     const fullStandingsEl = document.getElementById('fullStandings');
     if (fullStandingsEl) {
       const standings = calculateStandings();
@@ -279,13 +285,17 @@ async function loadData() {
 
   } catch (err) {
     console.error('Load error:', err);
-    const msg = err.message || err.details || 'Unknown error';
-    const els = ['liveMatches', 'recentResults', 'quickStandings', 'topScorers', 'fullStandings', 'allFixtures'];
-    els.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.innerHTML = `<p class="text-red-400 text-sm">Error: ${msg}</p>`;
-    });
+    const msg = err.message || err.details || JSON.stringify(err) || 'Unknown error';
+    showError(msg);
   }
+}
+
+function showError(msg) {
+  const els = ['liveMatches', 'recentResults', 'quickStandings', 'topScorers', 'fullStandings', 'allFixtures'];
+  els.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<p class="text-red-400 text-sm">Error: ${msg}</p>`;
+  });
 }
 
 function startAutoRefresh() {
@@ -297,5 +307,6 @@ function startAutoRefresh() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
-  startAutoRefresh();
+  // Small delay to ensure scripts are fully ready
+  setTimeout(startAutoRefresh, 100);
 });
