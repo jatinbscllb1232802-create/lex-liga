@@ -1,0 +1,96 @@
+/* Lex Liga Futsal - Custom styles on top of Tailwind */
+:root {
+  --primary: #22c55e;
+  --primary-dark: #16a34a;
+  --live: #ef4444;
+  --finished: #6b7280;
+  --upcoming: #3b82f6;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+/* Status badges */
+.status-live {
+  background-color: #ef4444;
+  animation: pulse 2s infinite;
+}
+.status-finished {
+  background-color: #6b7280;
+}
+.status-not_started, .status-upcoming {
+  background-color: #3b82f6;
+}
+.status-half_time {
+  background-color: #f59e0b;
+}
+.status-walkover, .status-cancelled {
+  background-color: #9ca3af;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Match card */
+.match-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.match-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* Score numbers */
+.score {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+
+/* Admin score buttons */
+.score-btn {
+  width: 42px;
+  height: 42px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.score-btn:active {
+  transform: scale(0.92);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+/* Light mode overrides */
+.light body,
+body.light {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+.light .bg-slate-900 { background-color: #ffffff !important; }
+.light .bg-slate-800 { background-color: #f1f5f9 !important; }
+.light .bg-slate-700 { background-color: #e2e8f0 !important; }
+.light .text-slate-100 { color: #0f172a !important; }
+.light .text-slate-300 { color: #334155 !important; }
+.light .text-slate-400 { color: #64748b !important; }
+.light .border-slate-700 { border-color: #e2e8f0 !important; }
