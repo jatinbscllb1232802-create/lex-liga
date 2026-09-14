@@ -1,4 +1,4 @@
-// Lex Liga Admin logic
+// Lex Liga Admin logic (simplified)
 
 const loginScreen = document.getElementById('loginScreen');
 const adminPanel = document.getElementById('adminPanel');
@@ -7,7 +7,6 @@ const loginBtn = document.getElementById('loginBtn');
 const loginError = document.getElementById('loginError');
 const logoutBtn = document.getElementById('logoutBtn');
 
-// Check if already logged in this session
 if (sessionStorage.getItem('lexAdmin') === 'true') {
   showAdmin();
 }
@@ -42,48 +41,51 @@ document.getElementById('refreshAdmin')?.addEventListener('click', loadAdminData
 
 let allTeams = [];
 
+function getTeamName(id) {
+  const t = allTeams.find(t => t.id === id);
+  return t ? t.name : 'TBD';
+}
+
 async function loadAdminData() {
   const container = document.getElementById('adminMatches');
   container.innerHTML = '<p class="text-slate-400 text-sm">Loading...</p>';
 
-  const { data: teams } = await supabase.from('teams').select('*').order('name');
-  allTeams = teams || [];
+  try {
+    const { data: teams, error: te } = await supabase.from('teams').select('*').order('name');
+    if (te) throw te;
+    allTeams = teams || [];
 
-  // Fill add-match dropdowns
-  const homeSelect = document.getElementById('newHome');
-  const awaySelect = document.getElementById('newAway');
-  if (homeSelect && awaySelect) {
-    const opts = allTeams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
-    homeSelect.innerHTML = opts;
-    awaySelect.innerHTML = opts;
+    // Fill dropdowns
+    const homeSelect = document.getElementById('newHome');
+    const awaySelect = document.getElementById('newAway');
+    if (homeSelect && awaySelect) {
+      const opts = allTeams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+      homeSelect.innerHTML = opts;
+      awaySelect.innerHTML = opts;
+    }
+
+    const { data: matches, error } = await supabase
+      .from('matches')
+      .select('*')
+      .order('kickoff_time', { ascending: true });
+
+    if (error) throw error;
+
+    if (!matches || matches.length === 0) {
+      container.innerHTML = '<p class="text-slate-400 text-sm">No matches yet. Add one below.</p>';
+      return;
+    }
+
+    container.innerHTML = matches.map(m => renderAdminCard(m)).join('');
+  } catch (err) {
+    container.innerHTML = `<p class="text-red-400">Error: ${err.message || err}</p>`;
+    console.error(err);
   }
-
-  const { data: matches, error } = await supabase
-    .from('matches')
-    .select(`
-      *,
-      home_team:teams!home_team_id(id, name),
-      away_team:teams!away_team_id(id, name),
-      goals(*, team:teams(id, name))
-    `)
-    .order('kickoff_time', { ascending: true });
-
-  if (error) {
-    container.innerHTML = `<p class="text-red-400">Error: ${error.message}</p>`;
-    return;
-  }
-
-  if (!matches || matches.length === 0) {
-    container.innerHTML = '<p class="text-slate-400 text-sm">No matches yet. Add one below.</p>';
-    return;
-  }
-
-  container.innerHTML = matches.map(m => renderAdminCard(m)).join('');
 }
 
 function renderAdminCard(m) {
-  const home = m.home_team?.name || 'TBD';
-  const away = m.away_team?.name || 'TBD';
+  const home = getTeamName(m.home_team_id);
+  const away = getTeamName(m.away_team_id);
 
   return `
     <div class="bg-slate-800 rounded-xl p-4 border border-slate-700" data-id="${m.id}">
@@ -105,7 +107,7 @@ function renderAdminCard(m) {
         
         <div class="flex items-center gap-2">
           <button onclick="changeScore('${m.id}', 'home', -1)" class="score-btn bg-slate-700 hover:bg-slate-600">−</button>
-          <span class="score text-2xl w-8 text-center" id="home-${m.id}">${m.home_score}</span>
+          <span class="score text-2xl w-8 text-center" id="home-${m.id}">${m.home_score ?? 0}</span>
           <button onclick="changeScore('${m.id}', 'home', 1)" class="score-btn bg-primary text-slate-900 hover:bg-green-400">+</button>
         </div>
 
@@ -113,14 +115,13 @@ function renderAdminCard(m) {
 
         <div class="flex items-center gap-2">
           <button onclick="changeScore('${m.id}', 'away', -1)" class="score-btn bg-slate-700 hover:bg-slate-600">−</button>
-          <span class="score text-2xl w-8 text-center" id="away-${m.id}">${m.away_score}</span>
+          <span class="score text-2xl w-8 text-center" id="away-${m.id}">${m.away_score ?? 0}</span>
           <button onclick="changeScore('${m.id}', 'away', 1)" class="score-btn bg-primary text-slate-900 hover:bg-green-400">+</button>
         </div>
 
         <div class="flex-1 font-semibold text-sm truncate">${away}</div>
       </div>
 
-      <!-- Quick add scorer -->
       <div class="flex gap-2 mb-3">
         <select id="scorerTeam-${m.id}" class="bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs flex-1">
           <option value="${m.home_team_id}">${home}</option>
@@ -141,7 +142,6 @@ function renderAdminCard(m) {
   `;
 }
 
-// Change score
 window.changeScore = async function(matchId, side, delta) {
   const el = document.getElementById(`${side}-${matchId}`);
   let current = parseInt(el.textContent) || 0;
@@ -158,7 +158,6 @@ window.changeScore = async function(matchId, side, delta) {
   }
 };
 
-// Update status
 window.updateStatus = async function(matchId, status) {
   const { error } = await supabase
     .from('matches')
@@ -167,7 +166,6 @@ window.updateStatus = async function(matchId, status) {
   if (error) alert('Error: ' + error.message);
 };
 
-// Add goal
 window.addGoal = async function(matchId) {
   const teamId = document.getElementById(`scorerTeam-${matchId}`).value;
   const name = document.getElementById(`scorerName-${matchId}`).value.trim();
@@ -186,14 +184,10 @@ window.addGoal = async function(matchId) {
     alert('Error adding goal: ' + error.message);
   } else {
     document.getElementById(`scorerName-${matchId}`).value = '';
-    // Also increase the score for that team
-    const matchCard = document.querySelector(`[data-id="${matchId}"]`);
-    // We can let the user press + manually, or auto-increment here if desired
     loadAdminData();
   }
 };
 
-// Reset score
 window.resetScore = async function(matchId) {
   if (!confirm('Reset both scores to 0?')) return;
   const { error } = await supabase
@@ -204,7 +198,6 @@ window.resetScore = async function(matchId) {
   else loadAdminData();
 };
 
-// Delete match
 window.deleteMatch = async function(matchId) {
   if (!confirm('Delete this match permanently?')) return;
   const { error } = await supabase.from('matches').delete().eq('id', matchId);
@@ -212,7 +205,6 @@ window.deleteMatch = async function(matchId) {
   else loadAdminData();
 };
 
-// Add new match
 document.getElementById('addMatchBtn')?.addEventListener('click', async () => {
   const home = document.getElementById('newHome').value;
   const away = document.getElementById('newAway').value;
