@@ -6,6 +6,7 @@ let lastFetchTime = null;
 let allTeams = [];
 let allMatches = [];
 let allGoals = [];
+let allCards = [];
 
 function initTheme() {
   const saved = localStorage.getItem('theme');
@@ -53,31 +54,62 @@ function statusBadge(status) {
 function renderMatchCard(match) {
   const home = getTeamName(match.home_team_id);
   const away = getTeamName(match.away_team_id);
-  const matchGoals = allGoals.filter(g => g.match_id === match.id);
 
-  const scorersHtml = matchGoals.length
-    ? `<div class="mt-2 text-xs text-slate-400 space-y-0.5">
-        ${matchGoals.map(g => {
-          const teamName = getTeamName(g.team_id);
-          return `<div>⚽ ${g.player_name}${g.minute ? ` ${g.minute}'` : ''} <span class="text-slate-500">(${teamName})</span></div>`;
-        }).join('')}
+  // Split goals by team
+  const homeGoals = allGoals.filter(g => g.match_id === match.id && g.team_id === match.home_team_id);
+  const awayGoals = allGoals.filter(g => g.match_id === match.id && g.team_id === match.away_team_id);
+
+  // Cards for this match
+  const matchCards = allCards.filter(c => c.match_id === match.id);
+
+  const homeScorersHtml = homeGoals.length
+    ? homeGoals.map(g => `<div class="text-xs text-slate-400">⚽ ${g.player_name}${g.minute ? ` ${g.minute}'` : ''}</div>`).join('')
+    : '';
+
+  const awayScorersHtml = awayGoals.length
+    ? awayGoals.map(g => `<div class="text-xs text-slate-400">⚽ ${g.player_name}${g.minute ? ` ${g.minute}'` : ''}</div>`).join('')
+    : '';
+
+  const cardsHtml = matchCards.length
+    ? `<div class="mt-2 flex flex-wrap gap-2 justify-center">
+        ${matchCards.map(c => `
+          <span class="text-xs px-2 py-0.5 rounded ${c.card_type === 'yellow' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'}">
+            ${c.card_type === 'yellow' ? '🟨' : '🟥'} ${c.player_name}${c.minute ? ` ${c.minute}'` : ''}
+          </span>
+        `).join('')}
        </div>`
     : '';
 
   return `
     <div class="match-card bg-slate-800 rounded-xl p-4 border border-slate-700">
-      <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center justify-between mb-3">
         ${statusBadge(match.status)}
         <span class="text-xs text-slate-400">${match.group_name || ''}</span>
       </div>
-      <div class="flex items-center justify-between gap-3">
-        <div class="flex-1 text-right font-semibold truncate">${home}</div>
-        <div class="score text-2xl px-3 min-w-[80px] text-center">
+
+      <!-- Score row -->
+      <div class="flex items-start justify-between gap-2">
+        <!-- Home side -->
+        <div class="flex-1 text-right">
+          <div class="font-semibold text-sm sm:text-base truncate">${home}</div>
+          <div class="mt-1 space-y-0.5">${homeScorersHtml}</div>
+        </div>
+
+        <!-- Score -->
+        <div class="score text-2xl sm:text-3xl px-3 min-w-[70px] text-center font-extrabold pt-0.5">
           ${match.home_score ?? 0} – ${match.away_score ?? 0}
         </div>
-        <div class="flex-1 font-semibold truncate">${away}</div>
+
+        <!-- Away side -->
+        <div class="flex-1 text-left">
+          <div class="font-semibold text-sm sm:text-base truncate">${away}</div>
+          <div class="mt-1 space-y-0.5">${awayScorersHtml}</div>
+        </div>
       </div>
-      ${scorersHtml}
+
+      <!-- Cards -->
+      ${cardsHtml}
+
       <div class="mt-3 flex justify-end">
         <button onclick="shareMatch('${home.replace(/'/g, "\\'")}', '${away.replace(/'/g, "\\'")}', ${match.home_score ?? 0}, ${match.away_score ?? 0}, '${match.status}')"
           class="text-xs text-primary hover:underline">Share</button>
@@ -182,6 +214,14 @@ async function loadData() {
     if (ge) throw ge;
     allGoals = goals || [];
 
+    // Load cards (if table exists)
+    try {
+      const { data: cards } = await sb.from('cards').select('*');
+      allCards = cards || [];
+    } catch (e) {
+      allCards = [];
+    }
+
     lastFetchTime = new Date();
     const updatedEl = document.getElementById('lastUpdated');
     if (updatedEl) {
@@ -190,7 +230,7 @@ async function loadData() {
 
     const liveMatches = allMatches.filter(m => m.status === 'live' || m.status === 'half_time');
 
-    // HOME PAGE - Live Now
+    // HOME - Live Now
     const liveContainer = document.getElementById('liveMatches');
     if (liveContainer) {
       liveContainer.innerHTML = liveMatches.length
@@ -198,7 +238,7 @@ async function loadData() {
         : '<p class="text-slate-400 text-sm">No live matches right now</p>';
     }
 
-    // FIXTURES PAGE - Live Now (at the top)
+    // FIXTURES - Live Now
     const liveFixturesContainer = document.getElementById('liveMatchesFixtures');
     if (liveFixturesContainer) {
       liveFixturesContainer.innerHTML = liveMatches.length
@@ -206,7 +246,7 @@ async function loadData() {
         : '<p class="text-slate-400 text-sm">No live matches right now</p>';
     }
 
-    // Recent Results (Home)
+    // Recent Results
     const recentContainer = document.getElementById('recentResults');
     if (recentContainer) {
       const finished = allMatches
@@ -218,7 +258,7 @@ async function loadData() {
         : '<p class="text-slate-400 text-sm">No results yet</p>';
     }
 
-    // Quick Standings (Home)
+    // Quick Standings
     const quickEl = document.getElementById('quickStandings');
     if (quickEl) {
       const standings = calculateStandings();
@@ -271,7 +311,7 @@ async function loadData() {
       }
     }
 
-    // Full Standings (Fixtures page)
+    // Full Standings
     const fullStandingsEl = document.getElementById('fullStandings');
     if (fullStandingsEl) {
       const standings = calculateStandings();
@@ -286,7 +326,7 @@ async function loadData() {
       }
     }
 
-    // All Matches (Fixtures page)
+    // All Matches
     const allFixturesEl = document.getElementById('allFixtures');
     if (allFixturesEl) {
       allFixturesEl.innerHTML = allMatches.length
