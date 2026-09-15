@@ -17,16 +17,18 @@
     }
     .sport-pick button {
       padding: 1rem; border-radius: 1rem; border: 2px solid #334155;
-      background: #0f172a; font-weight: 700; transition: all 0.15s;
+      background: #0f172a; font-weight: 700; color: #94a3b8; transition: all 0.15s;
     }
     .sport-pick button.active {
-      border-color: #22c55e; background: rgba(34,197,94,0.15); color: #4ade80;
+      border-color: #22c55e !important;
+      background: rgba(34, 197, 94, 0.2) !important;
+      color: #4ade80 !important;
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4), 0 0 20px rgba(34, 197, 94, 0.15);
     }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen">
 
-  <!-- LOGIN -->
   <div id="loginScreen" class="min-h-screen flex items-center justify-center px-4">
     <div class="bg-slate-800 rounded-2xl p-8 w-full max-w-sm border border-slate-700">
       <h1 class="text-xl font-bold mb-1 text-center">Lex Liga Admin</h1>
@@ -43,11 +45,10 @@
         Unlock
       </button>
       <p id="loginError" class="text-red-400 text-sm mt-3 text-center hidden">Wrong password</p>
-      <p class="text-xs text-slate-500 text-center mt-4">Different admins · different passwords</p>
+      <p class="text-xs text-slate-500 text-center mt-4">Futsal: lexliga2026 · Badminton: badminton2026</p>
     </div>
   </div>
 
-  <!-- FUTSAL ADMIN -->
   <div id="adminPanelFutsal" class="hidden">
     <header class="sticky top-0 z-50 bg-slate-900 border-b border-slate-700">
       <div class="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
@@ -61,16 +62,12 @@
         </div>
       </div>
     </header>
-
     <main class="max-w-lg mx-auto px-4 py-5 space-y-5 pb-20">
       <div class="flex items-center justify-between">
         <h2 class="font-bold text-lg">Matches</h2>
         <button id="refreshAdmin" class="text-sm text-green-400 font-medium">Refresh</button>
       </div>
-      <div id="adminMatches" class="space-y-5">
-        <p class="text-slate-400 text-sm">Loading...</p>
-      </div>
-
+      <div id="adminMatches" class="space-y-5"><p class="text-slate-400 text-sm">Loading...</p></div>
       <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 mt-8">
         <h3 class="font-bold mb-4 text-center">+ Add New Match</h3>
         <label class="text-xs text-slate-400 mb-1 block">Home Team</label>
@@ -78,16 +75,12 @@
         <label class="text-xs text-slate-400 mb-1 block">Away Team</label>
         <select id="newAway" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-3 text-base"></select>
         <label class="text-xs text-slate-400 mb-1 block">Group (optional)</label>
-        <input id="newGroup" type="text" placeholder="e.g. Group A"
-          class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-4 text-base" />
-        <button id="addMatchBtn" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">
-          Add Match
-        </button>
+        <input id="newGroup" type="text" placeholder="e.g. Group A" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-4 text-base" />
+        <button id="addMatchBtn" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">Add Match</button>
       </div>
     </main>
   </div>
 
-  <!-- BADMINTON ADMIN -->
   <div id="adminPanelBadminton" class="hidden">
     <header class="sticky top-0 z-50 bg-slate-900 border-b border-slate-700">
       <div class="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
@@ -101,30 +94,21 @@
         </div>
       </div>
     </header>
-
     <main class="max-w-lg mx-auto px-4 py-5 space-y-5 pb-20">
       <div class="flex items-center justify-between">
         <h2 class="font-bold text-lg">Matches</h2>
         <button id="refreshBadminton" class="text-sm text-green-400 font-medium">Refresh</button>
       </div>
-      <div id="adminBadmintonMatches" class="space-y-5">
-        <p class="text-slate-400 text-sm">Loading...</p>
-      </div>
-
+      <div id="adminBadmintonMatches" class="space-y-5"><p class="text-slate-400 text-sm">Loading...</p></div>
       <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 mt-8">
         <h3 class="font-bold mb-4 text-center">+ Add Badminton Match</h3>
         <label class="text-xs text-slate-400 mb-1 block">Player / Pair 1</label>
-        <input id="bmP1" type="text" placeholder="Name"
-          class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-3 text-base" />
+        <input id="bmP1" type="text" placeholder="Name" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-3 text-base" />
         <label class="text-xs text-slate-400 mb-1 block">Player / Pair 2</label>
-        <input id="bmP2" type="text" placeholder="Name"
-          class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-3 text-base" />
+        <input id="bmP2" type="text" placeholder="Name" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-3 text-base" />
         <label class="text-xs text-slate-400 mb-1 block">Category (optional)</label>
-        <input id="bmCategory" type="text" placeholder="e.g. Men's Singles"
-          class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-4 text-base" />
-        <button id="addBadmintonMatchBtn" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">
-          Add Match
-        </button>
+        <input id="bmCategory" type="text" placeholder="e.g. Men's Singles" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-4 text-base" />
+        <button id="addBadmintonMatchBtn" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">Add Match</button>
       </div>
     </main>
   </div>
