@@ -4,19 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Fixtures & Standings – Lex Liga Futsal</title>
+  <title>Fixtures & Standings — Lex Liga Futsal</title>
 
   <meta
     name="description"
-    content="Fixtures, live scores and standings for Lex Liga Futsal college tournament"
+    content="Fixtures, live scores, standings and tournament information for Lex Liga Futsal."
   />
 
   <meta name="theme-color" content="#0b1120" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet"
   >
 
@@ -25,16 +26,18 @@
   <script>
     tailwind.config = {
       darkMode: 'class',
+
       theme: {
         extend: {
           colors: {
             primary: {
-              DEFAULT: '#22c55e'
+              DEFAULT: '#22c55e',
+              dark: '#16a34a'
             }
           }
         }
       }
-    }
+    };
   </script>
 
   <link rel="stylesheet" href="css/styles.css" />
@@ -42,237 +45,447 @@
 
 <body class="min-h-screen">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-end">
-      <div class="flex items-center gap-3">
+  <!-- HEADER -->
 
-        <button
-          id="themeToggle"
-          class="theme-toggle p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-sm transition"
-          aria-label="Toggle theme"
-        >
-          ☀️
-        </button>
+  <header class="site-header sticky top-0 z-50">
 
-        <a
-          href="index.html"
-          class="text-sm font-semibold text-primary hover:text-green-400 transition"
-        >
-          Live
-        </a>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
+
+      <div class="flex items-center justify-end">
+
+        <nav class="flex items-center gap-2 sm:gap-3">
+
+          <a
+            href="index.html"
+            class="nav-link"
+          >
+            Live
+          </a>
+
+          <button
+            id="themeToggle"
+            class="theme-toggle"
+            aria-label="Toggle theme"
+            type="button"
+          >
+            ☀️
+          </button>
+
+        </nav>
 
       </div>
+
     </div>
+
   </header>
 
-  <!-- ANIMATED HERO LOGO -->
-  <div class="hero-logo">
 
-    <div class="ball-icon">
-      <svg
-        viewBox="0 0 64 64"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          cx="32"
-          cy="32"
-          r="30"
-          fill="#1e293b"
-          stroke="#22c55e"
-          stroke-width="2.5"
-        />
+  <!-- HERO -->
 
-        <circle
-          cx="32"
-          cy="32"
-          r="10"
-          fill="#22c55e"
-          opacity="0.9"
-        />
+  <section class="hero-shell hero-shell-compact">
 
-        <path
-          d="M32 2 L38 18 L54 14 L42 28 L58 38 L40 40 L38 56 L32 42 L26 56 L24 40 L6 38 L22 28 L10 14 L26 18 Z"
-          fill="none"
-          stroke="#4ade80"
-          stroke-width="1.5"
-          opacity="0.7"
-        />
+    <div class="hero-grid"></div>
 
-        <circle
-          cx="32"
-          cy="32"
-          r="4"
-          fill="#0b1120"
-        />
-      </svg>
+    <div class="hero-glow hero-glow-one"></div>
+    <div class="hero-glow hero-glow-two"></div>
+
+    <div class="hero-content max-w-6xl mx-auto px-4 sm:px-6">
+
+      <div class="hero-kicker">
+        <span class="hero-live-dot"></span>
+        TOURNAMENT CENTRE
+      </div>
+
+      <h1>
+        LEX <span>LIGA</span>
+      </h1>
+
+      <p class="hero-title">
+        FIXTURES &amp; STANDINGS
+      </p>
+
+      <div class="hero-divider"></div>
+
+      <div class="hero-meta">
+        <span>FIXTURES</span>
+        <span>•</span>
+        <span>TABLES</span>
+        <span>•</span>
+        <span>ACHIEVEMENTS</span>
+      </div>
+
     </div>
 
-    <h1>LEX LIGA</h1>
-    <p class="subtitle">Fixtures &amp; Standings</p>
+  </section>
 
-  </div>
 
-  <main class="max-w-5xl mx-auto px-4 pb-6 space-y-10">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-12 space-y-10">
 
-    <!-- Last updated -->
-    <div class="flex items-center justify-between text-sm text-slate-400">
-      <span id="lastUpdated">Loading...</span>
+
+    <!-- UPDATE BAR -->
+
+    <div class="update-bar">
+
+      <div class="update-status">
+
+        <span class="status-pulse"></span>
+
+        <span id="lastUpdated">
+          Loading live data...
+        </span>
+
+      </div>
 
       <button
         id="refreshBtn"
-        class="text-primary hover:text-green-400 text-sm font-semibold transition"
+        class="refresh-button"
+        type="button"
       >
-        Refresh
+        ↻ Refresh
       </button>
+
     </div>
 
-    <!-- Live Now -->
+
+    <!-- ===================================================
+         LIVE MATCHES
+    ==================================================== -->
+
     <section>
-      <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-        Live Now
-      </h2>
+
+      <div class="section-heading-row">
+
+        <div>
+
+          <p class="section-eyebrow">
+            MATCH CENTRE
+          </p>
+
+          <h2>
+            Live Now
+          </h2>
+
+        </div>
+
+        <span class="section-chip">
+          LIVE
+        </span>
+
+      </div>
 
       <div
         id="liveMatchesFixtures"
-        class="space-y-3"
+        class="space-y-4"
       >
-        <p class="text-slate-400 text-sm">
+
+        <p class="empty-state">
           No live matches right now
         </p>
+
       </div>
+
     </section>
 
-    <!-- Standings -->
+
+    <!-- ===================================================
+         STANDINGS
+    ==================================================== -->
+
     <section>
-      <h2 class="text-xl font-bold mb-4">
-        Standings
-      </h2>
+
+      <div class="section-heading-row">
+
+        <div>
+
+          <p class="section-eyebrow">
+            GROUP TABLES
+          </p>
+
+          <h2>
+            Standings
+          </h2>
+
+        </div>
+
+      </div>
 
       <div
         id="fullStandings"
         class="space-y-6"
       >
-        <p class="text-slate-400 text-sm">
+
+        <p class="empty-state">
           Loading standings...
         </p>
+
       </div>
+
     </section>
 
-    <!-- All Matches -->
+
+    <!-- ===================================================
+         ALL MATCHES
+    ==================================================== -->
+
     <section>
-      <h2 class="text-xl font-bold mb-4">
-        All Matches
-      </h2>
+
+      <div class="section-heading-row">
+
+        <div>
+
+          <p class="section-eyebrow">
+            SCHEDULE
+          </p>
+
+          <h2>
+            All Matches
+          </h2>
+
+        </div>
+
+      </div>
 
       <div
         id="allFixtures"
-        class="space-y-3"
+        class="space-y-4"
       >
-        <p class="text-slate-400 text-sm">
+
+        <p class="empty-state">
           Loading fixtures...
         </p>
+
       </div>
+
     </section>
 
-    <!-- Rules & Format -->
-    <section class="info-section rounded-2xl p-5">
-      <h2 class="text-lg font-bold mb-3">
-        Rules &amp; Format
-      </h2>
 
-      <ul class="text-sm space-y-2 list-disc list-inside">
-        <li>Group stage followed by knockout rounds</li>
-        <li>3 points for a win, 1 for a draw</li>
-        <li>Matches are 2 × 20 minutes (Futsal rules)</li>
-        <li>Top teams from each group advance</li>
-        <li>Fair play is mandatory – yellow/red cards will be recorded</li>
+    <!-- ===================================================
+         RULES
+    ==================================================== -->
+
+    <section class="info-section rounded-2xl p-5 sm:p-6">
+
+      <div class="section-heading-row mb-4">
+
+        <div>
+
+          <p class="section-eyebrow">
+            TOURNAMENT
+          </p>
+
+          <h2>
+            Rules &amp; Format
+          </h2>
+
+        </div>
+
+      </div>
+
+      <ul class="rules-list">
+
+        <li>
+          <span>01</span>
+          <p>
+            Group stage followed by knockout rounds.
+          </p>
+        </li>
+
+        <li>
+          <span>02</span>
+          <p>
+            3 points for a win and 1 point for a draw.
+          </p>
+        </li>
+
+        <li>
+          <span>03</span>
+          <p>
+            Matches are played over 2 × 20 minutes.
+          </p>
+        </li>
+
+        <li>
+          <span>04</span>
+          <p>
+            Top teams from each group progress to the next stage.
+          </p>
+        </li>
+
+        <li>
+          <span>05</span>
+          <p>
+            Fair play is mandatory. Yellow and red cards are officially recorded.
+          </p>
+        </li>
+
       </ul>
+
     </section>
 
-    <!-- Achievements -->
-    <section class="info-section rounded-2xl p-5">
 
-      <h2 class="text-lg font-bold mb-3">
-        Achievements
-      </h2>
+    <!-- ===================================================
+         ACHIEVEMENTS
+    ==================================================== -->
 
-      <p class="achievement-intro text-sm mb-4">
-        Follow the standout performances and tournament milestones as Lex Liga unfolds.
+    <section class="info-section rounded-2xl p-5 sm:p-6">
+
+      <div class="section-heading-row mb-3">
+
+        <div>
+
+          <p class="section-eyebrow">
+            TOURNAMENT HIGHLIGHTS
+          </p>
+
+          <h2>
+            Achievements
+          </h2>
+
+        </div>
+
+      </div>
+
+      <p class="achievement-intro text-sm mb-5">
+        Follow the tournament's leading scorers, group leaders and standout performances as the competition develops.
       </p>
 
-      <div class="grid sm:grid-cols-2 gap-3 text-sm">
+      <div
+        id="achievementsGrid"
+        class="grid sm:grid-cols-2 gap-4"
+      >
 
-        <div class="achievement-card rounded-xl p-4">
-          <p class="font-semibold text-primary">
-            ⚽ Golden Boot
-          </p>
+        <div class="achievement-card rounded-2xl p-5">
 
-          <p class="achievement-muted mt-1">
-            Current leading goal scorer of the tournament.
-          </p>
+          <div class="achievement-icon">
+            ⚽
+          </div>
+
+          <div>
+
+            <p class="font-bold text-primary">
+              Golden Boot
+            </p>
+
+            <p class="achievement-muted mt-1">
+              Loading tournament leader...
+            </p>
+
+          </div>
+
         </div>
 
-        <div class="achievement-card rounded-xl p-4">
-          <p class="font-semibold text-primary">
-            📈 Tournament Milestones
-          </p>
 
-          <p class="achievement-muted mt-1">
-            Notable scoring records, winning streaks and match achievements.
-          </p>
+        <div class="achievement-card rounded-2xl p-5">
+
+          <div class="achievement-icon">
+            🏆
+          </div>
+
+          <div>
+
+            <p class="font-bold text-primary">
+              Group Leaders
+            </p>
+
+            <p class="achievement-muted mt-1">
+              Current leaders by group.
+            </p>
+
+          </div>
+
         </div>
 
-        <div class="achievement-card rounded-xl p-4">
-          <p class="font-semibold text-primary">
-            🏆 Group Leaders
-          </p>
 
-          <p class="achievement-muted mt-1">
-            Teams currently leading their respective groups.
-          </p>
+        <div class="achievement-card rounded-2xl p-5">
+
+          <div class="achievement-icon">
+            🔥
+          </div>
+
+          <div>
+
+            <p class="font-bold text-primary">
+              Tournament Milestones
+            </p>
+
+            <p class="achievement-muted mt-1">
+              Major scoring and match milestones.
+            </p>
+
+          </div>
+
         </div>
 
-        <div class="achievement-card rounded-xl p-4">
-          <p class="font-semibold text-primary">
-            ⭐ Standout Performances
-          </p>
 
-          <p class="achievement-muted mt-1">
-            Exceptional player and team performances throughout the tournament.
-          </p>
+        <div class="achievement-card rounded-2xl p-5">
+
+          <div class="achievement-icon">
+            ⭐
+          </div>
+
+          <div>
+
+            <p class="font-bold text-primary">
+              Standout Performances
+            </p>
+
+            <p class="achievement-muted mt-1">
+              Exceptional player and team performances.
+            </p>
+
+          </div>
+
         </div>
 
       </div>
+
     </section>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="site-footer mt-10 py-7 text-center text-sm">
 
-    <div class="flex items-center justify-center gap-2 mb-2">
-      <span class="footer-live-dot"></span>
-      <span class="font-semibold">Lex Liga Futsal</span>
+  <!-- FOOTER -->
+
+  <footer class="site-footer">
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-9 text-center">
+
+      <div class="footer-title">
+
+        <span class="footer-live-dot"></span>
+
+        LEX LIGA FUTSAL
+
+      </div>
+
+      <p class="footer-line">
+        College Futsal Championship • Live scoring &amp; tournament centre
+      </p>
+
+      <div class="footer-rule"></div>
+
+      <p class="footer-credit">
+        Created by <strong>Jatin Narula</strong>
+      </p>
+
+      <p class="footer-credit">
+        Managed by
+        <strong>
+          Sports &amp; Cultural Committee (SACC), SLFJPS, NFSU
+        </strong>
+      </p>
+
     </div>
-
-    <p class="footer-line">
-      College Tournament
-    </p>
-
-    <p class="footer-credit mt-2">
-      Created by <strong>Jatin Narula</strong>
-    </p>
-
-    <p class="footer-credit">
-      Managed by <strong>Sports &amp; Cultural Committee (SACC), SLFJPS, NFSU</strong>
-    </p>
 
   </footer>
 
+
+  <!-- SCRIPTS -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+
   <script src="js/supabase-config.js"></script>
+
   <script src="js/app.js"></script>
 
 </body>
