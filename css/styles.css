@@ -1,252 +1,1192 @@
-/* Lex Liga Futsal - Sporty Theme + Animations */
+/* =========================================================
+   LEX LIGA FUTSAL
+   Sporty Theme + Dark/Light Mode
+========================================================= */
 
 :root {
   --primary: #22c55e;
   --primary-dark: #16a34a;
+
   --live: #ef4444;
   --finished: #64748b;
   --upcoming: #3b82f6;
-  --card-bg: #1e293b;
+
   --page-bg: #0b1120;
+  --card-bg: #1e293b;
+  --card-bg-2: #1a2332;
+
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+
+  --border: rgba(148, 163, 184, 0.12);
 }
+
+
+/* =========================================================
+   BASE
+========================================================= */
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
   background: var(--page-bg);
-  background-image: 
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34, 197, 94, 0.18), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(59, 130, 246, 0.1), transparent);
-  color: #e2e8f0;
+
+  background-image:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(34, 197, 94, 0.18),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 100% 100%,
+      rgba(59, 130, 246, 0.1),
+      transparent
+    );
+
+  color: var(--text-main);
   min-height: 100vh;
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
-/* ========== ANIMATED HERO LOGO ==========
-   Big centered Lex Liga text at the top */
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+  background: rgba(15, 23, 42, 0.85) !important;
+
+  backdrop-filter: blur(12px);
+
+  border-bottom:
+    1px solid rgba(34, 197, 94, 0.2) !important;
+
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.3);
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.theme-toggle {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
 .hero-logo {
   text-align: center;
-  padding: 1.75rem 1rem 1.25rem;
+
+  padding:
+    1.75rem
+    1rem
+    1.25rem;
+
   position: relative;
 }
 
 .hero-logo .ball-icon {
   width: 48px;
   height: 48px;
-  margin: 0 auto 0.75rem;
-  animation: float-ball 3s ease-in-out infinite;
+
+  margin:
+    0 auto
+    0.75rem;
+
+  animation:
+    float-ball
+    3s
+    ease-in-out
+    infinite;
 }
 
 .hero-logo h1 {
   font-size: 2rem;
+
   font-weight: 800;
+
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 40%, #86efac 70%, #22c55e 100%);
+
+  background:
+    linear-gradient(
+      135deg,
+      #4ade80 0%,
+      #22c55e 40%,
+      #86efac 70%,
+      #22c55e 100%
+    );
+
   background-size: 200% auto;
+
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
   background-clip: text;
-  animation: shine 4s linear infinite;
-  text-shadow: 0 0 40px rgba(34, 197, 94, 0.3);
+
+  animation:
+    shine
+    4s
+    linear
+    infinite;
+
+  text-shadow:
+    0 0 40px
+    rgba(34, 197, 94, 0.3);
 }
 
 .hero-logo .subtitle {
   font-size: 0.8rem;
+
   color: #94a3b8;
+
   margin-top: 0.25rem;
+
   letter-spacing: 0.15em;
+
   text-transform: uppercase;
-  animation: fade-in-up 0.8s ease-out 0.3s both;
+
+  animation:
+    fade-in-up
+    0.8s
+    ease-out
+    0.3s
+    both;
 }
 
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
 @keyframes shine {
-  to { background-position: 200% center; }
+  to {
+    background-position: 200% center;
+  }
 }
 
 @keyframes float-ball {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
-/* Match cards entrance */
+
+/* =========================================================
+   MATCH CARDS
+========================================================= */
+
 .match-card {
-  animation: fade-in-up 0.5s ease-out both;
-}
-.match-card:nth-child(1) { animation-delay: 0.05s; }
-.match-card:nth-child(2) { animation-delay: 0.1s; }
-.match-card:nth-child(3) { animation-delay: 0.15s; }
-.match-card:nth-child(4) { animation-delay: 0.2s; }
-.match-card:nth-child(5) { animation-delay: 0.25s; }
+  animation:
+    fade-in-up
+    0.5s
+    ease-out
+    both;
 
-/* Header */
-header {
-  background: rgba(15, 23, 42, 0.85) !important;
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(34, 197, 94, 0.2) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
+  background:
+    linear-gradient(
+      145deg,
+      #1e293b,
+      #1a2332
+    ) !important;
 
-.logo-circle {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.45);
-  animation: pulse-logo 2.5s ease-in-out infinite;
-}
+  border:
+    1px solid
+    rgba(148, 163, 184, 0.12) !important;
 
-@keyframes pulse-logo {
-  0%, 100% { box-shadow: 0 0 16px rgba(34, 197, 94, 0.4); }
-  50% { box-shadow: 0 0 28px rgba(34, 197, 94, 0.65); }
-}
+  border-radius:
+    1rem !important;
 
-/* Status badges */
-.status-live {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
-  animation: pulse-live 1.8s infinite;
-}
-.status-finished {
-  background: linear-gradient(135deg, #64748b, #475569);
-}
-.status-not_started, .status-upcoming {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-}
-.status-half_time {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-}
-.status-walkover, .status-cancelled {
-  background: #6b7280;
-}
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
 
-@keyframes pulse-live {
-  0%, 100% { opacity: 1; box-shadow: 0 0 12px rgba(239, 68, 68, 0.5); }
-  50% { opacity: 0.85; box-shadow: 0 0 22px rgba(239, 68, 68, 0.75); }
-}
-
-/* Match cards */
-.match-card {
-  background: linear-gradient(145deg, #1e293b, #1a2332) !important;
-  border: 1px solid rgba(148, 163, 184, 0.12) !important;
-  border-radius: 1rem !important;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   position: relative;
+
   overflow: hidden;
+}
+
+.match-card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.match-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.match-card:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.match-card:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.match-card:nth-child(5) {
+  animation-delay: 0.25s;
 }
 
 .match-card::before {
   content: '';
+
   position: absolute;
+
   top: 0;
   left: 0;
   right: 0;
+
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--primary),
+      transparent
+    );
+
   opacity: 0.7;
 }
 
 .match-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 32px -8px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(34, 197, 94, 0.2);
-  border-color: rgba(34, 197, 94, 0.3) !important;
+
+  box-shadow:
+    0 14px 32px -8px
+    rgba(0, 0, 0, 0.55),
+    0 0 0 1px
+    rgba(34, 197, 94, 0.2);
+
+  border-color:
+    rgba(34, 197, 94, 0.3) !important;
 }
 
 .match-card:has(.status-live) {
-  border-color: rgba(239, 68, 68, 0.35) !important;
-  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2), 0 8px 28px -5px rgba(239, 68, 68, 0.15);
+  border-color:
+    rgba(239, 68, 68, 0.35) !important;
+
+  box-shadow:
+    0 0 0 1px
+    rgba(239, 68, 68, 0.2),
+    0 8px 28px -5px
+    rgba(239, 68, 68, 0.15);
 }
 
 .match-card:has(.status-live)::before {
-  background: linear-gradient(90deg, transparent, #ef4444, transparent);
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #ef4444,
+      transparent
+    );
+
   opacity: 1;
 }
 
-/* Score */
+
+/* =========================================================
+   SCORE
+========================================================= */
+
 .score {
   font-variant-numeric: tabular-nums;
+
   font-weight: 800;
+
   letter-spacing: -0.04em;
-  background: linear-gradient(180deg, #f8fafc, #94a3b8);
+
+  background:
+    linear-gradient(
+      180deg,
+      #f8fafc,
+      #94a3b8
+    );
+
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
   background-clip: text;
 }
 
-/* Section headings */
+
+/* =========================================================
+   SECTION HEADINGS
+========================================================= */
+
 h2 {
   position: relative;
+
   padding-left: 12px;
 }
 
 h2::before {
   content: '';
+
   position: absolute;
+
   left: 0;
   top: 50%;
-  transform: translateY(-50%);
+
+  transform:
+    translateY(-50%);
+
   width: 4px;
+
   height: 70%;
-  background: linear-gradient(180deg, var(--primary), transparent);
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--primary),
+      transparent
+    );
+
   border-radius: 2px;
 }
 
-/* Standings */
-.bg-slate-800 {
-  background: linear-gradient(145deg, #1e293b, #1a2332) !important;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.status-live {
+  background:
+    linear-gradient(
+      135deg,
+      #ef4444,
+      #dc2626
+    );
+
+  box-shadow:
+    0 0 12px
+    rgba(239, 68, 68, 0.5);
+
+  animation:
+    pulse-live
+    1.8s
+    infinite;
 }
 
-/* Admin buttons */
+.status-finished {
+  background:
+    linear-gradient(
+      135deg,
+      #64748b,
+      #475569
+    );
+}
+
+.status-not_started,
+.status-upcoming {
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #2563eb
+    );
+}
+
+.status-half_time {
+  background:
+    linear-gradient(
+      135deg,
+      #f59e0b,
+      #d97706
+    );
+}
+
+.status-walkover,
+.status-cancelled {
+  background:
+    #6b7280;
+}
+
+@keyframes pulse-live {
+  0%,
+  100% {
+    opacity: 1;
+
+    box-shadow:
+      0 0 12px
+      rgba(239, 68, 68, 0.5);
+  }
+
+  50% {
+    opacity: 0.85;
+
+    box-shadow:
+      0 0 22px
+      rgba(239, 68, 68, 0.75);
+  }
+}
+
+
+/* =========================================================
+   STANDINGS
+   Dedicated styles so light mode does not inherit
+   dark-only Tailwind overrides.
+========================================================= */
+
+.standings-card {
+  width: 100%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #1e293b,
+      #1a2332
+    );
+
+  border:
+    1px solid
+    rgba(148, 163, 184, 0.12);
+
+  border-radius:
+    0.9rem;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 8px 25px
+    rgba(0, 0, 0, 0.18);
+}
+
+.standings-group-header {
+  padding:
+    0.7rem
+    1rem;
+
+  background:
+    rgba(51, 65, 85, 0.55);
+
+  color: #f8fafc;
+
+  font-size: 0.875rem;
+
+  font-weight: 700;
+
+  border-bottom:
+    1px solid
+    rgba(148, 163, 184, 0.12);
+}
+
+.standings-scroll {
+  width: 100%;
+
+  overflow-x: auto;
+
+  -webkit-overflow-scrolling: touch;
+}
+
+.standings-table {
+  width: 100%;
+
+  min-width: 520px;
+
+  border-collapse: collapse;
+
+  font-size: 0.875rem;
+}
+
+.standings-table thead {
+  color: #94a3b8;
+
+  font-size: 0.7rem;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.04em;
+}
+
+.standings-table th {
+  padding:
+    0.65rem
+    0.45rem;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  text-align: center;
+}
+
+.standings-table th:nth-child(2) {
+  text-align: left;
+}
+
+.standings-row {
+  border-top:
+    1px solid
+    rgba(148, 163, 184, 0.1);
+
+  transition:
+    background-color 0.2s ease;
+}
+
+.standings-row:hover {
+  background:
+    rgba(34, 197, 94, 0.06);
+}
+
+.standings-number {
+  padding:
+    0.65rem
+    0.45rem;
+
+  text-align: center;
+
+  color: #94a3b8;
+
+  white-space: nowrap;
+}
+
+.standings-team {
+  padding:
+    0.65rem
+    0.45rem;
+
+  font-weight: 600;
+
+  color: #e2e8f0;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+.standings-stat {
+  padding:
+    0.65rem
+    0.4rem;
+
+  text-align: center;
+
+  color: #cbd5e1;
+
+  white-space: nowrap;
+}
+
+.standings-points {
+  padding:
+    0.65rem
+    0.55rem;
+
+  text-align: center;
+
+  font-weight: 800;
+
+  color: #22c55e;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   TOP SCORERS
+========================================================= */
+
+.top-scorers-card {
+  background:
+    linear-gradient(
+      145deg,
+      #1e293b,
+      #1a2332
+    );
+
+  border:
+    1px solid
+    rgba(148, 163, 184, 0.12);
+}
+
+.scorers-table {
+  border-collapse: collapse;
+}
+
+.scorers-table thead {
+  color: #94a3b8;
+
+  background:
+    rgba(51, 65, 85, 0.4);
+
+  font-size: 0.7rem;
+
+  text-transform: uppercase;
+}
+
+.scorers-table th {
+  font-weight: 700;
+}
+
+.scorers-table tbody tr {
+  border-top:
+    1px solid
+    rgba(148, 163, 184, 0.1);
+}
+
+
+/* =========================================================
+   INFO / ACHIEVEMENTS
+========================================================= */
+
+.info-section {
+  background:
+    linear-gradient(
+      145deg,
+      #1e293b,
+      #1a2332
+    );
+
+  border:
+    1px solid
+    rgba(148, 163, 184, 0.12);
+
+  color: #e2e8f0;
+}
+
+.info-section ul {
+  color: #cbd5e1;
+}
+
+.achievement-intro {
+  color: #94a3b8;
+}
+
+.achievement-card {
+  background:
+    rgba(51, 65, 85, 0.4);
+
+  border:
+    1px solid
+    rgba(148, 163, 184, 0.12);
+}
+
+.achievement-muted {
+  color: #94a3b8;
+}
+
+
+/* =========================================================
+   WINNER / DRAW
+========================================================= */
+
+.winner-text {
+  text-align: center;
+
+  font-size: 0.75rem;
+
+  color: #4ade80;
+
+  font-weight: 600;
+
+  margin-top: 0.25rem;
+}
+
+.draw-text {
+  text-align: center;
+
+  font-size: 0.75rem;
+
+  color: #94a3b8;
+
+  font-weight: 600;
+
+  margin-top: 0.25rem;
+}
+
+
+/* =========================================================
+   SHARE
+========================================================= */
+
+.share-button {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.share-button:hover {
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.site-footer {
+  border-top:
+    1px solid
+    rgba(148, 163, 184, 0.12);
+
+  color: #64748b;
+}
+
+.footer-live-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 999px;
+
+  background:
+    var(--primary);
+
+  animation:
+    pulse-logo
+    2.5s
+    ease-in-out
+    infinite;
+}
+
+.footer-line {
+  color: #64748b;
+}
+
+.footer-credit {
+  color: #64748b;
+
+  font-size: 0.75rem;
+
+  line-height: 1.5;
+}
+
+.footer-credit strong {
+  color: #475569;
+}
+
+
+/* =========================================================
+   ADMIN BUTTONS
+========================================================= */
+
 .big-btn {
   min-height: 52px;
+
   font-size: 1.25rem;
+
   font-weight: 700;
+
   border-radius: 0.75rem;
-  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.25);
-  transition: all 0.15s ease;
+
+  box-shadow:
+    0 4px 14px
+    rgba(34, 197, 94, 0.25);
+
+  transition:
+    all 0.15s ease;
 }
-.big-btn:active { transform: scale(0.96); }
+
+.big-btn:active {
+  transform:
+    scale(0.96);
+}
 
 .status-btn {
   min-height: 44px;
+
   font-size: 0.875rem;
+
   font-weight: 600;
+
   border-radius: 0.75rem;
-  transition: all 0.15s ease;
+
+  transition:
+    all 0.15s ease;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #0f172a; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-/* Light mode */
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+========================================================= */
+
 body.light {
+  --page-bg: #f1f5f9;
+
   background: #f1f5f9;
-  background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34, 197, 94, 0.12), transparent);
+
+  background-image:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(34, 197, 94, 0.12),
+      transparent
+    );
+
   color: #0f172a;
 }
-.light .bg-slate-900 { background-color: #ffffff !important; }
-.light .bg-slate-800 { background-color: #f8fafc !important; }
-.light .bg-slate-700 { background-color: #e2e8f0 !important; }
-.light .text-slate-100 { color: #0f172a !important; }
-.light .text-slate-300 { color: #334155 !important; }
-.light .text-slate-400 { color: #64748b !important; }
-.light .border-slate-700 { border-color: #e2e8f0 !important; }
-.light .match-card { background: #ffffff !important; border-color: #e2e8f0 !important; }
-.light .score {
-  background: linear-gradient(180deg, #0f172a, #475569);
+
+
+/* Header */
+
+body.light header {
+  background:
+    rgba(255, 255, 255, 0.92) !important;
+
+  border-bottom:
+    1px solid
+    #dbe3ec !important;
+
+  box-shadow:
+    0 4px 18px
+    rgba(15, 23, 42, 0.08);
+}
+
+body.light .theme-toggle {
+  background:
+    #e2e8f0 !important;
+
+  color:
+    #0f172a !important;
+}
+
+
+/* General Tailwind elements */
+
+body.light .bg-slate-900 {
+  background-color:
+    #ffffff !important;
+}
+
+body.light .bg-slate-800 {
+  background-color:
+    #f8fafc !important;
+}
+
+body.light .bg-slate-700 {
+  background-color:
+    #e2e8f0 !important;
+}
+
+body.light .text-slate-100 {
+  color:
+    #0f172a !important;
+}
+
+body.light .text-slate-300 {
+  color:
+    #334155 !important;
+}
+
+body.light .text-slate-400 {
+  color:
+    #64748b !important;
+}
+
+body.light .text-slate-500 {
+  color:
+    #64748b !important;
+}
+
+body.light .border-slate-700 {
+  border-color:
+    #e2e8f0 !important;
+}
+
+
+/* Match cards */
+
+body.light .match-card {
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #f8fafc
+    ) !important;
+
+  border-color:
+    #dbe3ec !important;
+
+  box-shadow:
+    0 5px 18px
+    rgba(15, 23, 42, 0.06);
+}
+
+
+/* Score */
+
+body.light .score {
+  background:
+    linear-gradient(
+      180deg,
+      #0f172a,
+      #475569
+    );
+
   -webkit-background-clip: text;
+
   background-clip: text;
 }
-.light .hero-logo h1 {
-  background: linear-gradient(135deg, #16a34a, #22c55e, #15803d);
+
+
+/* Hero */
+
+body.light .hero-logo h1 {
+  background:
+    linear-gradient(
+      135deg,
+      #16a34a,
+      #22c55e,
+      #15803d
+    );
+
   -webkit-background-clip: text;
+
   background-clip: text;
+}
+
+
+/* =========================================================
+   LIGHT MODE STANDINGS
+========================================================= */
+
+body.light .standings-card {
+  background:
+    #ffffff;
+
+  border-color:
+    #dbe3ec;
+
+  box-shadow:
+    0 5px 18px
+    rgba(15, 23, 42, 0.06);
+}
+
+body.light .standings-group-header {
+  background:
+    #e2e8f0;
+
+  color:
+    #0f172a;
+
+  border-bottom-color:
+    #cbd5e1;
+}
+
+body.light .standings-table thead {
+  color:
+    #64748b;
+}
+
+body.light .standings-row {
+  border-top-color:
+    #e2e8f0;
+}
+
+body.light .standings-row:hover {
+  background:
+    rgba(34, 197, 94, 0.06);
+}
+
+body.light .standings-number {
+  color:
+    #64748b;
+}
+
+body.light .standings-team {
+  color:
+    #0f172a;
+}
+
+body.light .standings-stat {
+  color:
+    #334155;
+}
+
+body.light .standings-points {
+  color:
+    #15803d;
+}
+
+
+/* =========================================================
+   LIGHT MODE TOP SCORERS
+========================================================= */
+
+body.light .top-scorers-card {
+  background:
+    #ffffff;
+
+  border-color:
+    #dbe3ec;
+
+  box-shadow:
+    0 5px 18px
+    rgba(15, 23, 42, 0.06);
+}
+
+body.light .scorers-table thead {
+  color:
+    #64748b;
+
+  background:
+    #e2e8f0;
+}
+
+body.light .scorers-table tbody tr {
+  border-top-color:
+    #e2e8f0;
+}
+
+
+/* =========================================================
+   LIGHT MODE INFO / ACHIEVEMENTS
+========================================================= */
+
+body.light .info-section {
+  background:
+    #ffffff;
+
+  border-color:
+    #dbe3ec;
+
+  color:
+    #0f172a;
+
+  box-shadow:
+    0 5px 18px
+    rgba(15, 23, 42, 0.05);
+}
+
+body.light .info-section ul {
+  color:
+    #334155;
+}
+
+body.light .achievement-intro {
+  color:
+    #64748b;
+}
+
+body.light .achievement-card {
+  background:
+    #f8fafc;
+
+  border-color:
+    #dbe3ec;
+}
+
+body.light .achievement-muted {
+  color:
+    #64748b;
+}
+
+
+/* =========================================================
+   LIGHT MODE FOOTER
+========================================================= */
+
+body.light .site-footer {
+  border-top-color:
+    #dbe3ec;
+
+  color:
+    #64748b;
+}
+
+body.light .footer-line {
+  color:
+    #64748b;
+}
+
+body.light .footer-credit {
+  color:
+    #64748b;
+}
+
+body.light .footer-credit strong {
+  color:
+    #334155;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 640px) {
+
+  .standings-table {
+    min-width: 500px;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    font-size: 0.75rem;
+  }
+
+  .standings-group-header {
+    padding:
+      0.65rem
+      0.85rem;
+  }
+
+  .hero-logo h1 {
+    font-size: 1.85rem;
+  }
+
+  .footer-credit {
+    padding:
+      0
+      1rem;
+  }
+
 }
