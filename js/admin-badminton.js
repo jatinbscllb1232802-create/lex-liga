@@ -1,81 +1,6 @@
-// Lex Liga Badminton Admin
-// Scoring: Best of 3 games, each game to 21 (win by 2), max 30
+// Lex Liga Badminton Admin – scoring only (login is in admin-login.js)
 
 const sb = window.supabaseClient || window.supabase || supabase;
-
-let selectedSport = 'futsal';
-
-// Sport picker on login
-const pickFutsal = document.getElementById('pickFutsal');
-const pickBadminton = document.getElementById('pickBadminton');
-
-if (pickFutsal && pickBadminton) {
-  pickFutsal.addEventListener('click', () => {
-    selectedSport = 'futsal';
-    pickFutsal.classList.add('active');
-    pickBadminton.classList.remove('active');
-  });
-  pickBadminton.addEventListener('click', () => {
-    selectedSport = 'badminton';
-    pickBadminton.classList.add('active');
-    pickFutsal.classList.remove('active');
-  });
-}
-
-// Override login from admin.js pattern
-const loginBtn = document.getElementById('loginBtn');
-const passwordInput = document.getElementById('passwordInput');
-const loginError = document.getElementById('loginError');
-const loginScreen = document.getElementById('loginScreen');
-
-function trySportLogin() {
-  const pwd = passwordInput.value;
-  const expected = (window.ADMIN_PASSWORDS && ADMIN_PASSWORDS[selectedSport]) || (selectedSport === 'badminton' ? 'badminton2026' : 'lexliga2026');
-
-  if (pwd === expected) {
-    sessionStorage.setItem('lexAdminSport', selectedSport);
-    sessionStorage.setItem('lexAdmin', 'true');
-    showSportAdmin(selectedSport);
-  } else {
-    loginError.classList.remove('hidden');
-    passwordInput.value = '';
-  }
-}
-
-if (loginBtn) {
-  loginBtn.onclick = trySportLogin;
-}
-if (passwordInput) {
-  passwordInput.onkeydown = (e) => { if (e.key === 'Enter') trySportLogin(); };
-}
-
-// Restore session
-const savedSport = sessionStorage.getItem('lexAdminSport');
-if (sessionStorage.getItem('lexAdmin') === 'true' && savedSport) {
-  showSportAdmin(savedSport);
-}
-
-function showSportAdmin(sport) {
-  loginScreen.classList.add('hidden');
-  document.getElementById('adminPanelFutsal')?.classList.add('hidden');
-  document.getElementById('adminPanelBadminton')?.classList.add('hidden');
-
-  if (sport === 'badminton') {
-    document.getElementById('adminPanelBadminton')?.classList.remove('hidden');
-    loadBadmintonAdmin();
-  } else {
-    document.getElementById('adminPanelFutsal')?.classList.remove('hidden');
-    if (typeof loadAdminData === 'function') loadAdminData();
-  }
-}
-
-document.getElementById('logoutBtnBadminton')?.addEventListener('click', () => {
-  sessionStorage.removeItem('lexAdmin');
-  sessionStorage.removeItem('lexAdminSport');
-  location.reload();
-});
-
-document.getElementById('refreshBadminton')?.addEventListener('click', loadBadmintonAdmin);
 
 async function loadBadmintonAdmin() {
   const container = document.getElementById('adminBadmintonMatches');
@@ -101,6 +26,10 @@ async function loadBadmintonAdmin() {
     container.innerHTML = `<p class="text-red-400 text-sm">Error: ${err.message}. Did you run the badminton SQL?</p>`;
   }
 }
+
+window.loadBadmintonAdmin = loadBadmintonAdmin;
+
+document.getElementById('refreshBadminton')?.addEventListener('click', loadBadmintonAdmin);
 
 function renderBadmintonCard(m) {
   const cg = m.current_game || 1;
@@ -171,7 +100,6 @@ window.bmEndGame = async function(id) {
   const p1 = m[`g${cg}_p1`] ?? 0;
   const p2 = m[`g${cg}_p2`] ?? 0;
 
-  // Determine winner of game (21 with +2, or 30 cap)
   let games_p1 = m.games_p1 || 0;
   let games_p2 = m.games_p2 || 0;
   if (p1 > p2) games_p1++;
@@ -188,10 +116,7 @@ window.bmEndGame = async function(id) {
   }
 
   await sb.from('badminton_matches').update({
-    games_p1,
-    games_p2,
-    current_game: nextGame,
-    status,
+    games_p1, games_p2, current_game: nextGame, status,
     updated_at: new Date().toISOString()
   }).eq('id', id);
 
@@ -216,16 +141,9 @@ document.getElementById('addBadmintonMatchBtn')?.addEventListener('click', async
   if (!p1 || !p2) { alert('Enter both names'); return; }
 
   const { error } = await sb.from('badminton_matches').insert({
-    player1: p1,
-    player2: p2,
-    category: cat || null,
-    status: 'not_started',
-    current_game: 1,
-    games_p1: 0,
-    games_p2: 0,
-    g1_p1: 0, g1_p2: 0,
-    g2_p1: 0, g2_p2: 0,
-    g3_p1: 0, g3_p2: 0
+    player1: p1, player2: p2, category: cat || null,
+    status: 'not_started', current_game: 1, games_p1: 0, games_p2: 0,
+    g1_p1: 0, g1_p2: 0, g2_p1: 0, g2_p2: 0, g3_p1: 0, g3_p2: 0
   });
 
   if (error) alert('Error: ' + error.message + '\n\nRun the badminton SQL in Supabase first.');
