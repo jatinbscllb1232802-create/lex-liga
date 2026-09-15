@@ -2486,3 +2486,315 @@ body.light ::-webkit-scrollbar-thumb {
       repeat(4, minmax(0, 1fr));
   }
 }
+
+/* =========================================================
+   LEX LIGA HERO ARTWORK
+========================================================= */
+
+.hero-shell {
+  min-height: 390px;
+}
+
+.hero-content {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(320px, 0.82fr);
+
+  align-items: center;
+
+  gap: 1rem;
+
+  padding:
+    2.75rem 0
+    2.5rem;
+}
+
+.hero-copy {
+  position: relative;
+
+  z-index: 5;
+
+  padding:
+    1rem 0;
+}
+
+.hero-artwork {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 350px;
+
+  pointer-events: none;
+}
+
+.hero-artwork-frame {
+  position: absolute;
+
+  width: 330px;
+  height: 330px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(34, 197, 94, 0.08),
+      rgba(239, 68, 68, 0.06) 45%,
+      transparent 72%
+    );
+
+  filter:
+    blur(12px);
+}
+
+.hero-red-glow {
+  position: absolute;
+
+  width: 420px;
+  height: 420px;
+
+  right: 12%;
+
+  top: 50%;
+
+  transform:
+    translateY(-50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(239, 68, 68, 0.12),
+      transparent 68%
+    );
+
+  filter:
+    blur(30px);
+
+  pointer-events:
+    none;
+}
+
+.lexliga-logo-art {
+  position: relative;
+
+  z-index: 3;
+
+  width: min(
+    100%,
+    470px
+  );
+
+  max-height:
+    500px;
+
+  object-fit:
+    contain;
+
+  object-position:
+    center;
+
+  filter:
+    drop-shadow(
+      0 24px 40px
+      rgba(0, 0, 0, 0.42)
+    );
+
+  transform:
+    rotate(1deg);
+
+  animation:
+    hero-logo-float
+    6s
+    ease-in-out
+    infinite;
+}
+
+
+/* Slightly stronger hero branding */
+
+.hero-content h1 {
+  position:
+    relative;
+
+  z-index:
+    5;
+
+  font-size:
+    clamp(
+      3.5rem,
+      8vw,
+      6.4rem
+    );
+}
+
+
+/* =========================================================
+   HERO ARTWORK ANIMATION
+========================================================= */
+
+@keyframes hero-logo-float {
+
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(1deg);
+  }
+
+  50% {
+    transform:
+      translateY(-8px)
+      rotate(-0.5deg);
+  }
+}
+
+
+/* =========================================================
+   LIGHT MODE HERO
+========================================================= */
+
+body.light .hero-red-glow {
+  background:
+    radial-gradient(
+      circle,
+      rgba(239, 68, 68, 0.08),
+      transparent 68%
+    );
+}
+
+body.light .hero-artwork-frame {
+  background:
+    radial-gradient(
+      circle,
+      rgba(34, 197, 94, 0.08),
+      rgba(239, 68, 68, 0.04) 45%,
+      transparent 72%
+    );
+}
+
+body.light .lexliga-logo-art {
+  filter:
+    drop-shadow(
+      0 22px 35px
+      rgba(15, 23, 42, 0.16)
+    );
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+  .hero-shell {
+    min-height:
+      auto;
+  }
+
+  .hero-content {
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    gap:
+      0.25rem;
+
+    padding:
+      2.5rem 0
+      1.8rem;
+  }
+
+  .hero-copy {
+    width:
+      100%;
+
+    text-align:
+      center;
+
+    order:
+      1;
+  }
+
+  .hero-kicker {
+    justify-content:
+      center;
+  }
+
+  .hero-divider {
+    margin-left:
+      auto;
+
+    margin-right:
+      auto;
+  }
+
+  .hero-meta {
+    justify-content:
+      center;
+  }
+
+  .hero-artwork {
+    width:
+      100%;
+
+    min-height:
+      290px;
+
+    order:
+      2;
+
+    margin-top:
+      -0.25rem;
+  }
+
+  .lexliga-logo-art {
+    width:
+      min(
+        92vw,
+        360px
+      );
+
+    max-height:
+      360px;
+  }
+
+  .hero-artwork-frame {
+    width:
+      280px;
+
+    height:
+      280px;
+  }
+
+  .hero-red-glow {
+    width:
+      300px;
+
+    height:
+      300px;
+
+    right:
+      50%;
+
+    top:
+      62%;
+
+    transform:
+      translate(
+        50%,
+        -50%
+      );
+  }
+}
