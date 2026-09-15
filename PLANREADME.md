@@ -17,6 +17,7 @@ This file is kept up-to-date so any AI or developer can continue the work.
   1. Home / Live Scores (`index.html`)
   2. Fixtures & Standings (`fixtures.html`) – now has Live Now section at the top
   3. Admin (`admin.html`) – password protected
+  4. Badminton (`badminton.html`) – tournament landing page, ready for fixtures and results when the event is announced
 - **Cost:** 100% free
 - **Hosting:** GitHub Pages
 - **Database:** Supabase (free tier)
@@ -36,6 +37,7 @@ This file is kept up-to-date so any AI or developer can continue the work.
 - Share button for any match
 - Rules & Format + Awards sections
 - Dark mode default + light mode toggle
+- Public sport switcher: Futsal is live, Badminton has its own landing page, and the layout is ready for future sports
 
 ### Admin Page (simplified & phone-friendly)
 - Password gate (`lexliga2026`)
@@ -104,6 +106,7 @@ Reset Score clears both the numeric score **and** all related goals + cards.
 /
 ├── index.html              → Home / Live Scores
 ├── fixtures.html           → Live Now + Standings + All Matches + Rules
+├── badminton.html          → Badminton tournament landing page
 ├── admin.html              → Protected Admin
 ├── css/styles.css
 ├── js/
@@ -145,6 +148,8 @@ Reset Score clears both the numeric score **and** all related goals + cards.
 - [x] PLANREADME fully updated
 
 **Next possible improvements (optional):**
+- Connect Badminton fixtures, results and standings when its tournament data is ready
+- Add new sport pages using the same sport switcher pattern
 - Prettier custom modal instead of browser `prompt()`
 - Real player lists per team
 - Better card display on public pages

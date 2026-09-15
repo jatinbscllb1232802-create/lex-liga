@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Badminton — Lex Liga</title>
+  <meta name="description" content="Badminton tournament updates from Lex Liga." />
+  <meta name="theme-color" content="#0b1120" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body class="min-h-screen">
+  <header class="site-header sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
+      <div class="flex items-center justify-between gap-3">
+        <a href="index.html" class="site-wordmark" aria-label="Lex Liga home">LEX <span>LIGA</span></a>
+
+        <nav class="site-nav" aria-label="Main navigation">
+          <div class="sport-tabs" aria-label="Choose a sport">
+            <a href="index.html" class="sport-tab"><span aria-hidden="true">⚽</span> Futsal</a>
+            <a href="badminton.html" class="sport-tab is-active" aria-current="page"><span aria-hidden="true">🏸</span> Badminton</a>
+          </div>
+
+          <a href="fixtures.html" class="nav-link">Fixtures</a>
+          <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" type="button">☀️</button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero-shell hero-shell-compact">
+    <div class="hero-grid"></div>
+    <div class="hero-glow hero-glow-one"></div>
+    <div class="hero-glow hero-glow-two"></div>
+
+    <div class="hero-content max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="hero-copy">
+        <div class="hero-kicker"><span class="hero-live-dot"></span> LEX LIGA • MULTI-SPORT</div>
+        <h1>BAD<span>MINTON</span></h1>
+        <p class="hero-title">TOURNAMENT CENTRE</p>
+        <div class="hero-divider"></div>
+        <div class="hero-meta"><span>FIXTURES</span><span>•</span><span>RESULTS</span><span>•</span><span>DRAW</span></div>
+      </div>
+
+      <div class="hero-artwork hero-artwork-small" aria-hidden="true">
+        <div class="badminton-shuttle">🏸</div>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-12 space-y-10">
+    <section class="badminton-status-card">
+      <div>
+        <p class="section-eyebrow">COMING SOON</p>
+        <h2>Badminton is joining Lex Liga.</h2>
+        <p>Fixtures, live scores, results and the tournament draw will appear here once the Badminton event is announced.</p>
+      </div>
+      <span class="badminton-status-icon" aria-hidden="true">🏸</span>
+    </section>
+
+    <section>
+      <div class="section-heading-row">
+        <div>
+          <p class="section-eyebrow">WHAT'S NEXT</p>
+          <h2>Built for every court.</h2>
+        </div>
+      </div>
+
+      <div class="sport-roadmap-grid">
+        <article class="sport-roadmap-card sport-roadmap-active">
+          <span class="sport-roadmap-icon">⚽</span>
+          <div><p>LIVE NOW</p><h3>Futsal</h3><span>Scores, standings and fixtures are live.</span></div>
+          <a href="index.html">Open Futsal <span aria-hidden="true">→</span></a>
+        </article>
+
+        <article class="sport-roadmap-card">
+          <span class="sport-roadmap-icon">🏸</span>
+          <div><p>NEXT UP</p><h3>Badminton</h3><span>Fixtures and tournament draw will be added here.</span></div>
+          <span class="sport-roadmap-pending">In preparation</span>
+        </article>
+
+        <article class="sport-roadmap-card">
+          <span class="sport-roadmap-icon">＋</span>
+          <div><p>MORE SPORTS</p><h3>Coming later</h3><span>New Lex Liga events will get their own tournament tab.</span></div>
+          <span class="sport-roadmap-pending">Stay tuned</span>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      <div class="footer-bottom">
+        <span>Lex Liga 2026</span><span class="footer-dot">•</span><span>Multi-sport tournament centre</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('theme');
+      const button = document.getElementById('themeToggle');
+      const setTheme = (light) => {
+        document.documentElement.classList.toggle('dark', !light);
+        document.body.classList.toggle('light', light);
+        button.textContent = light ? '🌙' : '☀️';
+      };
+      setTheme(savedTheme === 'light');
+      button.addEventListener('click', () => {
+        const light = !document.body.classList.contains('light');
+        localStorage.setItem('theme', light ? 'light' : 'dark');
+        setTheme(light);
+      });
+    }());
+  </script>
+</body>
+</html>

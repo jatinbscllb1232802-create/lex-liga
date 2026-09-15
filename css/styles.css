@@ -93,6 +93,64 @@ body {
     rgba(0, 0, 0, 0.18);
 }
 
+.site-wordmark {
+  color: #f8fafc;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-wordmark span {
+  color: var(--primary);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.sport-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.22rem;
+  padding: 0.2rem;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 0.9rem;
+  background: rgba(15, 23, 42, 0.62);
+}
+
+.sport-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.32rem;
+  min-height: 31px;
+  padding: 0 0.58rem;
+  border-radius: 0.65rem;
+  color: #94a3b8;
+  font-size: 0.67rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sport-tab:hover {
+  color: #e2e8f0;
+  background: rgba(148, 163, 184, 0.1);
+}
+
+.sport-tab.is-active {
+  color: #f0fdf4;
+  background: rgba(34, 197, 94, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.22);
+}
+
 .nav-link {
   display:
     inline-flex;
@@ -546,6 +604,20 @@ body {
 .hero-artwork-small {
   min-height:
     245px;
+}
+
+.badminton-shuttle {
+  display: grid;
+  width: min(56vw, 270px);
+  height: min(56vw, 270px);
+  place-items: center;
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-radius: 50%;
+  color: #f8fafc;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.025) 68%);
+  box-shadow: 0 0 0 34px rgba(34, 197, 94, 0.025), 0 25px 60px rgba(0, 0, 0, 0.22);
+  font-size: clamp(5rem, 12vw, 8.5rem);
+  transform: rotate(-16deg);
 }
 
 .hero-artwork-frame {
@@ -3025,6 +3097,128 @@ h2::before {
 
 
 /* =========================================================
+   BADMINTON / FUTURE SPORTS
+========================================================= */
+
+.badminton-status-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1.4rem, 4vw, 2.5rem);
+  overflow: hidden;
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-radius: 1.35rem;
+  background: linear-gradient(135deg, rgba(15, 35, 31, 0.96), rgba(17, 24, 39, 0.95));
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16);
+}
+
+.badminton-status-card h2 {
+  margin: 0.35rem 0 0;
+  color: #f8fafc;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.badminton-status-card p:last-child {
+  max-width: 590px;
+  margin: 0.75rem 0 0;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.badminton-status-icon {
+  display: grid;
+  width: 78px;
+  height: 78px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 1.2rem;
+  background: rgba(34, 197, 94, 0.1);
+  font-size: 2.3rem;
+  transform: rotate(-14deg);
+}
+
+.sport-roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.sport-roadmap-card {
+  display: flex;
+  min-height: 235px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.15rem;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 1.15rem;
+  background: linear-gradient(145deg, rgba(23, 32, 51, 0.92), rgba(15, 23, 42, 0.92));
+}
+
+.sport-roadmap-card p {
+  margin: 0.95rem 0 0;
+  color: #64748b;
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.sport-roadmap-card h3 {
+  margin: 0.2rem 0;
+  color: #f8fafc;
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.sport-roadmap-card div > span {
+  color: #94a3b8;
+  font-size: 0.68rem;
+  line-height: 1.55;
+}
+
+.sport-roadmap-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 0.8rem;
+  background: rgba(148, 163, 184, 0.1);
+  color: #e2e8f0;
+  font-size: 1.4rem;
+}
+
+.sport-roadmap-active {
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.sport-roadmap-active .sport-roadmap-icon {
+  background: rgba(34, 197, 94, 0.16);
+}
+
+.sport-roadmap-card a,
+.sport-roadmap-pending {
+  margin-top: auto;
+  padding-top: 1rem;
+  color: #94a3b8;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.sport-roadmap-card a {
+  color: #86efac;
+}
+
+.sport-roadmap-card a:hover {
+  color: #bbf7d0;
+}
+
+
+/* =========================================================
    FOOTER
 ========================================================= */
 
@@ -3347,6 +3541,29 @@ body.light .nav-link {
     #475569;
 }
 
+body.light .site-wordmark {
+  color: #0f172a;
+}
+
+body.light .sport-tabs {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+body.light .sport-tab {
+  color: #64748b;
+}
+
+body.light .sport-tab:hover {
+  color: #14532d;
+  background: rgba(34, 197, 94, 0.08);
+}
+
+body.light .sport-tab.is-active {
+  color: #166534;
+  background: rgba(34, 197, 94, 0.13);
+}
+
 body.light .nav-link:hover {
   color:
     #14532d;
@@ -3530,6 +3747,22 @@ body.light .empty-state {
     rgba(255, 255, 255, 0.72);
 }
 
+body.light .badminton-status-card {
+  background: linear-gradient(135deg, #f1fff5, #ffffff);
+  border-color: rgba(34, 197, 94, 0.22);
+}
+
+body.light .badminton-status-card h2,
+body.light .sport-roadmap-card h3 {
+  color: #0f172a;
+}
+
+body.light .sport-roadmap-card {
+  border-color: #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+}
+
 body.light .social-section {
   background:
     linear-gradient(
@@ -3702,6 +3935,25 @@ body.light .footer-subtext {
 
 @media (max-width: 767px) {
 
+  .site-wordmark {
+    display: none;
+  }
+
+  .site-nav {
+    width: 100%;
+    gap: 0.25rem;
+  }
+
+  .sport-tabs {
+    flex: 1 1 auto;
+  }
+
+  .sport-tab {
+    flex: 1 1 0;
+    padding: 0 0.35rem;
+    font-size: 0.61rem;
+  }
+
   .hero-shell {
     min-height:
       auto;
@@ -3823,6 +4075,24 @@ body.light .footer-subtext {
   .snapshot-grid {
     gap:
       0.6rem;
+  }
+
+  .badminton-status-card {
+    align-items: flex-start;
+  }
+
+  .badminton-status-icon {
+    width: 58px;
+    height: 58px;
+    font-size: 1.75rem;
+  }
+
+  .sport-roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sport-roadmap-card {
+    min-height: 180px;
   }
 
   .snapshot-card {

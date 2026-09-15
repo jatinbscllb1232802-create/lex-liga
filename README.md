@@ -2,6 +2,8 @@
 
 Temporary live scoring & fixtures website for the college Futsal tournament **Lex Liga**.
 
+The public navigation also includes a Badminton tournament landing page and is structured to add more Lex Liga sports later.
+
 ## Live Website
 
 After enabling GitHub Pages it will be available at:
