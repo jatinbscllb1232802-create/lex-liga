@@ -88,64 +88,80 @@
 
   <section class="hero-shell">
 
-  <div class="hero-grid"></div>
+    <div class="hero-grid"></div>
 
-  <div class="hero-glow hero-glow-one"></div>
-  <div class="hero-glow hero-glow-two"></div>
+    <div class="hero-glow hero-glow-one"></div>
 
-  <div class="hero-red-glow"></div>
+    <div class="hero-glow hero-glow-two"></div>
 
-  <div class="hero-content max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="hero-red-glow"></div>
 
-    <div class="hero-copy">
 
-      <div class="hero-kicker">
-        <span class="hero-live-dot"></span>
-        COLLEGE FUTSAL • 2026
+    <div class="hero-content max-w-6xl mx-auto px-4 sm:px-6">
+
+      <div class="hero-copy">
+
+        <div class="hero-kicker">
+          <span class="hero-live-dot"></span>
+          COLLEGE FUTSAL • 2026
+        </div>
+
+
+        <h1>
+          LEX <span>LIGA</span>
+        </h1>
+
+
+        <p class="hero-title">
+          FUTSAL CHAMPIONSHIP
+        </p>
+
+
+        <div class="hero-divider"></div>
+
+
+        <div class="hero-meta">
+
+          <span>LIVE SCORES</span>
+
+          <span>•</span>
+
+          <span>RESULTS</span>
+
+          <span>•</span>
+
+          <span>STANDINGS</span>
+
+        </div>
+
       </div>
 
-      <h1>
-        LEX <span>LIGA</span>
-      </h1>
 
-      <p class="hero-title">
-        FUTSAL CHAMPIONSHIP
-      </p>
+      <!-- Logo artwork -->
 
-      <div class="hero-divider"></div>
+      <div class="hero-artwork">
 
-      <div class="hero-meta">
-        <span>LIVE SCORES</span>
-        <span>•</span>
-        <span>RESULTS</span>
-        <span>•</span>
-        <span>STANDINGS</span>
+        <div class="hero-artwork-frame"></div>
+
+        <img
+          src="assets/lexliga_logo_transparent.png"
+          alt="Lex Liga Futsal Championship artwork"
+          class="lexliga-logo-art"
+        />
+
       </div>
 
     </div>
 
+  </section>
 
-    <div class="hero-artwork">
-
-      <div class="hero-artwork-frame"></div>
-
-      <img
-        src="assets/lexliga_logo_transparent.png"
-        alt="Lex Liga Futsal Championship artwork"
-        class="lexliga-logo-art"
-      />
-
-    </div>
-
-  </div>
-
-</section>
 
   <!-- =====================================================
        MAIN
   ====================================================== -->
 
   <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-12 space-y-10">
+
 
     <!-- Update bar -->
 
@@ -160,6 +176,7 @@
         </span>
 
       </div>
+
 
       <button
         id="refreshBtn"
@@ -192,11 +209,13 @@
 
         </div>
 
+
         <span class="section-chip">
           LIVE
         </span>
 
       </div>
+
 
       <div
         id="liveMatches"
@@ -234,6 +253,7 @@
 
       </div>
 
+
       <div
         id="recentResults"
         class="grid lg:grid-cols-2 gap-4"
@@ -268,6 +288,7 @@
 
         </div>
 
+
         <a
           href="fixtures.html"
           class="section-action"
@@ -276,6 +297,7 @@
         </a>
 
       </div>
+
 
       <div
         id="quickStandings"
@@ -313,6 +335,7 @@
 
       </div>
 
+
       <div
         id="topScorers"
         class="top-scorers-card rounded-2xl overflow-hidden"
@@ -349,41 +372,324 @@
 
       </div>
 
-      <div
-        id="tournamentSnapshot"
-        class="snapshot-grid"
-      >
+
+      <div class="snapshot-grid">
 
         <div class="snapshot-card">
-          <span class="snapshot-icon">⚽</span>
+
+          <span class="snapshot-icon">
+            ⚽
+          </span>
+
           <div>
-            <p class="snapshot-label">Matches</p>
-            <p class="snapshot-value" id="snapshotMatches">—</p>
+
+            <p class="snapshot-label">
+              Matches
+            </p>
+
+            <p
+              class="snapshot-value"
+              id="snapshotMatches"
+            >
+              —
+            </p>
+
           </div>
+
         </div>
 
-        <div class="snapshot-card">
-          <span class="snapshot-icon">🔥</span>
-          <div>
-            <p class="snapshot-label">Live</p>
-            <p class="snapshot-value" id="snapshotLive">—</p>
-          </div>
-        </div>
 
         <div class="snapshot-card">
-          <span class="snapshot-icon">🥅</span>
+
+          <span class="snapshot-icon">
+            🔥
+          </span>
+
           <div>
-            <p class="snapshot-label">Goals</p>
-            <p class="snapshot-value" id="snapshotGoals">—</p>
+
+            <p class="snapshot-label">
+              Live
+            </p>
+
+            <p
+              class="snapshot-value"
+              id="snapshotLive"
+            >
+              —
+            </p>
+
           </div>
+
         </div>
 
+
         <div class="snapshot-card">
-          <span class="snapshot-icon">🏆</span>
+
+          <span class="snapshot-icon">
+            🥅
+          </span>
+
           <div>
-            <p class="snapshot-label">Teams</p>
-            <p class="snapshot-value" id="snapshotTeams">—</p>
+
+            <p class="snapshot-label">
+              Goals
+            </p>
+
+            <p
+              class="snapshot-value"
+              id="snapshotGoals"
+            >
+              —
+            </p>
+
           </div>
+
+        </div>
+
+
+        <div class="snapshot-card">
+
+          <span class="snapshot-icon">
+            🏆
+          </span>
+
+          <div>
+
+            <p class="snapshot-label">
+              Teams
+            </p>
+
+            <p
+              class="snapshot-value"
+              id="snapshotTeams"
+            >
+              —
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         FOLLOW THE ACTION
+    ==================================================== -->
+
+    <section class="social-section">
+
+      <div class="social-background-word">
+        FOLLOW
+      </div>
+
+
+      <div class="social-content">
+
+        <div class="social-heading">
+
+          <p class="section-eyebrow">
+            BEYOND THE SCOREBOARD
+          </p>
+
+          <h2>
+            Follow the Action
+          </h2>
+
+          <p class="social-description">
+            Matchday moments, behind-the-scenes updates,
+            campus life and everything happening around
+            Lex Liga.
+          </p>
+
+        </div>
+
+
+        <!-- Social preview cards -->
+
+        <div class="social-post-grid">
+
+
+          <!-- Post 1 -->
+
+          <a
+            href="https://instagram.com/YOUR_SACC_HANDLE"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-post social-post-match"
+          >
+
+            <div class="social-post-overlay"></div>
+
+            <div class="social-post-art">
+
+              <img
+                src="assets/lexliga_logo_transparent.png"
+                alt=""
+              />
+
+            </div>
+
+            <div class="social-post-content">
+
+              <span class="social-post-number">
+                01
+              </span>
+
+              <span class="social-post-label">
+                MATCHDAY
+              </span>
+
+              <strong>
+                The action
+              </strong>
+
+              <span>
+                Live scores • Results
+              </span>
+
+            </div>
+
+            <span class="social-post-arrow">
+              ↗
+            </span>
+
+          </a>
+
+
+          <!-- Post 2 -->
+
+          <a
+            href="https://instagram.com/YOUR_SACC_HANDLE"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-post social-post-scenes"
+          >
+
+            <div class="social-post-overlay"></div>
+
+            <div class="social-post-art">
+
+              <div class="scene-lines"></div>
+
+            </div>
+
+            <div class="social-post-content">
+
+              <span class="social-post-number">
+                02
+              </span>
+
+              <span class="social-post-label">
+                BEHIND THE SCENES
+              </span>
+
+              <strong>
+                Beyond the match
+              </strong>
+
+              <span>
+                People • Players • Moments
+              </span>
+
+            </div>
+
+            <span class="social-post-arrow">
+              ↗
+            </span>
+
+          </a>
+
+
+          <!-- Post 3 -->
+
+          <a
+            href="https://instagram.com/YOUR_SACC_HANDLE"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-post social-post-campus"
+          >
+
+            <div class="social-post-overlay"></div>
+
+            <div class="social-post-art">
+
+              <span class="campus-word">
+                PEOPLE
+              </span>
+
+              <span class="campus-word campus-word-two">
+                PLAY
+              </span>
+
+            </div>
+
+            <div class="social-post-content">
+
+              <span class="social-post-number">
+                03
+              </span>
+
+              <span class="social-post-label">
+                CAMPUS
+              </span>
+
+              <strong>
+                Law • People • Play
+              </strong>
+
+              <span>
+                The Lex Liga community
+              </span>
+
+            </div>
+
+            <span class="social-post-arrow">
+              ↗
+            </span>
+
+          </a>
+
+        </div>
+
+
+        <!-- Follow CTA -->
+
+        <div class="social-cta-row">
+
+          <div class="social-cta-copy">
+
+            <span class="social-instagram-symbol">
+              ◎
+            </span>
+
+            <div>
+
+              <span class="social-cta-label">
+                FOLLOW SACC ON INSTAGRAM
+              </span>
+
+              <strong class="social-cta-handle">
+                @YOUR_SACC_HANDLE
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <a
+            href="https://instagram.com/YOUR_SACC_HANDLE"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-follow-button"
+          >
+            Follow us
+            <span>↗</span>
+          </a>
+
         </div>
 
       </div>
@@ -394,46 +700,203 @@
 
 
   <!-- =====================================================
+       FLOATING SOCIAL CTA
+  ====================================================== -->
+
+  <a
+    href="https://instagram.com/YOUR_SACC_HANDLE"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="floating-social"
+    id="floatingSocial"
+    aria-label="Follow SACC on Instagram"
+  >
+
+    <span class="floating-social-icon">
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+
+        <rect
+          x="3"
+          y="3"
+          width="18"
+          height="18"
+          rx="5"
+          stroke="currentColor"
+          stroke-width="1.8"
+        />
+
+        <circle
+          cx="12"
+          cy="12"
+          r="4.2"
+          stroke="currentColor"
+          stroke-width="1.8"
+        />
+
+        <circle
+          cx="17.4"
+          cy="6.7"
+          r="1"
+          fill="currentColor"
+        />
+
+      </svg>
+
+    </span>
+
+
+    <span class="floating-social-text">
+
+      <small>
+        FOLLOW SACC
+      </small>
+
+      <strong>
+        Instagram ↗
+      </strong>
+
+    </span>
+
+  </a>
+
+
+  <!-- =====================================================
        FOOTER
   ====================================================== -->
 
   <footer class="site-footer">
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-9 text-center">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
-      <div class="footer-title">
+      <div class="footer-content">
 
-        <span class="footer-live-dot"></span>
 
-        LEX LIGA FUTSAL
+        <div class="footer-credit-block">
+
+          <span class="footer-label">
+            Created by
+          </span>
+
+          <strong class="footer-name">
+            Jatin Narula
+          </strong>
+
+        </div>
+
+
+        <div class="footer-credit-block">
+
+          <span class="footer-label">
+            Managed by
+          </span>
+
+          <strong class="footer-name">
+            Sports &amp; Cultural Committee
+          </strong>
+
+          <span class="footer-subtext">
+            (SACC), SLFJPS, NFSU
+          </span>
+
+        </div>
+
+
+        <a
+          href="https://instagram.com/YOUR_SACC_HANDLE"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="instagram-card"
+        >
+
+          <div class="instagram-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+
+              <rect
+                x="3"
+                y="3"
+                width="18"
+                height="18"
+                rx="5"
+                stroke="currentColor"
+                stroke-width="1.8"
+              />
+
+              <circle
+                cx="12"
+                cy="12"
+                r="4.2"
+                stroke="currentColor"
+                stroke-width="1.8"
+              />
+
+              <circle
+                cx="17.4"
+                cy="6.7"
+                r="1"
+                fill="currentColor"
+              />
+
+            </svg>
+
+          </div>
+
+
+          <div class="instagram-copy">
+
+            <span class="instagram-label">
+              Follow SACC
+            </span>
+
+            <span class="instagram-handle">
+              @YOUR_SACC_HANDLE
+            </span>
+
+          </div>
+
+
+          <span class="instagram-arrow">
+            ↗
+          </span>
+
+        </a>
 
       </div>
 
-      <p class="footer-line">
-        College Futsal Championship • Live scoring &amp; tournament centre
-      </p>
 
-      <div class="footer-rule"></div>
+      <div class="footer-bottom">
 
-      <p class="footer-credit">
-        Created by <strong>Jatin Narula</strong>
-      </p>
+        <span>
+          Lex Liga Futsal Championship 2026
+        </span>
 
-      <p class="footer-credit">
-        Managed by
-        <strong>
-          Sports &amp; Cultural Committee (SACC), SLFJPS, NFSU
-        </strong>
-      </p>
+        <span class="footer-dot">
+          •
+        </span>
+
+        <span>
+          Live scoring &amp; tournament centre
+        </span>
+
+      </div>
 
     </div>
 
   </footer>
 
 
-  <!-- =====================================================
-       SCRIPTS
-  ====================================================== -->
+  <!-- SCRIPTS -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
 
