@@ -1,120 +1,40 @@
-// Supabase configuration - robust version
+// Supabase configuration
 
-const SUPABASE_URL =
-  'https://gqoxwbhjocyhbgyrugsr.supabase.co';
-
-const SUPABASE_ANON_KEY =
-  'sb_publishable_ul73oOHRtNgcn3nX032M2w_af6XfqlU';
-
-
-// Create client safely
+const SUPABASE_URL = 'https://gqoxwbhjocyhbgyrugsr.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_ul73oOHRtNgcn3nX032M2w_af6XfqlU';
 
 let supabase = null;
 
 try {
-
-  if (
-    typeof window.supabase !== 'undefined' &&
-    typeof window.supabase.createClient === 'function'
-  ) {
-
-    supabase =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
-
-    console.log(
-      'Supabase client created successfully'
-    );
-
-  } else if (
-    typeof createClient === 'function'
-  ) {
-
-    supabase =
-      createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
-
-    console.log(
-      'Supabase client created via createClient'
-    );
-
+  if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Supabase client created successfully');
+  } else if (typeof createClient === 'function') {
+    supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   } else {
-
-    throw new Error(
-      'Supabase library not found. Check if the CDN script loaded.'
-    );
+    throw new Error('Supabase library not found');
   }
-
 } catch (err) {
-
-  console.error(
-    'Failed to create Supabase client:',
-    err
-  );
-
-  // Create a dummy client so the page shows
-  // a readable error instead of crashing.
-
+  console.error('Failed to create Supabase client:', err);
   supabase = {
-
     from: function () {
-
       return {
-
-        select: () =>
-          Promise.resolve({
-            data: null,
-            error: {
-              message:
-                'Supabase client failed to load. Please refresh the page.'
-            }
-          }),
-
-        insert: () =>
-          Promise.resolve({
-            data: null,
-            error: {
-              message:
-                'Supabase client failed to load'
-            }
-          }),
-
-        update: () =>
-          Promise.resolve({
-            data: null,
-            error: {
-              message:
-                'Supabase client failed to load'
-            }
-          }),
-
-        delete: () =>
-          Promise.resolve({
-            data: null,
-            error: {
-              message:
-                'Supabase client failed to load'
-            }
-          })
-
+        select: () => Promise.resolve({ data: null, error: { message: 'Supabase client failed to load' } }),
+        insert: () => Promise.resolve({ data: null, error: { message: 'Supabase client failed to load' } }),
+        update: () => Promise.resolve({ data: null, error: { message: 'Supabase client failed to load' } }),
+        delete: () => Promise.resolve({ data: null, error: { message: 'Supabase client failed to load' } })
       };
     }
-
   };
 }
 
-
-// Make available globally
-
 window.supabaseClient = supabase;
 
+// Separate admin passwords per sport
+const ADMIN_PASSWORDS = {
+  futsal: 'lexliga2026',
+  badminton: 'badminton2026'
+};
 
-// Admin password
-// Must match PLANREADME.md
-
-const ADMIN_PASSWORD =
-  'lexliga2026';
+// Legacy alias (futsal)
+const ADMIN_PASSWORD = ADMIN_PASSWORDS.futsal;
