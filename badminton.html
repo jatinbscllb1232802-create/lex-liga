@@ -11,6 +11,25 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: { DEFAULT: '#22c55e' } } } } }</script>
   <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .bm-hero-art {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 240px;
+    }
+    .bm-hero-art img {
+      width: min(72vw, 300px);
+      height: auto;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.45));
+      animation: bm-float 5s ease-in-out infinite;
+    }
+    @keyframes bm-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
 </head>
 <body class="min-h-screen">
 
@@ -24,7 +43,6 @@
             <a href="futsal.html" class="sport-tab"><span>⚽</span> Futsal</a>
             <a href="badminton.html" class="sport-tab is-active" aria-current="page"><span>🏸</span> Badminton</a>
           </div>
-          <button id="themeToggle" class="theme-toggle" type="button">☀️</button>
         </nav>
       </div>
     </div>
@@ -41,8 +59,8 @@
         <div class="hero-divider"></div>
         <div class="hero-meta"><span>BEST OF 3</span><span>•</span><span>TO 21</span><span>•</span><span>WIN BY 2</span></div>
       </div>
-      <div class="hero-artwork hero-artwork-small" aria-hidden="true">
-        <div class="badminton-shuttle" style="font-size:4rem">🏸</div>
+      <div class="bm-hero-art" aria-hidden="true">
+        <img src="assets/badminton-player.svg" alt="" width="300" height="328" />
       </div>
     </div>
   </section>
