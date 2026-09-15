@@ -26,10 +26,12 @@
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: #000;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(6px);
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 1.25rem;
       transition: opacity 0.45s ease, visibility 0.45s ease;
     }
     #introOverlay.is-hidden {
@@ -37,24 +39,34 @@
       visibility: hidden;
       pointer-events: none;
     }
+    #introFrame {
+      position: relative;
+      width: min(80vw, 920px);
+      max-height: 80vh;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08);
+      background: #000;
+    }
     #introOverlay video {
+      display: block;
       width: 100%;
-      height: 100%;
+      max-height: 80vh;
       object-fit: contain;
       background: #000;
     }
     #introClose {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
+      top: 0.75rem;
+      right: 0.75rem;
       z-index: 10000;
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.35);
-      background: rgba(0,0,0,0.55);
+      background: rgba(0,0,0,0.6);
       color: #fff;
-      font-size: 1.4rem;
+      font-size: 1.25rem;
       line-height: 1;
       cursor: pointer;
       display: flex;
@@ -62,22 +74,24 @@
       justify-content: center;
       backdrop-filter: blur(8px);
     }
-    #introClose:hover { background: rgba(239,68,68,0.85); border-color: transparent; }
+    #introClose:hover { background: rgba(239,68,68,0.9); border-color: transparent; }
   </style>
 </head>
 
 <body class="min-h-screen">
 
-  <!-- INTRO VIDEO OVERLAY -->
+  <!-- INTRO VIDEO (centered ~75%, website visible behind) -->
   <div id="introOverlay" aria-label="Lex Liga intro">
-    <button id="introClose" type="button" aria-label="Close intro">✕</button>
-    <video
-      id="introVideo"
-      playsinline
-      autoplay
-      muted
-      src="assets/WhatsApp%20Video%202026-09-15%20at%2002.31.34.mp4"
-    ></video>
+    <div id="introFrame">
+      <button id="introClose" type="button" aria-label="Close intro">✕</button>
+      <video
+        id="introVideo"
+        playsinline
+        autoplay
+        muted
+        src="assets/WhatsApp%20Video%202026-09-15%20at%2002.31.34.mp4"
+      ></video>
+    </div>
   </div>
 
   <header class="site-header sticky top-0 z-50">
@@ -259,7 +273,6 @@
       var closeBtn = document.getElementById('introClose');
       if (!overlay || !video) return;
 
-      // Show once per session
       if (sessionStorage.getItem('lexIntroSeen') === '1') {
         overlay.classList.add('is-hidden');
         return;
@@ -273,11 +286,11 @@
 
       closeBtn.addEventListener('click', dismiss);
       video.addEventListener('ended', dismiss);
-
-      // Try unmute after user gesture is not required for muted autoplay
-      video.play().catch(function () {
-        // Autoplay blocked — still show with controls-like close
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) dismiss();
       });
+
+      video.play().catch(function () {});
     })();
   </script>
 </body>
