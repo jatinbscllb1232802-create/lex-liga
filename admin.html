@@ -13,11 +13,20 @@
     .big-btn { min-height: 52px; font-size: 1.25rem; font-weight: 700; }
     .status-btn { min-height: 44px; font-size: 0.9rem; font-weight: 600; }
     .sport-pick {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
     }
     .sport-pick button {
-      padding: 1rem; border-radius: 1rem; border: 2px solid #334155;
-      background: #0f172a; font-weight: 700; color: #94a3b8; transition: all 0.15s;
+      padding: 1rem;
+      border-radius: 1rem;
+      border: 2px solid #334155;
+      background: #0f172a;
+      font-weight: 700;
+      color: #94a3b8;
+      transition: all 0.15s;
+      cursor: pointer;
     }
     .sport-pick button.active {
       border-color: #22c55e !important;
@@ -46,8 +55,8 @@
       </button>
       <p id="loginError" class="text-red-400 text-sm mt-3 text-center hidden">Wrong password for selected sport</p>
       <p class="text-xs text-slate-500 text-center mt-4 leading-relaxed">
-        Futsal password: <span class="text-slate-300">lexliga2026</span><br>
-        Badminton password: <span class="text-slate-300">badminton2026</span>
+        Futsal: <span class="text-slate-300">lexliga2026</span><br>
+        Badminton: <span class="text-slate-300">badminton2026</span>
       </p>
     </div>
   </div>
@@ -116,10 +125,89 @@
     </main>
   </div>
 
+  <!-- LOGIN LOGIC INLINE (must work even if external JS fails) -->
+  <script>
+    window.__selectedSport = 'futsal';
+
+    function setSport(sport) {
+      window.__selectedSport = sport;
+      var f = document.getElementById('pickFutsal');
+      var b = document.getElementById('pickBadminton');
+      if (f && b) {
+        if (sport === 'futsal') {
+          f.className = 'active';
+          b.className = '';
+        } else {
+          b.className = 'active';
+          f.className = '';
+        }
+      }
+    }
+
+    function showPanel(sport) {
+      var login = document.getElementById('loginScreen');
+      var futsal = document.getElementById('adminPanelFutsal');
+      var badminton = document.getElementById('adminPanelBadminton');
+      if (login) login.classList.add('hidden');
+      if (futsal) futsal.classList.add('hidden');
+      if (badminton) badminton.classList.add('hidden');
+
+      if (sport === 'badminton') {
+        if (badminton) badminton.classList.remove('hidden');
+        if (typeof window.loadBadmintonAdmin === 'function') window.loadBadmintonAdmin();
+      } else {
+        if (futsal) futsal.classList.remove('hidden');
+        if (typeof window.loadAdminData === 'function') window.loadAdminData();
+      }
+    }
+
+    function tryLogin() {
+      var input = document.getElementById('passwordInput');
+      var err = document.getElementById('loginError');
+      var pwd = (input && input.value ? input.value : '').trim();
+      var sport = window.__selectedSport || 'futsal';
+      var expected = sport === 'badminton' ? 'badminton2026' : 'lexliga2026';
+
+      if (pwd === expected) {
+        sessionStorage.setItem('lexAdmin', 'true');
+        sessionStorage.setItem('lexAdminSport', sport);
+        if (err) err.classList.add('hidden');
+        showPanel(sport);
+      } else {
+        if (err) err.classList.remove('hidden');
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+      }
+    }
+
+    function doLogout() {
+      sessionStorage.removeItem('lexAdmin');
+      sessionStorage.removeItem('lexAdminSport');
+      location.reload();
+    }
+
+    document.getElementById('pickFutsal').onclick = function () { setSport('futsal'); };
+    document.getElementById('pickBadminton').onclick = function () { setSport('badminton'); };
+    document.getElementById('loginBtn').onclick = tryLogin;
+    document.getElementById('passwordInput').onkeydown = function (e) {
+      if (e.key === 'Enter') tryLogin();
+    };
+    document.getElementById('logoutBtn').onclick = doLogout;
+    document.getElementById('logoutBtnBadminton').onclick = doLogout;
+
+    // Restore session after other scripts load
+    if (sessionStorage.getItem('lexAdmin') === 'true') {
+      var s = sessionStorage.getItem('lexAdminSport') || 'futsal';
+      setSport(s);
+      setTimeout(function () { showPanel(s); }, 100);
+    }
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
   <script src="js/supabase-config.js"></script>
   <script src="js/admin.js"></script>
   <script src="js/admin-badminton.js"></script>
-  <script src="js/admin-login.js"></script>
 </body>
 </html>
