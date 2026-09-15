@@ -1,30 +1,11 @@
-// Lex Liga Badminton – public page
+// Lex Liga Badminton – public page (dark only)
 
 const sb = window.supabaseClient || window.supabase || supabase;
 
-function initTheme() {
-  const saved = localStorage.getItem('theme');
-  if (saved === 'light') {
-    document.documentElement.classList.remove('dark');
-    document.body.classList.add('light');
-  }
-  const btn = document.getElementById('themeToggle');
-  if (btn) {
-    btn.addEventListener('click', () => {
-      const isDark = document.documentElement.classList.contains('dark');
-      if (isDark) {
-        document.documentElement.classList.remove('dark');
-        document.body.classList.add('light');
-        localStorage.setItem('theme', 'light');
-        btn.textContent = '🌙';
-      } else {
-        document.documentElement.classList.add('dark');
-        document.body.classList.remove('light');
-        localStorage.setItem('theme', 'dark');
-        btn.textContent = '☀️';
-      }
-    });
-  }
+function forceDark() {
+  document.documentElement.classList.add('dark');
+  document.body.classList.remove('light');
+  localStorage.setItem('theme', 'dark');
 }
 
 function statusBadge(status) {
@@ -76,7 +57,6 @@ async function loadBadminton() {
 
     const live = matches.filter(m => m.status === 'live');
     const finished = matches.filter(m => m.status === 'finished');
-    const upcoming = matches.filter(m => m.status === 'not_started');
 
     const liveEl = document.getElementById('bmLive');
     if (liveEl) liveEl.innerHTML = live.length ? live.map(renderBmCard).join('') : '<p class="text-slate-400 text-sm">No live matches</p>';
@@ -99,7 +79,7 @@ async function loadBadminton() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initTheme();
+  forceDark();
   loadBadminton();
   setInterval(loadBadminton, 20000);
   document.getElementById('refreshBtn')?.addEventListener('click', loadBadminton);
