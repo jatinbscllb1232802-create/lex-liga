@@ -3,920 +3,282 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Lex Liga Futsal — Live Scores</title>
-
-  <meta
-    name="description"
-    content="Live scores, results, standings and top scorers for Lex Liga Futsal."
-  />
-
+  <meta name="description" content="Live scores, results, standings and top scorers for Lex Liga Futsal." />
   <meta name="theme-color" content="#0b1120" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet"
-  >
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-
   <script>
     tailwind.config = {
       darkMode: 'class',
-
       theme: {
         extend: {
-          colors: {
-            primary: {
-              DEFAULT: '#22c55e',
-              dark: '#16a34a'
-            }
-          }
+          colors: { primary: { DEFAULT: '#22c55e', dark: '#16a34a' } }
         }
       }
     };
   </script>
-
   <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    #introOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
+    }
+    #introOverlay.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    #introOverlay video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+    }
+    #introClose {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10000;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      font-size: 1.4rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    #introClose:hover { background: rgba(239,68,68,0.85); border-color: transparent; }
+  </style>
 </head>
 
 <body class="min-h-screen">
 
-  <!-- =====================================================
-       HEADER
-  ====================================================== -->
+  <!-- INTRO VIDEO OVERLAY -->
+  <div id="introOverlay" aria-label="Lex Liga intro">
+    <button id="introClose" type="button" aria-label="Close intro">✕</button>
+    <video
+      id="introVideo"
+      playsinline
+      autoplay
+      muted
+      src="assets/WhatsApp%20Video%202026-09-15%20at%2002.31.34.mp4"
+    ></video>
+  </div>
 
   <header class="site-header sticky top-0 z-50">
-
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
-
       <div class="flex items-center justify-between gap-3">
-
-        <a href="index.html" class="site-wordmark" aria-label="Lex Liga home">
-          LEX <span>LIGA</span>
-        </a>
-
+        <a href="index.html" class="site-wordmark" aria-label="Lex Liga home">LEX <span>LIGA</span></a>
         <nav class="site-nav" aria-label="Main navigation">
-
           <div class="sport-tabs" aria-label="Choose a sport">
-            <a href="index.html" class="sport-tab is-active" aria-current="page">
-              <span aria-hidden="true">⚽</span> Futsal
-            </a>
-
-            <a href="badminton.html" class="sport-tab">
-              <span aria-hidden="true">🏸</span> Badminton
-            </a>
+            <a href="index.html" class="sport-tab is-active" aria-current="page"><span aria-hidden="true">⚽</span> Futsal</a>
+            <a href="badminton.html" class="sport-tab"><span aria-hidden="true">🏸</span> Badminton</a>
           </div>
-
-          <a
-            href="fixtures.html"
-            class="nav-link"
-          >
-            Fixtures
-          </a>
-
-          <button
-            id="themeToggle"
-            class="theme-toggle"
-            aria-label="Toggle theme"
-            type="button"
-          >
-            ☀️
-          </button>
-
+          <a href="fixtures.html" class="nav-link">Fixtures</a>
+          <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" type="button">☀️</button>
         </nav>
-
       </div>
-
     </div>
-
   </header>
 
-
-  <!-- =====================================================
-       HERO
-  ====================================================== -->
-
   <section class="hero-shell">
-
     <div class="hero-grid"></div>
-
     <div class="hero-glow hero-glow-one"></div>
-
     <div class="hero-glow hero-glow-two"></div>
-
     <div class="hero-red-glow"></div>
-
-
     <div class="hero-content max-w-6xl mx-auto px-4 sm:px-6">
-
       <div class="hero-copy">
-
-        <div class="hero-kicker">
-          <span class="hero-live-dot"></span>
-          COLLEGE FUTSAL • 2026
-        </div>
-
-
-        <h1>
-          LEX <span>LIGA</span>
-        </h1>
-
-
-        <p class="hero-title">
-          FUTSAL CHAMPIONSHIP
-        </p>
-
-
+        <div class="hero-kicker"><span class="hero-live-dot"></span> COLLEGE FUTSAL • 2026</div>
+        <h1>LEX <span>LIGA</span></h1>
+        <p class="hero-title">FUTSAL CHAMPIONSHIP</p>
         <div class="hero-divider"></div>
-
-
-        <div class="hero-meta">
-
-          <span>LIVE SCORES</span>
-
-          <span>•</span>
-
-          <span>RESULTS</span>
-
-          <span>•</span>
-
-          <span>STANDINGS</span>
-
-        </div>
-
+        <div class="hero-meta"><span>LIVE SCORES</span><span>•</span><span>RESULTS</span><span>•</span><span>STANDINGS</span></div>
       </div>
-
-
-      <!-- Logo artwork -->
-
       <div class="hero-artwork">
-
         <div class="hero-artwork-frame"></div>
-
-        <img
-          src="assets/lexliga_logo_transparent.png"
-          alt="Lex Liga Futsal Championship artwork"
-          class="lexliga-logo-art"
-        />
-
+        <img src="assets/lexliga_logo_transparent.png" alt="Lex Liga Futsal Championship artwork" class="lexliga-logo-art" />
       </div>
-
     </div>
-
   </section>
 
-
-  <!-- =====================================================
-       MAIN
-  ====================================================== -->
-
   <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-12 space-y-10">
-
-
-    <!-- Update bar -->
-
     <div class="update-bar">
-
-      <div class="update-status">
-
-        <span class="status-pulse"></span>
-
-        <span id="lastUpdated">
-          Loading live data...
-        </span>
-
-      </div>
-
-
-      <button
-        id="refreshBtn"
-        class="refresh-button"
-        type="button"
-      >
-        ↻ Refresh
-      </button>
-
+      <div class="update-status"><span class="status-pulse"></span><span id="lastUpdated">Loading live data...</span></div>
+      <button id="refreshBtn" class="refresh-button" type="button">↻ Refresh</button>
     </div>
 
-
-    <!-- ===================================================
-         LIVE NOW
-    ==================================================== -->
-
     <section>
-
       <div class="section-heading-row">
-
-        <div>
-
-          <p class="section-eyebrow">
-            MATCH CENTRE
-          </p>
-
-          <h2>
-            Live Now
-          </h2>
-
-        </div>
-
-
-        <span class="section-chip">
-          LIVE
-        </span>
-
+        <div><p class="section-eyebrow">MATCH CENTRE</p><h2>Live Now</h2></div>
+        <span class="section-chip">LIVE</span>
       </div>
-
-
-      <div
-        id="liveMatches"
-        class="space-y-4"
-      >
-
-        <p class="empty-state">
-          Loading live matches...
-        </p>
-
-      </div>
-
+      <div id="liveMatches" class="space-y-4"><p class="empty-state">Loading live matches...</p></div>
     </section>
 
-
-    <!-- ===================================================
-         RECENT RESULTS
-    ==================================================== -->
-
     <section>
-
       <div class="section-heading-row">
-
-        <div>
-
-          <p class="section-eyebrow">
-            LATEST
-          </p>
-
-          <h2>
-            Recent Results
-          </h2>
-
-        </div>
-
+        <div><p class="section-eyebrow">LATEST</p><h2>Recent Results</h2></div>
       </div>
-
-
-      <div
-        id="recentResults"
-        class="grid lg:grid-cols-2 gap-4"
-      >
-
-        <p class="empty-state">
-          Loading results...
-        </p>
-
-      </div>
-
+      <div id="recentResults" class="grid lg:grid-cols-2 gap-4"><p class="empty-state">Loading results...</p></div>
     </section>
 
-
-    <!-- ===================================================
-         STANDINGS
-    ==================================================== -->
-
     <section>
-
       <div class="section-heading-row">
-
-        <div>
-
-          <p class="section-eyebrow">
-            TABLES
-          </p>
-
-          <h2>
-            Quick Standings
-          </h2>
-
-        </div>
-
-
-        <a
-          href="fixtures.html"
-          class="section-action"
-        >
-          Full standings →
-        </a>
-
+        <div><p class="section-eyebrow">TABLES</p><h2>Quick Standings</h2></div>
+        <a href="fixtures.html" class="section-action">Full standings →</a>
       </div>
-
-
-      <div
-        id="quickStandings"
-        class="grid md:grid-cols-2 gap-4"
-      >
-
-        <p class="empty-state">
-          Loading standings...
-        </p>
-
-      </div>
-
+      <div id="quickStandings" class="grid md:grid-cols-2 gap-4"><p class="empty-state">Loading standings...</p></div>
     </section>
 
-
-    <!-- ===================================================
-         TOP SCORERS
-    ==================================================== -->
-
     <section>
-
       <div class="section-heading-row">
-
-        <div>
-
-          <p class="section-eyebrow">
-            GOLDEN BOOT
-          </p>
-
-          <h2>
-            Top Scorers
-          </h2>
-
-        </div>
-
+        <div><p class="section-eyebrow">GOLDEN BOOT</p><h2>Top Scorers</h2></div>
       </div>
-
-
-      <div
-        id="topScorers"
-        class="top-scorers-card rounded-2xl overflow-hidden"
-      >
-
-        <p class="p-5 text-slate-400 text-sm">
-          Loading scorers...
-        </p>
-
+      <div id="topScorers" class="top-scorers-card rounded-2xl overflow-hidden">
+        <p class="p-5 text-slate-400 text-sm">Loading scorers...</p>
       </div>
-
     </section>
 
-
-    <!-- ===================================================
-         TOURNAMENT SNAPSHOT
-    ==================================================== -->
-
     <section>
-
       <div class="section-heading-row">
-
-        <div>
-
-          <p class="section-eyebrow">
-            TOURNAMENT
-          </p>
-
-          <h2>
-            Tournament Snapshot
-          </h2>
-
-        </div>
-
+        <div><p class="section-eyebrow">TOURNAMENT</p><h2>Tournament Snapshot</h2></div>
       </div>
-
-
       <div class="snapshot-grid">
-
-        <div class="snapshot-card">
-
-          <span class="snapshot-icon">
-            ⚽
-          </span>
-
-          <div>
-
-            <p class="snapshot-label">
-              Matches
-            </p>
-
-            <p
-              class="snapshot-value"
-              id="snapshotMatches"
-            >
-              —
-            </p>
-
-          </div>
-
-        </div>
-
-
-        <div class="snapshot-card">
-
-          <span class="snapshot-icon">
-            🔥
-          </span>
-
-          <div>
-
-            <p class="snapshot-label">
-              Live
-            </p>
-
-            <p
-              class="snapshot-value"
-              id="snapshotLive"
-            >
-              —
-            </p>
-
-          </div>
-
-        </div>
-
-
-        <div class="snapshot-card">
-
-          <span class="snapshot-icon">
-            🥅
-          </span>
-
-          <div>
-
-            <p class="snapshot-label">
-              Goals
-            </p>
-
-            <p
-              class="snapshot-value"
-              id="snapshotGoals"
-            >
-              —
-            </p>
-
-          </div>
-
-        </div>
-
-
-        <div class="snapshot-card">
-
-          <span class="snapshot-icon">
-            🏆
-          </span>
-
-          <div>
-
-            <p class="snapshot-label">
-              Teams
-            </p>
-
-            <p
-              class="snapshot-value"
-              id="snapshotTeams"
-            >
-              —
-            </p>
-
-          </div>
-
-        </div>
-
+        <div class="snapshot-card"><span class="snapshot-icon">⚽</span><div><p class="snapshot-label">Matches</p><p class="snapshot-value" id="snapshotMatches">—</p></div></div>
+        <div class="snapshot-card"><span class="snapshot-icon">🔥</span><div><p class="snapshot-label">Live</p><p class="snapshot-value" id="snapshotLive">—</p></div></div>
+        <div class="snapshot-card"><span class="snapshot-icon">🥅</span><div><p class="snapshot-label">Goals</p><p class="snapshot-value" id="snapshotGoals">—</p></div></div>
+        <div class="snapshot-card"><span class="snapshot-icon">🏆</span><div><p class="snapshot-label">Teams</p><p class="snapshot-value" id="snapshotTeams">—</p></div></div>
       </div>
-
     </section>
-
-
-    <!-- ===================================================
-         FOLLOW THE ACTION
-    ==================================================== -->
 
     <section class="social-section">
-
-      <div class="social-background-word">
-        FOLLOW
-      </div>
-
-
+      <div class="social-background-word">FOLLOW</div>
       <div class="social-content">
-
         <div class="social-heading">
-
-          <p class="section-eyebrow">
-            BEYOND THE SCOREBOARD
-          </p>
-
-          <h2>
-            Follow the Action
-          </h2>
-
-          <p class="social-description">
-            Matchday moments, behind-the-scenes updates,
-            campus life and everything happening around
-            Lex Liga.
-          </p>
-
+          <p class="section-eyebrow">BEYOND THE SCOREBOARD</p>
+          <h2>Follow the Action</h2>
+          <p class="social-description">Matchday moments, behind-the-scenes updates, campus life and everything happening around Lex Liga.</p>
         </div>
-
-
-        <!-- Social preview cards -->
-
         <div class="social-post-grid">
-
-
-          <!-- Post 1 -->
-
-          <a
-            href="https://www.instagram.com/sacc_.official"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="social-post social-post-match"
-          >
-
+          <a href="https://www.instagram.com/sacc_.official" target="_blank" rel="noopener noreferrer" class="social-post social-post-match">
             <div class="social-post-overlay"></div>
-
-            <div class="social-post-art">
-
-              <img
-                src="assets/lexliga_logo_transparent.png"
-                alt=""
-              />
-
-            </div>
-
-            <div class="social-post-content">
-
-              <span class="social-post-number">
-                01
-              </span>
-
-              <span class="social-post-label">
-                MATCHDAY
-              </span>
-
-              <strong>
-                The action
-              </strong>
-
-              <span>
-                Live scores • Results
-              </span>
-
-            </div>
-
-            <span class="social-post-arrow">
-              ↗
-            </span>
-
+            <div class="social-post-art"><img src="assets/lexliga_logo_transparent.png" alt="" /></div>
+            <div class="social-post-content"><span class="social-post-number">01</span><span class="social-post-label">MATCHDAY</span><strong>The action</strong><span>Live scores • Results</span></div>
+            <span class="social-post-arrow">↗</span>
           </a>
-
-
-          <!-- Post 2 -->
-
-          <a
-            href="https://www.instagram.com/sacc_.official"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="social-post social-post-scenes"
-          >
-
+          <a href="https://www.instagram.com/sacc_.official" target="_blank" rel="noopener noreferrer" class="social-post social-post-scenes">
             <div class="social-post-overlay"></div>
-
-            <div class="social-post-art">
-
-              <div class="scene-lines"></div>
-
-            </div>
-
-            <div class="social-post-content">
-
-              <span class="social-post-number">
-                02
-              </span>
-
-              <span class="social-post-label">
-                BEHIND THE SCENES
-              </span>
-
-              <strong>
-                Beyond the match
-              </strong>
-
-              <span>
-                People • Players • Moments
-              </span>
-
-            </div>
-
-            <span class="social-post-arrow">
-              ↗
-            </span>
-
+            <div class="social-post-art"><div class="scene-lines"></div></div>
+            <div class="social-post-content"><span class="social-post-number">02</span><span class="social-post-label">BEHIND THE SCENES</span><strong>Beyond the match</strong><span>People • Players • Moments</span></div>
+            <span class="social-post-arrow">↗</span>
           </a>
-
-
-          <!-- Post 3 -->
-
-          <a
-            href="https://www.instagram.com/sacc_.official"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="social-post social-post-campus"
-          >
-
+          <a href="https://www.instagram.com/sacc_.official" target="_blank" rel="noopener noreferrer" class="social-post social-post-campus">
             <div class="social-post-overlay"></div>
-
-            <div class="social-post-art">
-
-              <span class="campus-word">
-                PEOPLE
-              </span>
-
-              <span class="campus-word campus-word-two">
-                PLAY
-              </span>
-
-            </div>
-
-            <div class="social-post-content">
-
-              <span class="social-post-number">
-                03
-              </span>
-
-              <span class="social-post-label">
-                CAMPUS
-              </span>
-
-              <strong>
-                Law • People • Play
-              </strong>
-
-              <span>
-                The Lex Liga community
-              </span>
-
-            </div>
-
-            <span class="social-post-arrow">
-              ↗
-            </span>
-
+            <div class="social-post-art"><span class="campus-word">PEOPLE</span><span class="campus-word campus-word-two">PLAY</span></div>
+            <div class="social-post-content"><span class="social-post-number">03</span><span class="social-post-label">CAMPUS</span><strong>Law • People • Play</strong><span>The Lex Liga community</span></div>
+            <span class="social-post-arrow">↗</span>
           </a>
-
         </div>
-
-
-        <!-- Follow CTA -->
-
         <div class="social-cta-row">
-
           <div class="social-cta-copy">
-
-            <span class="social-instagram-symbol">
-              ◎
-            </span>
-
-            <div>
-
-              <span class="social-cta-label">
-                FOLLOW SACC ON INSTAGRAM
-              </span>
-
-              <strong class="social-cta-handle">
-                @sacc_.official
-              </strong>
-
-            </div>
-
+            <span class="social-instagram-symbol">◎</span>
+            <div><span class="social-cta-label">FOLLOW SACC ON INSTAGRAM</span><strong class="social-cta-handle">@sacc_.official</strong></div>
           </div>
-
-
-          <a
-            href="https://www.instagram.com/sacc_.official"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="social-follow-button"
-          >
-            Follow us
-            <span>↗</span>
-          </a>
-
+          <a href="https://www.instagram.com/sacc_.official" target="_blank" rel="noopener noreferrer" class="social-follow-button">Follow us <span>↗</span></a>
         </div>
-
       </div>
-
     </section>
-
   </main>
 
-
-  <!-- =====================================================
-       FLOATING SOCIAL CTA
-  ====================================================== -->
-
-  <a
-    href="https://www.instagram.com/sacc_.official"
-    target="_blank"
-    rel="noopener noreferrer"
-    class="floating-social"
-    id="floatingSocial"
-    aria-label="Follow SACC on Instagram"
-  >
-
+  <a href="https://www.instagram.com/sacc_.official" target="_blank" rel="noopener noreferrer" class="floating-social" id="floatingSocial" aria-label="Follow SACC on Instagram">
     <span class="floating-social-icon">
-
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-
-        <rect
-          x="3"
-          y="3"
-          width="18"
-          height="18"
-          rx="5"
-          stroke="currentColor"
-          stroke-width="1.8"
-        />
-
-        <circle
-          cx="12"
-          cy="12"
-          r="4.2"
-          stroke="currentColor"
-          stroke-width="1.8"
-        />
-
-        <circle
-          cx="17.4"
-          cy="6.7"
-          r="1"
-          fill="currentColor"
-        />
-
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="17.4" cy="6.7" r="1" fill="currentColor"/>
       </svg>
-
     </span>
-
-
-    <span class="floating-social-text">
-
-      <small>
-        FOLLOW SACC
-      </small>
-
-      <strong>
-        Instagram ↗
-      </strong>
-
-    </span>
-
+    <span class="floating-social-text"><small>FOLLOW SACC</small><strong>Instagram ↗</strong></span>
   </a>
 
-
-  <!-- =====================================================
-       FOOTER
-  ====================================================== -->
-
   <footer class="site-footer">
-
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-
       <div class="footer-content">
-
-
         <div class="footer-credit-block">
-
-          <span class="footer-label">
-            Created by
-          </span>
-
-          <strong class="footer-name">
-            Jatin Narula
-          </strong>
-
+          <span class="footer-label">Created by</span>
+          <strong class="footer-name">Jatin Narula</strong>
         </div>
-
-
         <div class="footer-credit-block">
-
-          <span class="footer-label">
-            Managed by
-          </span>
-
-          <strong class="footer-name">
-            Sports &amp; Cultural Committee
-          </strong>
-
-          <span class="footer-subtext">
-            (SACC), SLFJPS, NFSU
-          </span>
-
+          <span class="footer-label">Managed by</span>
+          <strong class="footer-name">Sports & Cultural Committee</strong>
+          <span class="footer-subtext">(SACC), SLFJPS, NFSU</span>
         </div>
-
-
-        <a
-          href="https://www.instagram.com/sacc_.official"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="instagram-card"
-        >
-
+        <a href="https://www.instagram.com/sacc_.official" target="_blank" rel="noopener noreferrer" class="instagram-card">
           <div class="instagram-icon">
-
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-
-              <rect
-                x="3"
-                y="3"
-                width="18"
-                height="18"
-                rx="5"
-                stroke="currentColor"
-                stroke-width="1.8"
-              />
-
-              <circle
-                cx="12"
-                cy="12"
-                r="4.2"
-                stroke="currentColor"
-                stroke-width="1.8"
-              />
-
-              <circle
-                cx="17.4"
-                cy="6.7"
-                r="1"
-                fill="currentColor"
-              />
-
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="17.4" cy="6.7" r="1" fill="currentColor"/>
             </svg>
-
           </div>
-
-
           <div class="instagram-copy">
-
-            <span class="instagram-label">
-              Follow SACC
-            </span>
-
-            <span class="instagram-handle">
-              @sacc_.official
-            </span>
-
+            <span class="instagram-label">Follow SACC</span>
+            <span class="instagram-handle">@sacc_.official</span>
           </div>
-
-
-          <span class="instagram-arrow">
-            ↗
-          </span>
-
+          <span class="instagram-arrow">↗</span>
         </a>
-
       </div>
-
-
       <div class="footer-bottom">
-
-        <span>
-          Lex Liga 2026
-        </span>
-
-        <span class="footer-dot">
-          •
-        </span>
-
-        <span>
-          Live scoring &amp; tournament centre
-        </span>
-
+        <span>Lex Liga 2026</span><span class="footer-dot">•</span><span>Live scoring & tournament centre</span>
       </div>
-
     </div>
-
   </footer>
 
-
-  <!-- SCRIPTS -->
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
-
   <script src="js/supabase-config.js"></script>
-
   <script src="js/app.js"></script>
+  <script>
+    (function () {
+      var overlay = document.getElementById('introOverlay');
+      var video = document.getElementById('introVideo');
+      var closeBtn = document.getElementById('introClose');
+      if (!overlay || !video) return;
 
+      // Show once per session
+      if (sessionStorage.getItem('lexIntroSeen') === '1') {
+        overlay.classList.add('is-hidden');
+        return;
+      }
+
+      function dismiss() {
+        overlay.classList.add('is-hidden');
+        sessionStorage.setItem('lexIntroSeen', '1');
+        try { video.pause(); } catch (e) {}
+      }
+
+      closeBtn.addEventListener('click', dismiss);
+      video.addEventListener('ended', dismiss);
+
+      // Try unmute after user gesture is not required for muted autoplay
+      video.play().catch(function () {
+        // Autoplay blocked — still show with controls-like close
+      });
+    })();
+  </script>
 </body>
 </html>
