@@ -31,10 +31,9 @@ try {
 window.supabaseClient = supabase;
 
 // Separate admin passwords per sport
-const ADMIN_PASSWORDS = {
+window.ADMIN_PASSWORDS = {
   futsal: 'lexliga2026',
   badminton: 'badminton2026'
 };
 
-// Legacy alias (futsal)
-const ADMIN_PASSWORD = ADMIN_PASSWORDS.futsal;
+const ADMIN_PASSWORD = window.ADMIN_PASSWORDS.futsal;
