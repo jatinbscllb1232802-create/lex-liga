@@ -1,52 +1,88 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 560" fill="none">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f8fafc"/>
-      <stop offset="100%" stop-color="#cbd5e1"/>
-    </linearGradient>
-  </defs>
-  <!-- Motion trails -->
-  <path d="M320 96c48-16 96-12 136 12" stroke="#4ade80" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
-  <path d="M328 120c52-12 100-6 140 20" stroke="#4ade80" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
-  <path d="M336 144c48-8 92 0 128 24" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" opacity="0.22"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 520" fill="none">
+  <!-- Motion arcs -->
+  <path d="M300 70c40-12 80-8 115 14" stroke="#4ade80" stroke-width="3.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M305 95c45-10 85-4 118 18" stroke="#4ade80" stroke-width="2.8" stroke-linecap="round" opacity="0.4"/>
+  <path d="M310 118c40-6 75 2 105 22" stroke="#4ade80" stroke-width="2.2" stroke-linecap="round" opacity="0.25"/>
 
   <!-- Shuttlecock -->
-  <g transform="translate(420 88)">
-    <ellipse cx="0" cy="14" rx="11" ry="13" fill="url(#g)"/>
-    <path d="M0 2 C-16 -18 -10 -40 0 -48 C10 -40 16 -18 0 2Z" fill="url(#g)"/>
-    <path d="M-5 -6 C-14 -20 -10 -36 -2 -42 M5 -6 C14 -20 10 -36 2 -42 M0 -8 C0 -24 2 -38 0 -46" stroke="#94a3b8" stroke-width="1.5" opacity="0.5"/>
+  <g transform="translate(395 55)">
+    <ellipse cx="0" cy="16" rx="9" ry="11" fill="#f8fafc"/>
+    <path d="M0 6c-12-16-8-34 0-42 8 8 12 26 0 42z" fill="#f8fafc"/>
+    <path d="M-4 -2c-8-10-6-24 0-30M4 -2c8-10 6-24 0-30" stroke="#94a3b8" stroke-width="1.2" opacity="0.6"/>
   </g>
 
-  <!-- Player silhouette -->
-  <g fill="url(#g)">
-    <!-- Head -->
-    <path d="M198 52c18 0 32 16 32 36s-14 36-32 36-32-16-32-36 14-36 32-36z"/>
-    <!-- Body + dynamic pose -->
-    <path d="M176 120c-6 8-10 20-8 32 4 28 18 52 28 78 6 16 4 34-2 50l24 10c8-20 16-42 14-64 12 12 30 22 48 26 10 2 22-2 26-12 4-8 0-18-8-22-14-8-32-12-44-24 0-22 6-46 14-66-24 4-48 6-72-8z"/>
-    <!-- Raised arm (hitting) -->
-    <path d="M230 128c24-36 58-60 98-72 10-3 20 6 16 16-10 28-32 52-56 70-12 10-26 16-40 20l-18-34z"/>
-    <!-- Lower arm / racket side -->
-    <path d="M168 148c-28 6-56 30-66 58-4 12 6 22 16 18 22-6 44-24 60-42 6-8 10-18 6-26l-16-8z"/>
-  </g>
+  <!-- Solid player silhouette (jump smash) -->
+  <path fill="#f8fafc" fill-rule="evenodd" d="
+    M198 42
+    c16 0 30 14 30 32
+    s-14 32-30 32
+    s-30-14-30-32
+    s14-32 30-32z
 
-  <!-- Racket -->
-  <g stroke="#f8fafc" fill="none">
-    <ellipse cx="92" cy="230" rx="42" ry="56" transform="rotate(-28 92 230)" stroke-width="11"/>
-    <ellipse cx="92" cy="230" rx="26" ry="38" transform="rotate(-28 92 230)" stroke-width="3" opacity="0.4"/>
-    <path d="M118 268c18 26 42 46 64 56" stroke-width="9" stroke-linecap="round"/>
-    <!-- string grid -->
-    <g opacity="0.35" stroke-width="1.5" transform="rotate(-28 92 230)">
-      <path d="M70 200h44M66 215h52M64 230h56M66 245h52M70 260h44"/>
-      <path d="M78 190v80M92 185v90M106 190v80"/>
-    </g>
-  </g>
+    M168 102
+    c-4 6-6 16-4 26
+    c6 36 28 68 36 104
+    c4 18 2 38-4 56
+    l28 12
+    c10-22 18-48 16-72
+    c14 14 36 26 58 30
+    c12 2 26-4 30-16
+    c4-10-2-20-12-24
+    c-16-8-36-12-50-26
+    c2-28 10-56 22-80
+    c-28 6-56 4-80-10z
 
-  <!-- Legs -->
-  <g fill="url(#g)">
-    <path d="M190 290c-2 32 2 64 12 94 6 16 2 34-6 48l26 8c10-18 16-40 14-62 10 16 28 28 46 32 8 2 16-4 16-12 0-18-14-32-26-46-2-24-4-50 0-74l-82 12z"/>
-    <path d="M232 300c14 28 36 50 62 64 12 6 26 2 30-10 4-14-4-24-16-30-18-10-34-28-44-50l-32 26z"/>
-    <!-- shoes -->
-    <path d="M178 430c-12 6-30 8-42 2-8-4-6-14 2-16 14-4 34-4 48 2 8 4 4 10-8 12z"/>
-    <path d="M310 360c16 2 34-2 44-10 6-6 4-14-4-16-14 2-32 8-44 14-8 4-6 12 4 12z"/>
+    M236 115
+    c28-40 68-68 112-82
+    c12-4 24 8 18 18
+    c-12 32-38 58-64 78
+    c-14 10-30 16-46 20
+    z
+
+    M155 145
+    c-32 8-64 36-74 66
+    c-4 14 8 26 20 20
+    c24-8 50-28 68-48
+    c8-8 12-20 6-30
+    z
+
+    M185 300
+    c0 36 6 72 18 104
+    c6 18 0 38-10 54
+    l30 10
+    c12-20 20-44 18-68
+    c12 18 32 32 52 36
+    c10 2 20-6 20-16
+    c0-20-16-36-30-50
+    c-2-28-4-56 2-84
+    z
+
+    M245 310
+    c16 32 42 56 72 72
+    c14 8 30 2 34-12
+    c4-16-6-28-20-34
+    c-20-12-40-32-52-56
+    z
+
+    M172 456
+    c-14 8-34 10-48 2
+    c-10-4-8-16 2-18
+    c16-4 38-4 54 2
+    c10 4 4 12-8 14z
+
+    M332 378
+    c18 4 38-2 50-12
+    c8-6 4-16-4-18
+    c-16 2-36 10-50 16
+    c-8 4-6 12 4 14z
+  "/>
+
+  <!-- Racket frame -->
+  <ellipse cx="78" cy="235" rx="40" ry="54" transform="rotate(-30 78 235)" fill="none" stroke="#f8fafc" stroke-width="10"/>
+  <ellipse cx="78" cy="235" rx="24" ry="36" transform="rotate(-30 78 235)" fill="none" stroke="#f8fafc" stroke-width="2.5" opacity="0.35"/>
+  <path d="M105 275c16 24 38 44 58 54" stroke="#f8fafc" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <g opacity="0.3" stroke="#f8fafc" stroke-width="1.4" transform="rotate(-30 78 235)">
+    <path d="M58 205h40M54 220h48M52 235h52M54 250h48M58 265h40"/>
+    <path d="M68 195v80M78 190v90M88 195v80"/>
   </g>
 </svg>
