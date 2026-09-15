@@ -3,14 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lex Liga Futsal – Live Scores</title>
-  <meta name="description" content="Live scores, fixtures and standings for Lex Liga Futsal college tournament" />
+
+  <title>Lex Liga Futsal — Live Scores</title>
+
+  <meta
+    name="description"
+    content="Live scores, results, standings and top scorers for Lex Liga Futsal."
+  />
+
   <meta name="theme-color" content="#0b1120" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet"
   >
 
@@ -19,6 +26,7 @@
   <script>
     tailwind.config = {
       darkMode: 'class',
+
       theme: {
         extend: {
           colors: {
@@ -29,7 +37,7 @@
           }
         }
       }
-    }
+    };
   </script>
 
   <link rel="stylesheet" href="css/styles.css" />
@@ -37,167 +45,382 @@
 
 <body class="min-h-screen">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-end">
-      <div class="flex items-center gap-3">
-        <button
-          id="themeToggle"
-          class="theme-toggle p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-sm transition"
-          aria-label="Toggle theme"
-        >
-          ☀️
-        </button>
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
 
-        <a
-          href="fixtures.html"
-          class="text-sm font-semibold text-primary hover:text-green-400 transition"
-        >
-          Fixtures
-        </a>
+  <header class="site-header sticky top-0 z-50">
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
+
+      <div class="flex items-center justify-end">
+
+        <nav class="flex items-center gap-2 sm:gap-3">
+
+          <a
+            href="fixtures.html"
+            class="nav-link"
+          >
+            Fixtures
+          </a>
+
+          <button
+            id="themeToggle"
+            class="theme-toggle"
+            aria-label="Toggle theme"
+            type="button"
+          >
+            ☀️
+          </button>
+
+        </nav>
+
       </div>
+
     </div>
+
   </header>
 
-  <!-- ANIMATED HERO LOGO -->
-  <div class="hero-logo">
-    <div class="ball-icon">
-      <svg
-        viewBox="0 0 64 64"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          cx="32"
-          cy="32"
-          r="30"
-          fill="#1e293b"
-          stroke="#22c55e"
-          stroke-width="2.5"
-        />
 
-        <circle
-          cx="32"
-          cy="32"
-          r="10"
-          fill="#22c55e"
-          opacity="0.9"
-        />
+  <!-- =====================================================
+       HERO
+  ====================================================== -->
 
-        <path
-          d="M32 2 L38 18 L54 14 L42 28 L58 38 L40 40 L38 56 L32 42 L26 56 L24 40 L6 38 L22 28 L10 14 L26 18 Z"
-          fill="none"
-          stroke="#4ade80"
-          stroke-width="1.5"
-          opacity="0.7"
-        />
+  <section class="hero-shell">
 
-        <circle
-          cx="32"
-          cy="32"
-          r="4"
-          fill="#0b1120"
-        />
-      </svg>
+    <div class="hero-grid"></div>
+
+    <div class="hero-glow hero-glow-one"></div>
+    <div class="hero-glow hero-glow-two"></div>
+
+    <div class="hero-content max-w-6xl mx-auto px-4 sm:px-6">
+
+      <div class="hero-kicker">
+        <span class="hero-live-dot"></span>
+        COLLEGE FUTSAL • 2026
+      </div>
+
+      <h1>
+        LEX <span>LIGA</span>
+      </h1>
+
+      <p class="hero-title">
+        FUTSAL CHAMPIONSHIP
+      </p>
+
+      <div class="hero-divider"></div>
+
+      <div class="hero-meta">
+        <span>LIVE SCORES</span>
+        <span>•</span>
+        <span>RESULTS</span>
+        <span>•</span>
+        <span>STANDINGS</span>
+      </div>
+
     </div>
 
-    <h1>LEX LIGA</h1>
-    <p class="subtitle">Futsal Championship</p>
-  </div>
+  </section>
 
-  <main class="max-w-5xl mx-auto px-4 pb-6 space-y-8">
 
-    <!-- Last updated -->
-    <div class="flex items-center justify-between text-sm text-slate-400">
-      <span id="lastUpdated">Loading...</span>
+  <!-- =====================================================
+       MAIN
+  ====================================================== -->
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-12 space-y-10">
+
+    <!-- Update bar -->
+
+    <div class="update-bar">
+
+      <div class="update-status">
+
+        <span class="status-pulse"></span>
+
+        <span id="lastUpdated">
+          Loading live data...
+        </span>
+
+      </div>
 
       <button
         id="refreshBtn"
-        class="text-primary hover:text-green-400 text-sm font-semibold transition"
+        class="refresh-button"
+        type="button"
       >
-        Refresh now
+        ↻ Refresh
       </button>
+
     </div>
 
-    <!-- Live Matches -->
-    <section>
-      <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-        Live Now
-      </h2>
 
-      <div id="liveMatches" class="space-y-4">
-        <p class="text-slate-400 text-sm">
+    <!-- ===================================================
+         LIVE NOW
+    ==================================================== -->
+
+    <section>
+
+      <div class="section-heading-row">
+
+        <div>
+
+          <p class="section-eyebrow">
+            MATCH CENTRE
+          </p>
+
+          <h2>
+            Live Now
+          </h2>
+
+        </div>
+
+        <span class="section-chip">
+          LIVE
+        </span>
+
+      </div>
+
+      <div
+        id="liveMatches"
+        class="space-y-4"
+      >
+
+        <p class="empty-state">
           Loading live matches...
         </p>
+
       </div>
+
     </section>
 
-    <!-- Recent Results -->
-    <section>
-      <h2 class="text-xl font-bold mb-4">
-        Recent Results
-      </h2>
 
-      <div id="recentResults" class="space-y-3">
-        <p class="text-slate-400 text-sm">
-          Loading...
+    <!-- ===================================================
+         RECENT RESULTS
+    ==================================================== -->
+
+    <section>
+
+      <div class="section-heading-row">
+
+        <div>
+
+          <p class="section-eyebrow">
+            LATEST
+          </p>
+
+          <h2>
+            Recent Results
+          </h2>
+
+        </div>
+
+      </div>
+
+      <div
+        id="recentResults"
+        class="grid lg:grid-cols-2 gap-4"
+      >
+
+        <p class="empty-state">
+          Loading results...
         </p>
+
       </div>
+
     </section>
 
-    <!-- Quick Standings -->
-    <section>
-      <h2 class="text-xl font-bold mb-4">
-        Quick Standings
-      </h2>
 
-      <div id="quickStandings" class="grid md:grid-cols-2 gap-4">
-        <p class="text-slate-400 text-sm">
+    <!-- ===================================================
+         STANDINGS
+    ==================================================== -->
+
+    <section>
+
+      <div class="section-heading-row">
+
+        <div>
+
+          <p class="section-eyebrow">
+            TABLES
+          </p>
+
+          <h2>
+            Quick Standings
+          </h2>
+
+        </div>
+
+        <a
+          href="fixtures.html"
+          class="section-action"
+        >
+          Full standings →
+        </a>
+
+      </div>
+
+      <div
+        id="quickStandings"
+        class="grid md:grid-cols-2 gap-4"
+      >
+
+        <p class="empty-state">
           Loading standings...
         </p>
+
       </div>
+
     </section>
 
-    <!-- Top Scorers -->
+
+    <!-- ===================================================
+         TOP SCORERS
+    ==================================================== -->
+
     <section>
-      <h2 class="text-xl font-bold mb-4">
-        Top Scorers
-      </h2>
+
+      <div class="section-heading-row">
+
+        <div>
+
+          <p class="section-eyebrow">
+            GOLDEN BOOT
+          </p>
+
+          <h2>
+            Top Scorers
+          </h2>
+
+        </div>
+
+      </div>
 
       <div
         id="topScorers"
-        class="top-scorers-card rounded-xl overflow-hidden"
+        class="top-scorers-card rounded-2xl overflow-hidden"
       >
-        <p class="p-4 text-slate-400 text-sm">
+
+        <p class="p-5 text-slate-400 text-sm">
           Loading scorers...
         </p>
+
       </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         TOURNAMENT SNAPSHOT
+    ==================================================== -->
+
+    <section>
+
+      <div class="section-heading-row">
+
+        <div>
+
+          <p class="section-eyebrow">
+            TOURNAMENT
+          </p>
+
+          <h2>
+            Tournament Snapshot
+          </h2>
+
+        </div>
+
+      </div>
+
+      <div
+        id="tournamentSnapshot"
+        class="snapshot-grid"
+      >
+
+        <div class="snapshot-card">
+          <span class="snapshot-icon">⚽</span>
+          <div>
+            <p class="snapshot-label">Matches</p>
+            <p class="snapshot-value" id="snapshotMatches">—</p>
+          </div>
+        </div>
+
+        <div class="snapshot-card">
+          <span class="snapshot-icon">🔥</span>
+          <div>
+            <p class="snapshot-label">Live</p>
+            <p class="snapshot-value" id="snapshotLive">—</p>
+          </div>
+        </div>
+
+        <div class="snapshot-card">
+          <span class="snapshot-icon">🥅</span>
+          <div>
+            <p class="snapshot-label">Goals</p>
+            <p class="snapshot-value" id="snapshotGoals">—</p>
+          </div>
+        </div>
+
+        <div class="snapshot-card">
+          <span class="snapshot-icon">🏆</span>
+          <div>
+            <p class="snapshot-label">Teams</p>
+            <p class="snapshot-value" id="snapshotTeams">—</p>
+          </div>
+        </div>
+
+      </div>
+
     </section>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="site-footer mt-10 py-7 text-center text-sm">
-    <div class="flex items-center justify-center gap-2 mb-2">
-      <span class="footer-live-dot"></span>
-      <span class="font-semibold">Lex Liga Futsal</span>
+
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+
+  <footer class="site-footer">
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-9 text-center">
+
+      <div class="footer-title">
+
+        <span class="footer-live-dot"></span>
+
+        LEX LIGA FUTSAL
+
+      </div>
+
+      <p class="footer-line">
+        College Futsal Championship • Live scoring &amp; tournament centre
+      </p>
+
+      <div class="footer-rule"></div>
+
+      <p class="footer-credit">
+        Created by <strong>Jatin Narula</strong>
+      </p>
+
+      <p class="footer-credit">
+        Managed by
+        <strong>
+          Sports &amp; Cultural Committee (SACC), SLFJPS, NFSU
+        </strong>
+      </p>
+
     </div>
 
-    <p class="footer-line">
-      College Tournament • Free live scoring
-    </p>
-
-    <p class="footer-credit mt-2">
-      Created by <strong>Jatin Narula</strong>
-    </p>
-
-    <p class="footer-credit">
-      Managed by <strong>Sports &amp; Cultural Committee (SACC), SLFJPS, NFSU</strong>
-    </p>
   </footer>
 
+
+  <!-- =====================================================
+       SCRIPTS
+  ====================================================== -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+
   <script src="js/supabase-config.js"></script>
+
   <script src="js/app.js"></script>
 
 </body>
