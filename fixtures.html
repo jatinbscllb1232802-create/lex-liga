@@ -87,31 +87,57 @@
     <div class="hero-grid"></div>
 
     <div class="hero-glow hero-glow-one"></div>
+
     <div class="hero-glow hero-glow-two"></div>
 
     <div class="hero-content max-w-6xl mx-auto px-4 sm:px-6">
 
-      <div class="hero-kicker">
-        <span class="hero-live-dot"></span>
-        TOURNAMENT CENTRE
+      <div class="hero-copy">
+
+        <div class="hero-kicker">
+          <span class="hero-live-dot"></span>
+          TOURNAMENT CENTRE
+        </div>
+
+
+        <h1>
+          LEX <span>LIGA</span>
+        </h1>
+
+
+        <p class="hero-title">
+          FIXTURES &amp; STANDINGS
+        </p>
+
+
+        <div class="hero-divider"></div>
+
+
+        <div class="hero-meta">
+
+          <span>FIXTURES</span>
+
+          <span>•</span>
+
+          <span>TABLES</span>
+
+          <span>•</span>
+
+          <span>ACHIEVEMENTS</span>
+
+        </div>
+
       </div>
 
-      <h1>
-        LEX <span>LIGA</span>
-      </h1>
 
-      <p class="hero-title">
-        FIXTURES &amp; STANDINGS
-      </p>
+      <div class="hero-artwork hero-artwork-small">
 
-      <div class="hero-divider"></div>
+        <img
+          src="assets/lexliga_logo_transparent.png"
+          alt="Lex Liga Futsal Championship artwork"
+          class="lexliga-logo-art"
+        />
 
-      <div class="hero-meta">
-        <span>FIXTURES</span>
-        <span>•</span>
-        <span>TABLES</span>
-        <span>•</span>
-        <span>ACHIEVEMENTS</span>
       </div>
 
     </div>
@@ -122,7 +148,7 @@
   <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-12 space-y-10">
 
 
-    <!-- UPDATE BAR -->
+    <!-- UPDATE -->
 
     <div class="update-bar">
 
@@ -136,6 +162,7 @@
 
       </div>
 
+
       <button
         id="refreshBtn"
         class="refresh-button"
@@ -147,9 +174,7 @@
     </div>
 
 
-    <!-- ===================================================
-         LIVE MATCHES
-    ==================================================== -->
+    <!-- LIVE NOW -->
 
     <section>
 
@@ -173,6 +198,7 @@
 
       </div>
 
+
       <div
         id="liveMatchesFixtures"
         class="space-y-4"
@@ -187,9 +213,7 @@
     </section>
 
 
-    <!-- ===================================================
-         STANDINGS
-    ==================================================== -->
+    <!-- STANDINGS -->
 
     <section>
 
@@ -209,6 +233,7 @@
 
       </div>
 
+
       <div
         id="fullStandings"
         class="space-y-6"
@@ -223,9 +248,7 @@
     </section>
 
 
-    <!-- ===================================================
-         ALL MATCHES
-    ==================================================== -->
+    <!-- MATCHES -->
 
     <section>
 
@@ -245,6 +268,7 @@
 
       </div>
 
+
       <div
         id="allFixtures"
         class="space-y-4"
@@ -259,9 +283,7 @@
     </section>
 
 
-    <!-- ===================================================
-         RULES
-    ==================================================== -->
+    <!-- RULES -->
 
     <section class="info-section rounded-2xl p-5 sm:p-6">
 
@@ -281,41 +303,71 @@
 
       </div>
 
+
       <ul class="rules-list">
 
         <li>
-          <span>01</span>
+
+          <span>
+            01
+          </span>
+
           <p>
             Group stage followed by knockout rounds.
           </p>
+
         </li>
 
+
         <li>
-          <span>02</span>
+
+          <span>
+            02
+          </span>
+
           <p>
             3 points for a win and 1 point for a draw.
           </p>
+
         </li>
 
+
         <li>
-          <span>03</span>
+
+          <span>
+            03
+          </span>
+
           <p>
             Matches are played over 2 × 20 minutes.
           </p>
+
         </li>
 
+
         <li>
-          <span>04</span>
+
+          <span>
+            04
+          </span>
+
           <p>
             Top teams from each group progress to the next stage.
           </p>
+
         </li>
 
+
         <li>
-          <span>05</span>
+
+          <span>
+            05
+          </span>
+
           <p>
             Fair play is mandatory. Yellow and red cards are officially recorded.
           </p>
+
         </li>
 
       </ul>
@@ -323,9 +375,7 @@
     </section>
 
 
-    <!-- ===================================================
-         ACHIEVEMENTS
-    ==================================================== -->
+    <!-- ACHIEVEMENTS -->
 
     <section class="info-section rounded-2xl p-5 sm:p-6">
 
@@ -345,9 +395,15 @@
 
       </div>
 
+
       <p class="achievement-intro text-sm mb-5">
-        Follow the tournament's leading scorers, group leaders and standout performances as the competition develops.
+
+        Follow the tournament's leading scorers,
+        group leaders and standout performances
+        as the competition develops.
+
       </p>
+
 
       <div
         id="achievementsGrid"
@@ -444,36 +500,191 @@
   </main>
 
 
+  <!-- FLOATING INSTAGRAM -->
+
+  <a
+    href="https://instagram.com/YOUR_SACC_HANDLE"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="floating-social"
+    id="floatingSocial"
+    aria-label="Follow SACC on Instagram"
+  >
+
+    <span class="floating-social-icon">
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+
+        <rect
+          x="3"
+          y="3"
+          width="18"
+          height="18"
+          rx="5"
+          stroke="currentColor"
+          stroke-width="1.8"
+        />
+
+        <circle
+          cx="12"
+          cy="12"
+          r="4.2"
+          stroke="currentColor"
+          stroke-width="1.8"
+        />
+
+        <circle
+          cx="17.4"
+          cy="6.7"
+          r="1"
+          fill="currentColor"
+        />
+
+      </svg>
+
+    </span>
+
+
+    <span class="floating-social-text">
+
+      <small>
+        FOLLOW SACC
+      </small>
+
+      <strong>
+        Instagram ↗
+      </strong>
+
+    </span>
+
+  </a>
+
+
   <!-- FOOTER -->
 
   <footer class="site-footer">
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-9 text-center">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
-      <div class="footer-title">
+      <div class="footer-content">
 
-        <span class="footer-live-dot"></span>
 
-        LEX LIGA FUTSAL
+        <div class="footer-credit-block">
+
+          <span class="footer-label">
+            Created by
+          </span>
+
+          <strong class="footer-name">
+            Jatin Narula
+          </strong>
+
+        </div>
+
+
+        <div class="footer-credit-block">
+
+          <span class="footer-label">
+            Managed by
+          </span>
+
+          <strong class="footer-name">
+            Sports &amp; Cultural Committee
+          </strong>
+
+          <span class="footer-subtext">
+            (SACC), SLFJPS, NFSU
+          </span>
+
+        </div>
+
+
+        <a
+          href="https://instagram.com/YOUR_SACC_HANDLE"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="instagram-card"
+        >
+
+          <div class="instagram-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+
+              <rect
+                x="3"
+                y="3"
+                width="18"
+                height="18"
+                rx="5"
+                stroke="currentColor"
+                stroke-width="1.8"
+              />
+
+              <circle
+                cx="12"
+                cy="12"
+                r="4.2"
+                stroke="currentColor"
+                stroke-width="1.8"
+              />
+
+              <circle
+                cx="17.4"
+                cy="6.7"
+                r="1"
+                fill="currentColor"
+              />
+
+            </svg>
+
+          </div>
+
+
+          <div class="instagram-copy">
+
+            <span class="instagram-label">
+              Follow SACC
+            </span>
+
+            <span class="instagram-handle">
+              @YOUR_SACC_HANDLE
+            </span>
+
+          </div>
+
+
+          <span class="instagram-arrow">
+            ↗
+          </span>
+
+        </a>
 
       </div>
 
-      <p class="footer-line">
-        College Futsal Championship • Live scoring &amp; tournament centre
-      </p>
 
-      <div class="footer-rule"></div>
+      <div class="footer-bottom">
 
-      <p class="footer-credit">
-        Created by <strong>Jatin Narula</strong>
-      </p>
+        <span>
+          Lex Liga Futsal Championship 2026
+        </span>
 
-      <p class="footer-credit">
-        Managed by
-        <strong>
-          Sports &amp; Cultural Committee (SACC), SLFJPS, NFSU
-        </strong>
-      </p>
+        <span class="footer-dot">
+          •
+        </span>
+
+        <span>
+          Live scoring &amp; tournament centre
+        </span>
+
+      </div>
 
     </div>
 
