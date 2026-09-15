@@ -6,63 +6,117 @@
   <title>Lex Liga Futsal – Live Scores</title>
   <meta name="description" content="Live scores, fixtures and standings for Lex Liga Futsal college tournament" />
   <meta name="theme-color" content="#0b1120" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            primary: { DEFAULT: '#22c55e', dark: '#16a34a' }
+            primary: {
+              DEFAULT: '#22c55e',
+              dark: '#16a34a'
+            }
           }
         }
       }
     }
   </script>
+
   <link rel="stylesheet" href="css/styles.css" />
 </head>
+
 <body class="min-h-screen">
+
   <!-- Header -->
   <header class="sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-end">
       <div class="flex items-center gap-3">
-        <div class="logo-circle w-9 h-9 rounded-full flex items-center justify-center font-bold text-slate-900 text-sm">LL</div>
-        <div>
-          <h1 class="font-bold text-base leading-tight tracking-tight">Lex Liga</h1>
-          <p class="text-[10px] text-slate-400">Live Scores</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-3">
-        <button id="themeToggle" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-sm transition">☀️</button>
-        <a href="fixtures.html" class="text-sm font-semibold text-primary hover:text-green-400 transition">Fixtures</a>
+        <button
+          id="themeToggle"
+          class="theme-toggle p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-sm transition"
+          aria-label="Toggle theme"
+        >
+          ☀️
+        </button>
+
+        <a
+          href="fixtures.html"
+          class="text-sm font-semibold text-primary hover:text-green-400 transition"
+        >
+          Fixtures
+        </a>
       </div>
     </div>
   </header>
 
   <!-- ANIMATED HERO LOGO -->
   <div class="hero-logo">
-    <!-- Simple Futsal Ball SVG (vector) -->
     <div class="ball-icon">
-      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="32" cy="32" r="30" fill="#1e293b" stroke="#22c55e" stroke-width="2.5"/>
-        <circle cx="32" cy="32" r="10" fill="#22c55e" opacity="0.9"/>
-        <path d="M32 2 L38 18 L54 14 L42 28 L58 38 L40 40 L38 56 L32 42 L26 56 L24 40 L6 38 L22 28 L10 14 L26 18 Z" 
-              fill="none" stroke="#4ade80" stroke-width="1.5" opacity="0.7"/>
-        <circle cx="32" cy="32" r="4" fill="#0b1120"/>
+      <svg
+        viewBox="0 0 64 64"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="32"
+          cy="32"
+          r="30"
+          fill="#1e293b"
+          stroke="#22c55e"
+          stroke-width="2.5"
+        />
+
+        <circle
+          cx="32"
+          cy="32"
+          r="10"
+          fill="#22c55e"
+          opacity="0.9"
+        />
+
+        <path
+          d="M32 2 L38 18 L54 14 L42 28 L58 38 L40 40 L38 56 L32 42 L26 56 L24 40 L6 38 L22 28 L10 14 L26 18 Z"
+          fill="none"
+          stroke="#4ade80"
+          stroke-width="1.5"
+          opacity="0.7"
+        />
+
+        <circle
+          cx="32"
+          cy="32"
+          r="4"
+          fill="#0b1120"
+        />
       </svg>
     </div>
+
     <h1>LEX LIGA</h1>
     <p class="subtitle">Futsal Championship</p>
   </div>
 
   <main class="max-w-5xl mx-auto px-4 pb-6 space-y-8">
+
     <!-- Last updated -->
     <div class="flex items-center justify-between text-sm text-slate-400">
       <span id="lastUpdated">Loading...</span>
-      <button id="refreshBtn" class="text-primary hover:text-green-400 text-sm font-semibold transition">Refresh now</button>
+
+      <button
+        id="refreshBtn"
+        class="text-primary hover:text-green-400 text-sm font-semibold transition"
+      >
+        Refresh now
+      </button>
     </div>
 
     <!-- Live Matches -->
@@ -70,46 +124,81 @@
       <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
         Live Now
       </h2>
+
       <div id="liveMatches" class="space-y-4">
-        <p class="text-slate-400 text-sm">Loading live matches...</p>
+        <p class="text-slate-400 text-sm">
+          Loading live matches...
+        </p>
       </div>
     </section>
 
     <!-- Recent Results -->
     <section>
-      <h2 class="text-xl font-bold mb-4">Recent Results</h2>
+      <h2 class="text-xl font-bold mb-4">
+        Recent Results
+      </h2>
+
       <div id="recentResults" class="space-y-3">
-        <p class="text-slate-400 text-sm">Loading...</p>
+        <p class="text-slate-400 text-sm">
+          Loading...
+        </p>
       </div>
     </section>
 
     <!-- Quick Standings -->
     <section>
-      <h2 class="text-xl font-bold mb-4">Quick Standings</h2>
+      <h2 class="text-xl font-bold mb-4">
+        Quick Standings
+      </h2>
+
       <div id="quickStandings" class="grid md:grid-cols-2 gap-4">
-        <p class="text-slate-400 text-sm">Loading standings...</p>
+        <p class="text-slate-400 text-sm">
+          Loading standings...
+        </p>
       </div>
     </section>
 
     <!-- Top Scorers -->
     <section>
-      <h2 class="text-xl font-bold mb-4">Top Scorers</h2>
-      <div id="topScorers" class="rounded-xl overflow-hidden bg-slate-800/80 border border-slate-700/50">
-        <p class="p-4 text-slate-400 text-sm">Loading scorers...</p>
+      <h2 class="text-xl font-bold mb-4">
+        Top Scorers
+      </h2>
+
+      <div
+        id="topScorers"
+        class="top-scorers-card rounded-xl overflow-hidden"
+      >
+        <p class="p-4 text-slate-400 text-sm">
+          Loading scorers...
+        </p>
       </div>
     </section>
+
   </main>
 
-  <footer class="border-t border-slate-800/80 mt-10 py-6 text-center text-sm text-slate-500">
-    <div class="flex items-center justify-center gap-2 mb-1">
-      <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-      Lex Liga Futsal
+  <!-- Footer -->
+  <footer class="site-footer mt-10 py-7 text-center text-sm">
+    <div class="flex items-center justify-center gap-2 mb-2">
+      <span class="footer-live-dot"></span>
+      <span class="font-semibold">Lex Liga Futsal</span>
     </div>
-    College Tournament • Free live scoring
+
+    <p class="footer-line">
+      College Tournament • Free live scoring
+    </p>
+
+    <p class="footer-credit mt-2">
+      Created by <strong>Jatin Narula</strong>
+    </p>
+
+    <p class="footer-credit">
+      Managed by <strong>Sports &amp; Cultural Committee (SACC), SLFJPS, NFSU</strong>
+    </p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
   <script src="js/supabase-config.js"></script>
   <script src="js/app.js"></script>
+
 </body>
 </html>
