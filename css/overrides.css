@@ -1,0 +1,16 @@
+/* Dark only + hide footer bottom line + hide theme toggle */
+.theme-toggle,
+button#themeToggle,
+.footer-bottom {
+  display: none !important;
+}
+html {
+  color-scheme: dark;
+}
+body.light {
+  color: #f8fafc !important;
+  background:
+    radial-gradient(ellipse 80% 45% at 50% -10%, rgba(34, 197, 94, 0.13), transparent 65%),
+    radial-gradient(ellipse 50% 35% at 100% 100%, rgba(59, 130, 246, 0.06), transparent 70%),
+    #0b1120 !important;
+}
