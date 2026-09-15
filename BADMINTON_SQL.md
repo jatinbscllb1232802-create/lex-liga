@@ -1,4 +1,6 @@
-# Badminton setup – run this in Supabase SQL Editor
+# Badminton setup – run ALL of this in Supabase SQL Editor
+
+## 1. Create table + policies
 
 ```sql
 create table if not exists badminton_matches (
@@ -22,26 +24,38 @@ create table if not exists badminton_matches (
 
 alter table badminton_matches enable row level security;
 
+drop policy if exists "Public read badminton" on badminton_matches;
+drop policy if exists "Public insert badminton" on badminton_matches;
+drop policy if exists "Public update badminton" on badminton_matches;
+drop policy if exists "Public delete badminton" on badminton_matches;
+
 create policy "Public read badminton" on badminton_matches for select using (true);
 create policy "Public insert badminton" on badminton_matches for insert with check (true);
 create policy "Public update badminton" on badminton_matches for update using (true);
 create policy "Public delete badminton" on badminton_matches for delete using (true);
 ```
 
-## Admin passwords
+## 2. Dummy matches (optional – for testing)
 
-| Sport     | Password        |
-|-----------|-----------------|
-| Futsal    | `lexliga2026`   |
-| Badminton | `badminton2026` |
+```sql
+insert into badminton_matches (player1, player2, category, status, current_game, games_p1, games_p2, g1_p1, g1_p2, g2_p1, g2_p2, g3_p1, g3_p2)
+values
+  ('Aarav Sharma', 'Rohan Patel', 'Men''s Singles', 'live', 2, 1, 0, 21, 18, 11, 9, 0, 0),
+  ('Priya Mehta', 'Ananya Singh', 'Women''s Singles', 'not_started', 1, 0, 0, 0, 0, 0, 0, 0, 0),
+  ('Vikram & Kabir', 'Dev & Arjun', 'Men''s Doubles', 'finished', 3, 2, 1, 21, 15, 19, 21, 21, 17),
+  ('Sneha Kapoor', 'Isha Reddy', 'Women''s Singles', 'live', 1, 0, 0, 14, 12, 0, 0, 0, 0),
+  ('NFSU A', 'Campus United', 'Mixed Doubles', 'not_started', 1, 0, 0, 0, 0, 0, 0, 0, 0);
+```
 
-## Intro video on Home
+## Admin
 
-1. Upload your video to the repo as: `assets/lexliga-intro.mp4`
-2. Tell me when uploaded – I will wire the full-screen intro with ✕ dismiss.
+- URL: https://jatinbscllb1232802-create.github.io/lex-liga/admin.html
+- Sport: **Badminton**
+- Password: `badminton2026`
 
-## Pages
+## How scoring works
 
-- Badminton live: https://jatinbscllb1232802-create.github.io/lex-liga/badminton.html
-- Admin: https://jatinbscllb1232802-create.github.io/lex-liga/admin.html  
-  → choose **Badminton** → password `badminton2026`
+1. **+1** adds a point in the **current game**
+2. When a game is done (e.g. 21–18), tap **End Game → Next**
+3. Games won update automatically (first to 2 games wins the match)
+4. Set **LIVE** so it shows on the public badminton page
