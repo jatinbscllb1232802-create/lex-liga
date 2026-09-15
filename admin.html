@@ -5,36 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>Admin – Lex Liga</title>
   <meta name="robots" content="noindex, nofollow" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config = { darkMode: 'class' }</script>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css?v=2" />
   <style>
     .big-btn { min-height: 52px; font-size: 1.25rem; font-weight: 700; }
     .status-btn { min-height: 44px; font-size: 0.9rem; font-weight: 600; }
-    .sport-pick {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-    }
+    .sport-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem; }
     .sport-pick button {
-      padding: 1rem;
-      border-radius: 1rem;
-      border: 2px solid #334155;
-      background: #0f172a;
-      font-weight: 700;
-      color: #94a3b8;
-      transition: all 0.15s;
-      cursor: pointer;
+      padding: 1rem; border-radius: 1rem; border: 2px solid #334155;
+      background: #0f172a; font-weight: 700; color: #94a3b8; cursor: pointer;
     }
     .sport-pick button.active {
       border-color: #22c55e !important;
-      background: rgba(34, 197, 94, 0.25) !important;
+      background: rgba(34,197,94,0.3) !important;
       color: #4ade80 !important;
-      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.5), 0 0 24px rgba(34, 197, 94, 0.2);
     }
+    .hidden { display: none !important; }
   </style>
+  <script>
+    // Define functions FIRST before any buttons use them
+    window.__sport = 'futsal';
+    function setSport(s) {
+      window.__sport = s;
+      var f = document.getElementById('pickFutsal');
+      var b = document.getElementById('pickBadminton');
+      if (s === 'futsal') { f.classList.add('active'); b.classList.remove('active'); }
+      else { b.classList.add('active'); f.classList.remove('active'); }
+    }
+    function tryLogin() {
+      var pwd = document.getElementById('passwordInput').value.trim();
+      var sport = window.__sport || 'futsal';
+      var ok = (sport === 'badminton' && pwd === 'badminton2026') || (sport === 'futsal' && pwd === 'lexliga2026');
+      if (ok) {
+        sessionStorage.setItem('lexAdmin', '1');
+        sessionStorage.setItem('lexAdminSport', sport);
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('adminPanelFutsal').classList.add('hidden');
+        document.getElementById('adminPanelBadminton').classList.add('hidden');
+        if (sport === 'badminton') {
+          document.getElementById('adminPanelBadminton').classList.remove('hidden');
+          setTimeout(function(){ if (window.loadBadmintonAdmin) loadBadmintonAdmin(); }, 200);
+        } else {
+          document.getElementById('adminPanelFutsal').classList.remove('hidden');
+          setTimeout(function(){ if (window.loadAdminData) loadAdminData(); }, 200);
+        }
+      } else {
+        document.getElementById('loginError').classList.remove('hidden');
+        document.getElementById('passwordInput').value = '';
+      }
+    }
+    function doLogout() {
+      sessionStorage.clear();
+      location.reload();
+    }
+  </script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen">
 
@@ -44,19 +71,21 @@
       <p class="text-sm text-slate-400 text-center mb-5">Choose sport, then enter password</p>
 
       <div class="sport-pick">
-        <button type="button" id="pickFutsal" class="active">⚽ Futsal</button>
-        <button type="button" id="pickBadminton">🏸 Badminton</button>
+        <button type="button" id="pickFutsal" class="active" onclick="setSport('futsal')">⚽ Futsal</button>
+        <button type="button" id="pickBadminton" onclick="setSport('badminton')">🏸 Badminton</button>
       </div>
 
-      <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password"
-        class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-4 mb-4 text-lg focus:outline-none focus:border-green-500" />
-      <button id="loginBtn" type="button" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">
+      <input id="passwordInput" type="password" placeholder="Password"
+        class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-4 mb-4 text-lg"
+        onkeydown="if(event.key==='Enter')tryLogin()" />
+      <button type="button" id="loginBtn" onclick="tryLogin()"
+        class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">
         Unlock
       </button>
       <p id="loginError" class="text-red-400 text-sm mt-3 text-center hidden">Wrong password for selected sport</p>
-      <p class="text-xs text-slate-500 text-center mt-4 leading-relaxed">
-        Futsal: <span class="text-slate-300">lexliga2026</span><br>
-        Badminton: <span class="text-slate-300">badminton2026</span>
+      <p class="text-xs text-slate-500 text-center mt-4">
+        Futsal: <b class="text-slate-300">lexliga2026</b><br>
+        Badminton: <b class="text-slate-300">badminton2026</b>
       </p>
     </div>
   </div>
@@ -70,14 +99,14 @@
         </div>
         <div class="flex gap-4 items-center">
           <a href="index.html" class="text-sm text-green-400">Live Site</a>
-          <button id="logoutBtn" type="button" class="text-sm text-slate-400">Logout</button>
+          <button type="button" onclick="doLogout()" class="text-sm text-slate-400">Logout</button>
         </div>
       </div>
     </header>
     <main class="max-w-lg mx-auto px-4 py-5 space-y-5 pb-20">
       <div class="flex items-center justify-between">
         <h2 class="font-bold text-lg">Matches</h2>
-        <button id="refreshAdmin" type="button" class="text-sm text-green-400 font-medium">Refresh</button>
+        <button type="button" id="refreshAdmin" class="text-sm text-green-400 font-medium">Refresh</button>
       </div>
       <div id="adminMatches" class="space-y-5"><p class="text-slate-400 text-sm">Loading...</p></div>
       <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 mt-8">
@@ -88,7 +117,7 @@
         <select id="newAway" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-3 text-base"></select>
         <label class="text-xs text-slate-400 mb-1 block">Group (optional)</label>
         <input id="newGroup" type="text" placeholder="e.g. Group A" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-4 text-base" />
-        <button id="addMatchBtn" type="button" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">Add Match</button>
+        <button type="button" id="addMatchBtn" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">Add Match</button>
       </div>
     </main>
   </div>
@@ -102,14 +131,14 @@
         </div>
         <div class="flex gap-4 items-center">
           <a href="badminton.html" class="text-sm text-green-400">Live Site</a>
-          <button id="logoutBtnBadminton" type="button" class="text-sm text-slate-400">Logout</button>
+          <button type="button" onclick="doLogout()" class="text-sm text-slate-400">Logout</button>
         </div>
       </div>
     </header>
     <main class="max-w-lg mx-auto px-4 py-5 space-y-5 pb-20">
       <div class="flex items-center justify-between">
         <h2 class="font-bold text-lg">Matches</h2>
-        <button id="refreshBadminton" type="button" class="text-sm text-green-400 font-medium">Refresh</button>
+        <button type="button" id="refreshBadminton" class="text-sm text-green-400 font-medium">Refresh</button>
       </div>
       <div id="adminBadmintonMatches" class="space-y-5"><p class="text-slate-400 text-sm">Loading...</p></div>
       <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 mt-8">
@@ -120,94 +149,33 @@
         <input id="bmP2" type="text" placeholder="Name" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-3 text-base" />
         <label class="text-xs text-slate-400 mb-1 block">Category (optional)</label>
         <input id="bmCategory" type="text" placeholder="e.g. Men's Singles" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 mb-4 text-base" />
-        <button id="addBadmintonMatchBtn" type="button" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">Add Match</button>
+        <button type="button" id="addBadmintonMatchBtn" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-bold py-4 rounded-xl text-lg">Add Match</button>
       </div>
     </main>
   </div>
 
-  <!-- LOGIN LOGIC INLINE (must work even if external JS fails) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js?v=2"></script>
+  <script src="js/admin.js?v=2"></script>
+  <script src="js/admin-badminton.js?v=2"></script>
   <script>
-    window.__selectedSport = 'futsal';
-
-    function setSport(sport) {
-      window.__selectedSport = sport;
-      var f = document.getElementById('pickFutsal');
-      var b = document.getElementById('pickBadminton');
-      if (f && b) {
-        if (sport === 'futsal') {
-          f.className = 'active';
-          b.className = '';
-        } else {
-          b.className = 'active';
-          f.className = '';
-        }
-      }
-    }
-
-    function showPanel(sport) {
-      var login = document.getElementById('loginScreen');
-      var futsal = document.getElementById('adminPanelFutsal');
-      var badminton = document.getElementById('adminPanelBadminton');
-      if (login) login.classList.add('hidden');
-      if (futsal) futsal.classList.add('hidden');
-      if (badminton) badminton.classList.add('hidden');
-
-      if (sport === 'badminton') {
-        if (badminton) badminton.classList.remove('hidden');
-        if (typeof window.loadBadmintonAdmin === 'function') window.loadBadmintonAdmin();
-      } else {
-        if (futsal) futsal.classList.remove('hidden');
-        if (typeof window.loadAdminData === 'function') window.loadAdminData();
-      }
-    }
-
-    function tryLogin() {
-      var input = document.getElementById('passwordInput');
-      var err = document.getElementById('loginError');
-      var pwd = (input && input.value ? input.value : '').trim();
-      var sport = window.__selectedSport || 'futsal';
-      var expected = sport === 'badminton' ? 'badminton2026' : 'lexliga2026';
-
-      if (pwd === expected) {
-        sessionStorage.setItem('lexAdmin', 'true');
-        sessionStorage.setItem('lexAdminSport', sport);
-        if (err) err.classList.add('hidden');
-        showPanel(sport);
-      } else {
-        if (err) err.classList.remove('hidden');
-        if (input) {
-          input.value = '';
-          input.focus();
-        }
-      }
-    }
-
-    function doLogout() {
-      sessionStorage.removeItem('lexAdmin');
-      sessionStorage.removeItem('lexAdminSport');
-      location.reload();
-    }
-
-    document.getElementById('pickFutsal').onclick = function () { setSport('futsal'); };
-    document.getElementById('pickBadminton').onclick = function () { setSport('badminton'); };
-    document.getElementById('loginBtn').onclick = tryLogin;
-    document.getElementById('passwordInput').onkeydown = function (e) {
-      if (e.key === 'Enter') tryLogin();
-    };
-    document.getElementById('logoutBtn').onclick = doLogout;
-    document.getElementById('logoutBtnBadminton').onclick = doLogout;
-
-    // Restore session after other scripts load
-    if (sessionStorage.getItem('lexAdmin') === 'true') {
+    // Auto-restore session
+    if (sessionStorage.getItem('lexAdmin') === '1') {
       var s = sessionStorage.getItem('lexAdminSport') || 'futsal';
       setSport(s);
-      setTimeout(function () { showPanel(s); }, 100);
+      setTimeout(function(){ tryLogin = function(){}; show = true;
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('adminPanelFutsal').classList.add('hidden');
+        document.getElementById('adminPanelBadminton').classList.add('hidden');
+        if (s === 'badminton') {
+          document.getElementById('adminPanelBadminton').classList.remove('hidden');
+          if (window.loadBadmintonAdmin) loadBadmintonAdmin();
+        } else {
+          document.getElementById('adminPanelFutsal').classList.remove('hidden');
+          if (window.loadAdminData) loadAdminData();
+        }
+      }, 300);
     }
   </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
-  <script src="js/supabase-config.js"></script>
-  <script src="js/admin.js"></script>
-  <script src="js/admin-badminton.js"></script>
 </body>
 </html>
