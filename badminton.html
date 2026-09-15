@@ -17,17 +17,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 240px;
+      min-height: 260px;
     }
     .bm-hero-art img {
-      width: min(72vw, 300px);
+      width: min(78vw, 340px);
       height: auto;
-      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.45));
-      animation: bm-float 5s ease-in-out infinite;
+      /* public-domain art is dark on light → invert for dark theme */
+      filter: brightness(0) invert(1) drop-shadow(0 18px 36px rgba(0,0,0,0.5));
+      animation: bm-float 5.5s ease-in-out infinite;
     }
     @keyframes bm-float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      50% { transform: translateY(-12px); }
     }
   </style>
 </head>
@@ -60,7 +61,14 @@
         <div class="hero-meta"><span>BEST OF 3</span><span>•</span><span>TO 21</span><span>•</span><span>WIN BY 2</span></div>
       </div>
       <div class="bm-hero-art" aria-hidden="true">
-        <img src="assets/badminton-player.svg" alt="" width="300" height="328" />
+        <!-- Public domain (CC0) OpenClipart / FreeSVG -->
+        <img
+          src="https://openclipart.org/image/800px/svg_to_png/168960/badmitten.png"
+          alt=""
+          width="340"
+          height="275"
+          loading="eager"
+        />
       </div>
     </div>
   </section>
