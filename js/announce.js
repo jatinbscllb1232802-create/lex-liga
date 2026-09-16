@@ -1,11 +1,11 @@
-/* Lex Liga – scrolling announcement bar */
+/* Lex Liga – full-width scrolling announcement bar */
 (function () {
   function ensureStyles() {
     if (document.getElementById('lexExtrasCss')) return;
     var l = document.createElement('link');
     l.id = 'lexExtrasCss';
     l.rel = 'stylesheet';
-    l.href = 'css/extras.css';
+    l.href = 'css/extras.css?v=7';
     document.head.appendChild(l);
   }
 
@@ -15,7 +15,6 @@
     bar.id = 'announceBar';
     bar.className = 'announce-bar';
     bar.setAttribute('aria-live', 'polite');
-    // Two identical halves for seamless CSS loop (translateX -50%)
     bar.innerHTML =
       '<div class="announce-track" id="announceTrack">' +
       '<span class="announce-text" id="announceText"></span>' +
@@ -24,6 +23,18 @@
     bar.style.display = 'none';
     document.body.insertBefore(bar, document.body.firstChild);
     return bar;
+  }
+
+  /** Make each half at least as wide as the viewport so the strip is always full */
+  function padToViewport(el, baseText) {
+    el.textContent = baseText;
+    var guard = 0;
+    // Wait one frame so layout can measure
+    var minW = Math.max(window.innerWidth || 800, 600);
+    while (el.offsetWidth < minW && guard < 20) {
+      el.textContent += baseText;
+      guard++;
+    }
   }
 
   async function loadAnnounce() {
@@ -35,7 +46,6 @@
     if (!sb || typeof sb.from !== 'function') return;
 
     try {
-      // All active announcements, oldest first so they read in order
       var res = await sb
         .from('announcements')
         .select('id,message,active,created_at')
@@ -46,7 +56,6 @@
         return r.message && String(r.message).trim();
       });
 
-      // Fallback single-row schema
       if (!rows.length) {
         var single = await sb.from('announcements').select('message,active').eq('id', 1).maybeSingle();
         if (single.data && single.data.active && single.data.message) {
@@ -60,22 +69,22 @@
         return;
       }
 
-      // Join multiple messages once: Msg1  •  Msg2  •  Msg3
       var sequence = rows
         .map(function (r) { return String(r.message).trim(); })
         .join('   •   ');
       var unit = '   •   ' + sequence + '   •   ';
 
-      // Exactly two copies in the track (for seamless loop) — no 3x repeat of same text
-      t1.textContent = unit;
-      t2.textContent = unit;
       bar.style.display = 'flex';
       document.body.classList.add('has-announce');
 
-      // Speed scales slightly with content length
+      // Fill each half to ≥ viewport width, then mirror for seamless loop
+      padToViewport(t1, unit);
+      t2.textContent = t1.textContent;
+
       var track = document.getElementById('announceTrack');
       if (track) {
-        var secs = Math.max(12, Math.min(40, unit.length * 0.12));
+        // Longer content → slightly longer duration so speed stays readable
+        var secs = Math.max(18, Math.min(45, (t1.textContent.length / 12)));
         track.style.animationDuration = secs + 's';
       }
     } catch (e) {
@@ -86,6 +95,11 @@
   function start() {
     loadAnnounce();
     setInterval(loadAnnounce, 20000);
+    window.addEventListener('resize', function () {
+      // Re-pad on big resize so laptop width stays filled
+      clearTimeout(window.__lexAnnResize);
+      window.__lexAnnResize = setTimeout(loadAnnounce, 300);
+    });
   }
 
   if (document.readyState === 'loading') {
