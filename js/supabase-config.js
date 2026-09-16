@@ -37,3 +37,28 @@ window.ADMIN_PASSWORDS = {
 };
 
 const ADMIN_PASSWORD = window.ADMIN_PASSWORDS.futsal;
+
+/* Load announce bar + sound/alerts on every public page (skip admin) */
+(function () {
+  var path = (location.pathname || '').toLowerCase();
+  if (path.indexOf('admin') !== -1) return;
+
+  function addScript(src) {
+    if (document.querySelector('script[src="' + src + '"]')) return;
+    var s = document.createElement('script');
+    s.src = src;
+    s.defer = true;
+    document.head.appendChild(s);
+  }
+  function addCss(href) {
+    if (document.querySelector('link[href="' + href + '"]')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = href;
+    document.head.appendChild(l);
+  }
+
+  addCss('css/extras.css');
+  addScript('js/announce.js');
+  addScript('js/live-extras.js');
+})();
