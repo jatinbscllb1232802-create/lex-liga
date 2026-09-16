@@ -1,4 +1,4 @@
-/* Lex Liga – scrolling announcement bar (all public pages) */
+/* Lex Liga – scrolling announcement bar */
 (function () {
   function ensureStyles() {
     if (document.getElementById('lexExtrasCss')) return;
@@ -15,6 +15,7 @@
     bar.id = 'announceBar';
     bar.className = 'announce-bar';
     bar.setAttribute('aria-live', 'polite');
+    // Two identical halves for seamless CSS loop (translateX -50%)
     bar.innerHTML =
       '<div class="announce-track" id="announceTrack">' +
       '<span class="announce-text" id="announceText"></span>' +
@@ -34,33 +35,48 @@
     if (!sb || typeof sb.from !== 'function') return;
 
     try {
+      // All active announcements, oldest first so they read in order
       var res = await sb
         .from('announcements')
         .select('id,message,active,created_at')
         .eq('active', true)
-        .order('created_at', { ascending: false })
-        .limit(5);
+        .order('created_at', { ascending: true });
 
-      var rows = res.data || [];
-      var row = rows[0] || null;
+      var rows = (res.data || []).filter(function (r) {
+        return r.message && String(r.message).trim();
+      });
 
-      // Fallback single-row schema (id = 1)
-      if (!row) {
+      // Fallback single-row schema
+      if (!rows.length) {
         var single = await sb.from('announcements').select('message,active').eq('id', 1).maybeSingle();
-        if (single.data && single.data.active && single.data.message) row = single.data;
+        if (single.data && single.data.active && single.data.message) {
+          rows = [single.data];
+        }
       }
 
-      if (row && row.message && String(row.message).trim()) {
-        var msg = String(row.message).trim();
-        var unit = '   •   ' + msg + '   •   ';
-        while (unit.length < 100) unit += msg + '   •   ';
-        t1.textContent = unit;
-        t2.textContent = unit;
-        bar.style.display = 'flex';
-        document.body.classList.add('has-announce');
-      } else {
+      if (!rows.length) {
         bar.style.display = 'none';
         document.body.classList.remove('has-announce');
+        return;
+      }
+
+      // Join multiple messages once: Msg1  •  Msg2  •  Msg3
+      var sequence = rows
+        .map(function (r) { return String(r.message).trim(); })
+        .join('   •   ');
+      var unit = '   •   ' + sequence + '   •   ';
+
+      // Exactly two copies in the track (for seamless loop) — no 3x repeat of same text
+      t1.textContent = unit;
+      t2.textContent = unit;
+      bar.style.display = 'flex';
+      document.body.classList.add('has-announce');
+
+      // Speed scales slightly with content length
+      var track = document.getElementById('announceTrack');
+      if (track) {
+        var secs = Math.max(12, Math.min(40, unit.length * 0.12));
+        track.style.animationDuration = secs + 's';
       }
     } catch (e) {
       console.warn('announce', e);
