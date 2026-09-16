@@ -1,28 +1,31 @@
 # Announcements table (run once in Supabase SQL editor)
 
+Supports **history + delete** in admin.
+
 ```sql
-create table if not exists public.announcements (
-  id int primary key default 1 check (id = 1),
+-- Drop old single-row constraint if you already created the first version
+drop table if exists public.announcements cascade;
+
+create table public.announcements (
+  id bigserial primary key,
   message text not null default '',
   active boolean not null default true,
+  created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
 
-insert into public.announcements (id, message, active)
-values (1, 'Welcome to Lex Liga 2026 — follow live scores here!', true)
-on conflict (id) do nothing;
+insert into public.announcements (message, active)
+values ('Welcome to Lex Liga 2026!', true);
 
 alter table public.announcements enable row level security;
 
--- Public read
 drop policy if exists "announcements_read" on public.announcements;
 create policy "announcements_read" on public.announcements
   for select using (true);
 
--- Public update/insert (same model as your score admin — protect URL with password page)
 drop policy if exists "announcements_write" on public.announcements;
 create policy "announcements_write" on public.announcements
   for all using (true) with check (true);
 ```
 
-Then open: **admin-announce.html** (password `lexliga2026`)
+Admin: open **admin.html** → choose **📢 Announce** → password `lexliga2026`
