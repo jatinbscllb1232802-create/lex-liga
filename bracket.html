@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/extras.css" />
   <link rel="manifest" href="manifest.json" />
   <style>
     .bracket-round { min-width: 200px; }
@@ -26,23 +27,13 @@
   </style>
 </head>
 <body class="min-h-screen">
-  <header class="site-header sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-      <a href="index.html" class="site-wordmark">LEX <span>LIGA</span></a>
-      <nav class="site-nav">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="futsal.html" class="nav-link">Futsal</a>
-        <a href="badminton.html" class="nav-link">Badminton</a>
-        <a href="bracket.html" class="nav-link" style="color:#4ade80">Bracket</a>
-      </nav>
-    </div>
-  </header>
+  <header class="site-header sticky top-0 z-50"></header>
 
   <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10">
     <div>
       <p class="section-eyebrow">KNOCKOUT</p>
       <h1 class="text-2xl font-extrabold">Tournament Bracket</h1>
-      <p class="text-slate-400 text-sm mt-1">Matches tagged with stage: QF, SF, Final (in group_name / category).</p>
+      <p class="text-slate-400 text-sm mt-1">Demo data shown until real QF / SF / Final matches are added in admin.</p>
     </div>
 
     <section>
@@ -56,12 +47,19 @@
     </section>
   </main>
 
+  <footer class="site-footer">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      <div class="footer-content">
+        <div class="footer-credit-block"><span class="footer-label">Created by</span><strong class="footer-name">Jatin Narula</strong></div>
+        <div class="footer-credit-block"><span class="footer-label">Managed by</span><strong class="footer-name">Sports & Cultural Committee</strong><span class="footer-subtext">(SACC), SLFJPS, NFSU</span></div>
+      </div>
+    </div>
+  </footer>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/announce.js"></script>
   <script>
     var sb = window.supabaseClient;
-    var STAGES = ['QF', 'Quarter', 'SF', 'Semi', 'Final', 'FINAL'];
 
     function stageOf(text) {
       var t = (text || '').toUpperCase();
@@ -78,41 +76,12 @@
       return '<div class="' + cls + '">' + html + '</div>';
     }
 
-    async function load() {
-      if (!sb) return;
-      var teams = {};
-      try {
-        var tr = await sb.from('teams').select('*');
-        (tr.data || []).forEach(function (t) { teams[t.id] = t.name; });
-      } catch (e) {}
-
-      // Futsal
-      var fr = await sb.from('matches').select('*');
-      var fm = (fr.data || []).filter(function (m) { return stageOf(m.group_name); });
-      renderRounds('bracketFutsal', fm, function (m) {
-        var h = teams[m.home_team_id] || 'TBD';
-        var a = teams[m.away_team_id] || 'TBD';
-        return '<div class="text-xs text-slate-500 mb-1">' + (m.group_name || '') + '</div>' +
-          '<div class="font-semibold text-sm">' + h + ' <span class="text-slate-400">' + (m.home_score ?? 0) + '</span></div>' +
-          '<div class="font-semibold text-sm">' + a + ' <span class="text-slate-400">' + (m.away_score ?? 0) + '</span></div>';
-      });
-
-      // Badminton
-      var br = await sb.from('badminton_matches').select('*');
-      var bm = (br.data || []).filter(function (m) { return stageOf(m.category); });
-      renderRounds('bracketBm', bm, function (m) {
-        return '<div class="text-xs text-slate-500 mb-1">' + (m.category || '') + '</div>' +
-          '<div class="font-semibold text-sm">' + (m.player1 || 'TBD') + ' <span class="text-slate-400">' + (m.games_p1 || 0) + '</span></div>' +
-          '<div class="font-semibold text-sm">' + (m.player2 || 'TBD') + ' <span class="text-slate-400">' + (m.games_p2 || 0) + '</span></div>';
-      });
-    }
-
     function renderRounds(elId, matches, renderOne) {
       var el = document.getElementById(elId);
       var order = ['Quarter-finals', 'Semi-finals', 'Final'];
       var by = {};
       matches.forEach(function (m) {
-        var s = stageOf(m.group_name || m.category);
+        var s = stageOf(m.group_name || m.category || m.stage);
         if (!s) return;
         if (!by[s]) by[s] = [];
         by[s].push(m);
@@ -124,7 +93,92 @@
           list.map(function (m) { return card(renderOne(m), m.status); }).join('') +
           '</div>';
       }).join('');
-      el.innerHTML = html || '<p class="text-slate-400 text-sm">No knockout matches yet. Set group/category to QF, SF, or Final.</p>';
+      el.innerHTML = html || '<p class="text-slate-400 text-sm">No knockout matches yet.</p>';
+    }
+
+    var DEMO_FUTSAL = [
+      { stage: 'QF', group_name: 'QF 1', status: 'finished', home: 'Law Lions', away: 'Code Crushers', home_score: 4, away_score: 2 },
+      { stage: 'QF', group_name: 'QF 2', status: 'finished', home: 'Statute FC', away: 'Bailiff Ballers', home_score: 1, away_score: 3 },
+      { stage: 'QF', group_name: 'QF 3', status: 'finished', home: 'Moot Masters', away: 'Gavel United', home_score: 5, away_score: 5 },
+      { stage: 'QF', group_name: 'QF 4', status: 'finished', home: 'Section 11', away: 'Lex FC', home_score: 2, away_score: 0 },
+      { stage: 'SF', group_name: 'SF 1', status: 'live', home: 'Law Lions', away: 'Bailiff Ballers', home_score: 2, away_score: 2 },
+      { stage: 'SF', group_name: 'SF 2', status: 'not_started', home: 'Moot Masters', away: 'Section 11', home_score: 0, away_score: 0 },
+      { stage: 'Final', group_name: 'Final', status: 'not_started', home: 'TBD', away: 'TBD', home_score: 0, away_score: 0 }
+    ];
+
+    var DEMO_BM = [
+      { category: 'QF · MS', status: 'finished', player1: 'Aarav Sharma', player2: 'Rohan Patel', games_p1: 2, games_p2: 0 },
+      { category: 'QF · MS', status: 'finished', player1: 'Vikram Singh', player2: 'Kabir Mehta', games_p1: 2, games_p2: 1 },
+      { category: 'SF · MS', status: 'live', player1: 'Aarav Sharma', player2: 'Vikram Singh', games_p1: 1, games_p2: 1 },
+      { category: 'Final · MS', status: 'not_started', player1: 'TBD', player2: 'TBD', games_p1: 0, games_p2: 0 },
+      { category: 'SF · WS', status: 'finished', player1: 'Priya Mehta', player2: 'Ananya Singh', games_p1: 2, games_p2: 1 },
+      { category: 'Final · WS', status: 'not_started', player1: 'Priya Mehta', player2: 'TBD', games_p1: 0, games_p2: 0 }
+    ];
+
+    function showDemo() {
+      renderRounds('bracketFutsal', DEMO_FUTSAL, function (m) {
+        return '<div class="text-xs text-slate-500 mb-1">' + (m.group_name || '') + '</div>' +
+          '<div class="font-semibold text-sm">' + m.home + ' <span class="text-slate-400">' + m.home_score + '</span></div>' +
+          '<div class="font-semibold text-sm">' + m.away + ' <span class="text-slate-400">' + m.away_score + '</span></div>';
+      });
+      renderRounds('bracketBm', DEMO_BM, function (m) {
+        return '<div class="text-xs text-slate-500 mb-1">' + (m.category || '') + '</div>' +
+          '<div class="font-semibold text-sm">' + m.player1 + ' <span class="text-slate-400">' + m.games_p1 + '</span></div>' +
+          '<div class="font-semibold text-sm">' + m.player2 + ' <span class="text-slate-400">' + m.games_p2 + '</span></div>';
+      });
+    }
+
+    async function load() {
+      if (!sb || typeof sb.from !== 'function') {
+        showDemo();
+        return;
+      }
+      var teams = {};
+      try {
+        var tr = await sb.from('teams').select('*');
+        (tr.data || []).forEach(function (t) { teams[t.id] = t.name; });
+      } catch (e) {}
+
+      var fr = await sb.from('matches').select('*');
+      var fm = (fr.data || []).filter(function (m) { return stageOf(m.group_name); });
+
+      var br = await sb.from('badminton_matches').select('*');
+      var bm = (br.data || []).filter(function (m) { return stageOf(m.category); });
+
+      if (!fm.length && !bm.length) {
+        showDemo();
+        return;
+      }
+
+      if (fm.length) {
+        renderRounds('bracketFutsal', fm, function (m) {
+          var h = teams[m.home_team_id] || 'TBD';
+          var a = teams[m.away_team_id] || 'TBD';
+          return '<div class="text-xs text-slate-500 mb-1">' + (m.group_name || '') + '</div>' +
+            '<div class="font-semibold text-sm">' + h + ' <span class="text-slate-400">' + (m.home_score ?? 0) + '</span></div>' +
+            '<div class="font-semibold text-sm">' + a + ' <span class="text-slate-400">' + (m.away_score ?? 0) + '</span></div>';
+        });
+      } else {
+        renderRounds('bracketFutsal', DEMO_FUTSAL, function (m) {
+          return '<div class="text-xs text-slate-500 mb-1">' + (m.group_name || '') + ' · demo</div>' +
+            '<div class="font-semibold text-sm">' + m.home + ' <span class="text-slate-400">' + m.home_score + '</span></div>' +
+            '<div class="font-semibold text-sm">' + m.away + ' <span class="text-slate-400">' + m.away_score + '</span></div>';
+        });
+      }
+
+      if (bm.length) {
+        renderRounds('bracketBm', bm, function (m) {
+          return '<div class="text-xs text-slate-500 mb-1">' + (m.category || '') + '</div>' +
+            '<div class="font-semibold text-sm">' + (m.player1 || 'TBD') + ' <span class="text-slate-400">' + (m.games_p1 || 0) + '</span></div>' +
+            '<div class="font-semibold text-sm">' + (m.player2 || 'TBD') + ' <span class="text-slate-400">' + (m.games_p2 || 0) + '</span></div>';
+        });
+      } else {
+        renderRounds('bracketBm', DEMO_BM, function (m) {
+          return '<div class="text-xs text-slate-500 mb-1">' + (m.category || '') + ' · demo</div>' +
+            '<div class="font-semibold text-sm">' + m.player1 + ' <span class="text-slate-400">' + m.games_p1 + '</span></div>' +
+            '<div class="font-semibold text-sm">' + m.player2 + ' <span class="text-slate-400">' + m.games_p2 + '</span></div>';
+        });
+      }
     }
 
     load();
