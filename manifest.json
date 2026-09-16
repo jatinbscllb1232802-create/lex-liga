@@ -1,0 +1,19 @@
+{
+  "name": "Lex Liga 2026",
+  "short_name": "Lex Liga",
+  "description": "Live Futsal and Badminton scores — SLFJPS NFSU",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1120",
+  "theme_color": "#0b1120",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/lexliga_logo_transparent.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
