@@ -1,61 +1,86 @@
-/* Lex Liga – mobile hamburger nav */
+/* Lex Liga – uniform navbar + mobile hamburger on every page */
 (function () {
   var LINKS = [
-    { href: 'index.html', label: 'Home' },
-    { href: 'futsal.html', label: '⚽ Futsal' },
-    { href: 'badminton.html', label: '🏸 Badminton' },
-    { href: 'bracket.html', label: 'Bracket' },
-    { href: 'gallery.html', label: 'Photos' },
-    { href: 'fixtures.html', label: 'Fixtures' }
+    { href: 'index.html', label: 'Home', id: 'home' },
+    { href: 'futsal.html', label: '⚽ Futsal', id: 'futsal', sport: true },
+    { href: 'badminton.html', label: '🏸 Badminton', id: 'badminton', sport: true },
+    { href: 'bracket.html', label: 'Bracket', id: 'bracket' },
+    { href: 'gallery.html', label: 'Photos', id: 'gallery' },
+    { href: 'fixtures.html', label: 'Fixtures', id: 'fixtures' }
   ];
 
   function currentFile() {
     var p = (location.pathname || '').split('/').pop() || 'index.html';
-    if (!p || p === '') return 'index.html';
+    if (!p || p === '' || p === '/') return 'index.html';
     return p;
   }
 
-  function build() {
+  function buildUniformNav() {
     var header = document.querySelector('.site-header');
-    if (!header || document.getElementById('navBurger')) return;
+    if (!header) return;
 
-    var nav = header.querySelector('.site-nav');
-    if (!nav) return;
+    var cur = currentFile();
 
-    var burger = document.createElement('button');
-    burger.type = 'button';
-    burger.id = 'navBurger';
-    burger.className = 'nav-burger';
-    burger.setAttribute('aria-label', 'Open menu');
-    burger.innerHTML = '☰';
-    nav.appendChild(burger);
+    // Build standard inner structure
+    var html =
+      '<div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">' +
+      '<div class="flex items-center justify-between gap-3">' +
+      '<a href="index.html" class="site-wordmark">LEX <span>LIGA</span></a>' +
+      '<nav class="site-nav" aria-label="Main">' +
+      '<a href="index.html" class="nav-link' + (cur === 'index.html' ? ' is-active' : '') + '">Home</a>' +
+      '<div class="sport-tabs">' +
+      '<a href="futsal.html" class="sport-tab' + (cur === 'futsal.html' ? ' is-active' : '') + '"' +
+      (cur === 'futsal.html' ? ' aria-current="page"' : '') + '><span>⚽</span> Futsal</a>' +
+      '<a href="badminton.html" class="sport-tab' + (cur === 'badminton.html' ? ' is-active' : '') + '"' +
+      (cur === 'badminton.html' ? ' aria-current="page"' : '') + '><span>🏸</span> Badminton</a>' +
+      '</div>' +
+      '<a href="bracket.html" class="nav-link' + (cur === 'bracket.html' ? ' is-active' : '') + '">Bracket</a>' +
+      '<a href="gallery.html" class="nav-link' + (cur === 'gallery.html' ? ' is-active' : '') + '">Photos</a>' +
+      '<a href="fixtures.html" class="nav-link' + (cur === 'fixtures.html' ? ' is-active' : '') + '">Fixtures</a>' +
+      '<button type="button" id="navBurger" class="nav-burger" aria-label="Open menu">☰</button>' +
+      '</nav></div></div>';
 
-    var drawer = document.createElement('div');
-    drawer.id = 'navDrawer';
-    drawer.className = 'nav-drawer';
-    drawer.innerHTML =
-      '<div class="nav-drawer-panel">' +
-      '<button type="button" class="nav-drawer-close" id="navDrawerClose" aria-label="Close">✕</button>' +
-      LINKS.map(function (l) {
-        var active = currentFile() === l.href ? ' is-active' : '';
-        return '<a class="' + active + '" href="' + l.href + '">' + l.label + '</a>';
-      }).join('') +
-      '</div>';
-    document.body.appendChild(drawer);
+    header.innerHTML = html;
+    header.classList.add('sticky', 'top-0', 'z-50');
 
-    function open() { drawer.classList.add('open'); document.body.style.overflow = 'hidden'; }
-    function close() { drawer.classList.remove('open'); document.body.style.overflow = ''; }
+    // Drawer
+    if (!document.getElementById('navDrawer')) {
+      var drawer = document.createElement('div');
+      drawer.id = 'navDrawer';
+      drawer.className = 'nav-drawer';
+      drawer.innerHTML =
+        '<div class="nav-drawer-panel">' +
+        '<button type="button" class="nav-drawer-close" id="navDrawerClose" aria-label="Close">✕</button>' +
+        LINKS.map(function (l) {
+          var active = cur === l.href ? ' is-active' : '';
+          return '<a class="' + active + '" href="' + l.href + '">' + l.label + '</a>';
+        }).join('') +
+        '</div>';
+      document.body.appendChild(drawer);
+    }
 
-    burger.addEventListener('click', open);
-    document.getElementById('navDrawerClose').addEventListener('click', close);
-    drawer.addEventListener('click', function (e) {
+    var drawer = document.getElementById('navDrawer');
+    function open() {
+      drawer.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      drawer.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    var burger = document.getElementById('navBurger');
+    if (burger) burger.onclick = open;
+    var closeBtn = document.getElementById('navDrawerClose');
+    if (closeBtn) closeBtn.onclick = close;
+    drawer.onclick = function (e) {
       if (e.target === drawer) close();
-    });
+    };
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', build);
+    document.addEventListener('DOMContentLoaded', buildUniformNav);
   } else {
-    build();
+    buildUniformNav();
   }
 })();
