@@ -1,4 +1,4 @@
-/* Lex Liga – sound + notifications (mobile-safe via Service Worker) */
+/* Lex Liga – sound + live/score notifications (mobile via Service Worker) */
 (function () {
   var SOUND_KEY = 'lexSoundOn';
   var NOTIFY_KEY = 'lexNotifyOn';
@@ -10,6 +10,18 @@
 
   if (localStorage.getItem(SOUND_KEY) === null) localStorage.setItem(SOUND_KEY, '1');
   if (localStorage.getItem(NOTIFY_KEY) === null) localStorage.setItem(NOTIFY_KEY, '1');
+
+  // Remember live matches already announced this browser session (avoid spam on refresh)
+  try {
+    var saved = sessionStorage.getItem('lexKnownLive');
+    if (saved) knownLive = JSON.parse(saved) || {};
+  } catch (e) {}
+
+  function persistKnownLive() {
+    try {
+      sessionStorage.setItem('lexKnownLive', JSON.stringify(knownLive));
+    } catch (e) {}
+  }
 
   function soundOn() {
     return localStorage.getItem(SOUND_KEY) !== '0';
@@ -61,19 +73,11 @@
     }
   }
 
+  /** Real alerts only — same path that worked on mobile (Service Worker) */
   function sendNotify(title, body, tag) {
-    if (!notifyOn()) {
-      console.log('[lex] notify skipped: toggled off');
-      return;
-    }
-    if (!('Notification' in window)) {
-      console.log('[lex] Notification API missing');
-      return;
-    }
-    if (Notification.permission !== 'granted') {
-      console.log('[lex] permission not granted:', Notification.permission);
-      return;
-    }
+    if (!notifyOn()) return;
+    if (!('Notification' in window)) return;
+    if (Notification.permission !== 'granted') return;
 
     var payload = {
       type: 'NOTIFY',
@@ -84,7 +88,6 @@
       url: HOME
     };
 
-    // Prefer Service Worker (much more reliable on Android / mobile Chrome)
     if (navigator.serviceWorker && navigator.serviceWorker.controller) {
       try {
         navigator.serviceWorker.controller.postMessage(payload);
@@ -109,7 +112,7 @@
             });
           }
         })
-        .catch(function (e) {
+        .catch(function () {
           fallbackNotification(title, body, tag);
         });
       return;
@@ -131,29 +134,7 @@
       }, 10000);
     } catch (e) {
       console.warn('Notification failed', e);
-      // Last resort on mobile: visible in-page toast
-      showToast(title + ': ' + (body || ''));
     }
-  }
-
-  function showToast(msg) {
-    var t = document.getElementById('lexToast');
-    if (!t) {
-      t = document.createElement('div');
-      t.id = 'lexToast';
-      t.style.cssText =
-        'position:fixed;left:50%;bottom:5rem;transform:translateX(-50%);z-index:90;' +
-        'max-width:90vw;background:#14532d;color:#ecfdf5;padding:0.75rem 1rem;' +
-        'border-radius:0.75rem;font-size:0.85rem;font-weight:700;text-align:center;' +
-        'box-shadow:0 8px 30px rgba(0,0,0,0.4);';
-      document.body.appendChild(t);
-    }
-    t.textContent = msg;
-    t.style.display = 'block';
-    clearTimeout(window.__lexToastT);
-    window.__lexToastT = setTimeout(function () {
-      t.style.display = 'none';
-    }, 5000);
   }
 
   function requestNotifyPermission() {
@@ -170,8 +151,7 @@
     box.className = 'lex-extras-controls';
     box.innerHTML =
       '<button type="button" id="btnSound" class="lex-extra-btn" title="Score sound">🔊 Sound</button>' +
-      '<button type="button" id="btnNotify" class="lex-extra-btn" title="Live alerts">🔔 Alerts</button>' +
-      '<button type="button" id="btnTestNotify" class="lex-extra-btn" title="Send a test alert">🧪 Test</button>';
+      '<button type="button" id="btnNotify" class="lex-extra-btn" title="Live alerts">🔔 Alerts</button>';
     document.body.appendChild(box);
 
     function sync() {
@@ -205,61 +185,29 @@
       }
       if (isIos() && !isStandalone()) {
         alert(
-          'On iPhone/iPad: tap Share → Add to Home Screen, open Lex Liga from the icon, then enable Alerts again.\n\nSafari tabs often cannot show notifications.'
+          'On iPhone/iPad: Share → Add to Home Screen, open Lex Liga from the icon, then enable Alerts again.'
         );
       }
       if (Notification.permission === 'denied') {
         alert(
-          'Notifications are blocked for this site.\n\nAndroid: Chrome menu → Settings → Site settings → Notifications → Allow.\niPhone: Settings → Notifications → Lex Liga (after Add to Home Screen).'
+          'Notifications are blocked for this site. Enable them in browser settings for Lex Liga.'
         );
         return;
       }
       if (Notification.permission !== 'granted') {
         requestNotifyPermission().then(function (p) {
-          if (p === 'granted') {
-            localStorage.setItem(NOTIFY_KEY, '1');
-            sendNotify('Lex Liga', 'Alerts work on this phone ✓', 'lex-test');
-          } else {
-            alert('Permission was not granted. Try again or check browser settings.');
-          }
+          if (p === 'granted') localStorage.setItem(NOTIFY_KEY, '1');
+          else alert('Permission was not granted.');
           sync();
         });
         return;
       }
       localStorage.setItem(NOTIFY_KEY, notifyOn() ? '0' : '1');
       sync();
-      if (notifyOn()) sendNotify('Lex Liga', 'Alerts enabled on this device', 'lex-test');
-    };
-
-    document.getElementById('btnTestNotify').onclick = function () {
-      if (!('Notification' in window)) {
-        showToast('Notifications not supported');
-        return;
-      }
-      if (Notification.permission !== 'granted') {
-        requestNotifyPermission().then(function (p) {
-          sync();
-          if (p === 'granted') {
-            localStorage.setItem(NOTIFY_KEY, '1');
-            beep();
-            sendNotify('Lex Liga test', 'If you see this, mobile alerts work.', 'lex-test');
-          } else {
-            alert('Allow notifications first (button may say 🔔 Allow).');
-          }
-        });
-        return;
-      }
-      localStorage.setItem(NOTIFY_KEY, '1');
-      beep();
-      sendNotify('Lex Liga test', 'If you see this, mobile alerts work.', 'lex-test');
-      showToast('Test sent — check notification shade');
     };
 
     function unlock() {
       try { getCtx(); } catch (e) {}
-      if (notifyOn() && 'Notification' in window && Notification.permission === 'default') {
-        // Don't auto-prompt on mobile without gesture — only unlock audio
-      }
       document.removeEventListener('click', unlock);
       document.removeEventListener('touchstart', unlock);
     }
@@ -267,7 +215,7 @@
     document.addEventListener('touchstart', unlock, { once: true });
   }
 
-  /** items = [{id, label, scoreKey, isLive}] */
+  /** items = [{id, label, scoreKey, isLive}] — uses SW path for mobile */
   window.lexWatchScores = function (items) {
     ensureControls();
     (items || []).forEach(function (it) {
@@ -276,25 +224,29 @@
 
       if (scoreChanged) {
         beep();
-        sendNotify('Lex Liga — Score update', it.label || 'Score changed', 'lex-score-' + it.id);
+        sendNotify(
+          'Lex Liga — Score update',
+          it.label || 'Score changed',
+          'lex-score-' + it.id
+        );
       }
       lastScores[it.id] = it.scoreKey;
 
       if (it.isLive && !knownLive[it.id]) {
         knownLive[it.id] = true;
-        // Only alert "went live" if we already had score history (not first page load),
-        // OR always on first sight of live — users expect live alerts
-        sendNotify('Lex Liga — LIVE', it.label || 'A match just went live', 'lex-live-' + it.id);
+        persistKnownLive();
+        sendNotify(
+          'Lex Liga — LIVE',
+          it.label || 'A match just went live',
+          'lex-live-' + it.id
+        );
         beep();
       }
-      if (!it.isLive) delete knownLive[it.id];
+      if (!it.isLive && knownLive[it.id]) {
+        delete knownLive[it.id];
+        persistKnownLive();
+      }
     });
-  };
-
-  window.lexTestAlert = function () {
-    ensureControls();
-    beep();
-    sendNotify('Lex Liga test', 'If you see this, notifications work.', 'lex-test');
   };
 
   if (document.readyState === 'loading') {
