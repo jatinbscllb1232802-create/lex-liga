@@ -5,18 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>Admin – Lex Liga</title>
   <meta name="robots" content="noindex, nofollow" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config = { darkMode: 'class' }</script>
-  <link rel="stylesheet" href="css/styles.css?v=4" />
+  <link rel="stylesheet" href="css/styles.css" />
   <style>
-    .big-btn { min-height: 52px; font-size: 1.25rem; font-weight: 700; }
-    .status-btn { min-height: 44px; font-size: 0.9rem; font-weight: 600; }
-    .sport-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .sport-pick { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 1.25rem; }
     .sport-pick button {
-      padding: 1rem; border-radius: 1rem; border: 2px solid #334155;
-      background: #0f172a; font-weight: 700; color: #94a3b8; cursor: pointer;
+      padding: 0.85rem 0.5rem; border-radius: 1rem; border: 2px solid #334155;
+      background: #0f172a; font-weight: 700; color: #94a3b8; cursor: pointer; font-size: 0.85rem;
     }
     .sport-pick button.active {
       border-color: #22c55e !important;
@@ -29,31 +26,31 @@
     window.__sport = 'futsal';
     function setSport(s) {
       window.__sport = s;
-      var f = document.getElementById('pickFutsal');
-      var b = document.getElementById('pickBadminton');
-      if (s === 'futsal') { f.classList.add('active'); b.classList.remove('active'); }
-      else { b.classList.add('active'); f.classList.remove('active'); }
+      ['pickFutsal','pickBadminton','pickAnnounce'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+      });
+      var map = { futsal: 'pickFutsal', badminton: 'pickBadminton', announce: 'pickAnnounce' };
+      var btn = document.getElementById(map[s]);
+      if (btn) btn.classList.add('active');
     }
     function openAdmin(sport) {
       document.getElementById('loginScreen').classList.add('hidden');
       document.getElementById('adminPanelFutsal').classList.add('hidden');
       document.getElementById('adminPanelBadminton').classList.add('hidden');
+      document.getElementById('adminPanelAnnounce').classList.add('hidden');
       if (sport === 'badminton') {
         document.getElementById('adminPanelBadminton').classList.remove('hidden');
-        // Retry load a few times in case script is slow
         var tries = 0;
         function tryLoad() {
           tries++;
-          if (typeof window.loadBadmintonAdmin === 'function') {
-            window.loadBadmintonAdmin();
-          } else if (tries < 10) {
-            setTimeout(tryLoad, 200);
-          } else {
-            var el = document.getElementById('adminBadmintonMatches');
-            if (el) el.innerHTML = '<p class="text-red-400 text-sm text-center">Could not load admin script. Hard-refresh (Ctrl+Shift+R).</p>';
-          }
+          if (typeof window.loadBadmintonAdmin === 'function') window.loadBadmintonAdmin();
+          else if (tries < 10) setTimeout(tryLoad, 200);
         }
         setTimeout(tryLoad, 100);
+      } else if (sport === 'announce') {
+        document.getElementById('adminPanelAnnounce').classList.remove('hidden');
+        setTimeout(loadAnnounceAdmin, 100);
       } else {
         document.getElementById('adminPanelFutsal').classList.remove('hidden');
         setTimeout(function(){
@@ -64,7 +61,10 @@
     function tryLogin() {
       var pwd = document.getElementById('passwordInput').value.trim();
       var sport = window.__sport || 'futsal';
-      var ok = (sport === 'badminton' && pwd === 'badminton2026') || (sport === 'futsal' && pwd === 'lexliga2026');
+      var ok =
+        (sport === 'badminton' && pwd === 'badminton2026') ||
+        (sport === 'futsal' && pwd === 'lexliga2026') ||
+        (sport === 'announce' && pwd === 'lexliga2026');
       if (ok) {
         sessionStorage.setItem('lexAdmin', '1');
         sessionStorage.setItem('lexAdminSport', sport);
@@ -78,6 +78,100 @@
       sessionStorage.clear();
       location.reload();
     }
+
+    async function loadAnnounceAdmin() {
+      var sb = window.supabaseClient;
+      var list = document.getElementById('announceHistory');
+      if (!sb) { list.innerHTML = '<p class="text-red-400 text-sm">Supabase not ready</p>'; return; }
+      var res = await sb.from('announcements').select('*').order('created_at', { ascending: false });
+      if (res.error) {
+        // fallback single-row
+        var one = await sb.from('announcements').select('*').eq('id', 1).maybeSingle();
+        if (one.data) {
+          document.getElementById('annMsg').value = one.data.message || '';
+          document.getElementById('annActive').checked = !!one.data.active;
+          list.innerHTML = renderHistoryItem(one.data);
+        } else {
+          list.innerHTML = '<p class="text-slate-400 text-sm">No announcements yet. Run SQL_ANNOUNCEMENTS.md if errors persist.</p>';
+        }
+        return;
+      }
+      var rows = res.data || [];
+      if (!rows.length) {
+        list.innerHTML = '<p class="text-slate-400 text-sm">No announcements yet.</p>';
+        return;
+      }
+      list.innerHTML = rows.map(renderHistoryItem).join('');
+    }
+
+    function renderHistoryItem(row) {
+      var active = row.active ? '<span class="text-green-400 text-xs font-bold">LIVE</span>' : '<span class="text-slate-500 text-xs">off</span>';
+      var id = row.id;
+      return '<div class="bg-slate-900 border border-slate-700 rounded-xl p-3 flex gap-3 items-start">' +
+        '<div class="flex-1 min-w-0">' +
+        '<p class="text-sm break-words">' + escapeHtml(row.message || '') + '</p>' +
+        '<p class="text-xs text-slate-500 mt-1">' + active + ' · ' + (row.created_at ? new Date(row.created_at).toLocaleString() : '') + '</p>' +
+        '</div>' +
+        '<div class="flex flex-col gap-1 shrink-0">' +
+        (row.active ? '' : '<button type="button" class="text-xs text-green-400" onclick="activateAnnounce(' + id + ')">Show</button>') +
+        '<button type="button" class="text-xs text-red-400" onclick="deleteAnnounce(' + id + ')">Delete</button>' +
+        '</div></div>';
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>');
+    }
+
+    async function publishAnnounce() {
+      var sb = window.supabaseClient;
+      var msg = document.getElementById('annMsg').value.trim();
+      var active = document.getElementById('annActive').checked;
+      var st = document.getElementById('annStatus');
+      if (!msg) { st.textContent = 'Enter a message'; st.className = 'text-sm text-center text-red-400'; return; }
+      st.textContent = 'Saving…';
+
+      // Deactivate others if this one is active
+      if (active) {
+        await sb.from('announcements').update({ active: false }).eq('active', true);
+      }
+
+      var res = await sb.from('announcements').insert({
+        message: msg,
+        active: active,
+        created_at: new Date().toISOString()
+      });
+
+      if (res.error) {
+        // Try upsert id=1 for old schema
+        var u = await sb.from('announcements').upsert({
+          id: 1, message: msg, active: active, updated_at: new Date().toISOString()
+        });
+        if (u.error) {
+          st.textContent = 'Error: ' + (res.error.message || u.error.message);
+          st.className = 'text-sm text-center text-red-400';
+          return;
+        }
+      }
+      st.textContent = 'Published. Live site updates within ~20s.';
+      st.className = 'text-sm text-center text-green-400';
+      document.getElementById('annMsg').value = '';
+      loadAnnounceAdmin();
+    }
+
+    async function deleteAnnounce(id) {
+      if (!confirm('Delete this announcement?')) return;
+      var sb = window.supabaseClient;
+      var res = await sb.from('announcements').delete().eq('id', id);
+      if (res.error) alert(res.error.message);
+      loadAnnounceAdmin();
+    }
+
+    async function activateAnnounce(id) {
+      var sb = window.supabaseClient;
+      await sb.from('announcements').update({ active: false }).eq('active', true);
+      await sb.from('announcements').update({ active: true }).eq('id', id);
+      loadAnnounceAdmin();
+    }
   </script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen">
@@ -85,18 +179,19 @@
   <div id="loginScreen" class="min-h-screen flex items-center justify-center px-4">
     <div class="bg-slate-800 rounded-2xl p-8 w-full max-w-sm border border-slate-700">
       <h1 class="text-xl font-bold mb-1 text-center">Lex Liga Admin</h1>
-      <p class="text-sm text-slate-400 text-center mb-5">Choose sport, then enter password</p>
+      <p class="text-sm text-slate-400 text-center mb-5">Choose section, then enter password</p>
       <div class="sport-pick">
         <button type="button" id="pickFutsal" class="active" onclick="setSport('futsal')">⚽ Futsal</button>
         <button type="button" id="pickBadminton" onclick="setSport('badminton')">🏸 Badminton</button>
+        <button type="button" id="pickAnnounce" onclick="setSport('announce')">📢 Announce</button>
       </div>
       <input id="passwordInput" type="password" placeholder="Password"
         class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-4 mb-4 text-lg"
         onkeydown="if(event.key==='Enter')tryLogin()" />
       <button type="button" onclick="tryLogin()" class="w-full bg-green-500 text-slate-900 font-bold py-4 rounded-xl text-lg">Unlock</button>
-      <p id="loginError" class="text-red-400 text-sm mt-3 text-center hidden">Wrong password for selected sport</p>
+      <p id="loginError" class="text-red-400 text-sm mt-3 text-center hidden">Wrong password for selected section</p>
       <p class="text-xs text-slate-500 text-center mt-4">
-        Futsal: <b class="text-slate-300">lexliga2026</b><br>
+        Futsal / Announce: <b class="text-slate-300">lexliga2026</b><br>
         Badminton: <b class="text-slate-300">badminton2026</b>
       </p>
     </div>
@@ -105,7 +200,7 @@
   <div id="adminPanelFutsal" class="hidden">
     <header class="sticky top-0 z-50 bg-slate-900 border-b border-slate-700">
       <div class="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-        <div><h1 class="font-bold text-lg">Futsal Admin</h1><p class="text-xs text-slate-400">Lex Liga</p></div>
+        <div><h1 class="font-bold text-lg">Futsal Admin</h1></div>
         <div class="flex gap-4 items-center">
           <a href="index.html" class="text-sm text-green-400">Live Site</a>
           <button type="button" onclick="doLogout()" class="text-sm text-slate-400">Logout</button>
@@ -134,7 +229,7 @@
   <div id="adminPanelBadminton" class="hidden">
     <header class="sticky top-0 z-50 bg-slate-900 border-b border-slate-700">
       <div class="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-        <div><h1 class="font-bold text-lg">Badminton Admin</h1><p class="text-xs text-slate-400">Best of 3 · to 21 · win by 2</p></div>
+        <div><h1 class="font-bold text-lg">Badminton Admin</h1></div>
         <div class="flex gap-4 items-center">
           <a href="badminton.html" class="text-sm text-green-400">Live Site</a>
           <button type="button" onclick="doLogout()" class="text-sm text-slate-400">Logout</button>
@@ -160,10 +255,38 @@
     </main>
   </div>
 
+  <div id="adminPanelAnnounce" class="hidden">
+    <header class="sticky top-0 z-50 bg-slate-900 border-b border-slate-700">
+      <div class="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
+        <div><h1 class="font-bold text-lg">📢 Announcements</h1><p class="text-xs text-slate-400">Scrolling bar on all pages</p></div>
+        <div class="flex gap-4 items-center">
+          <a href="index.html" class="text-sm text-green-400">Live Site</a>
+          <button type="button" onclick="doLogout()" class="text-sm text-slate-400">Logout</button>
+        </div>
+      </div>
+    </header>
+    <main class="max-w-lg mx-auto px-4 py-5 space-y-5 pb-20">
+      <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 space-y-3">
+        <label class="text-xs text-slate-400 block">New message</label>
+        <textarea id="annMsg" rows="3" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-base" placeholder="e.g. Final starts at 4:30 PM on Court 1"></textarea>
+        <label class="flex items-center gap-2 text-sm">
+          <input id="annActive" type="checkbox" class="w-5 h-5" checked />
+          Show on website now
+        </label>
+        <button type="button" onclick="publishAnnounce()" class="w-full bg-green-500 text-slate-900 font-bold py-3 rounded-xl">Publish</button>
+        <p id="annStatus" class="text-sm text-center text-slate-400"></p>
+      </div>
+      <div>
+        <h2 class="font-bold text-lg mb-3">History</h2>
+        <div id="announceHistory" class="space-y-2"><p class="text-slate-400 text-sm">Loading…</p></div>
+      </div>
+    </main>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
-  <script src="js/supabase-config.js?v=4"></script>
-  <script src="js/admin.js?v=4"></script>
-  <script src="js/admin-badminton.js?v=4"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/admin-badminton.js"></script>
   <script>
     if (sessionStorage.getItem('lexAdmin') === '1') {
       var s = sessionStorage.getItem('lexAdminSport') || 'futsal';
