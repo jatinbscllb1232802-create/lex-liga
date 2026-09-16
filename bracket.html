@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knockout Bracket — Lex Liga</title>
+  <meta name="theme-color" content="#0b1120" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    .bracket-round { min-width: 200px; }
+    .bracket-card {
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.2);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+    }
+    .bracket-card.live { border-color: rgba(239,68,68,0.5); }
+    .bracket-card.done { border-color: rgba(34,197,94,0.35); }
+    .bracket-scroll {
+      display: flex; gap: 1.5rem; overflow-x: auto; padding-bottom: 1rem;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <header class="site-header sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <a href="index.html" class="site-wordmark">LEX <span>LIGA</span></a>
+      <nav class="site-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="futsal.html" class="nav-link">Futsal</a>
+        <a href="badminton.html" class="nav-link">Badminton</a>
+        <a href="bracket.html" class="nav-link" style="color:#4ade80">Bracket</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+    <div>
+      <p class="section-eyebrow">KNOCKOUT</p>
+      <h1 class="text-2xl font-extrabold">Tournament Bracket</h1>
+      <p class="text-slate-400 text-sm mt-1">Matches tagged with stage: QF, SF, Final (in group_name / category).</p>
+    </div>
+
+    <section>
+      <h2 class="font-bold text-lg mb-4">⚽ Futsal</h2>
+      <div id="bracketFutsal" class="bracket-scroll"><p class="text-slate-400 text-sm">Loading…</p></div>
+    </section>
+
+    <section>
+      <h2 class="font-bold text-lg mb-4">🏸 Badminton</h2>
+      <div id="bracketBm" class="bracket-scroll"><p class="text-slate-400 text-sm">Loading…</p></div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/announce.js"></script>
+  <script>
+    var sb = window.supabaseClient;
+    var STAGES = ['QF', 'Quarter', 'SF', 'Semi', 'Final', 'FINAL'];
+
+    function stageOf(text) {
+      var t = (text || '').toUpperCase();
+      if (t.indexOf('FINAL') >= 0 && t.indexOf('SEMI') < 0) return 'Final';
+      if (t.indexOf('SF') >= 0 || t.indexOf('SEMI') >= 0) return 'Semi-finals';
+      if (t.indexOf('QF') >= 0 || t.indexOf('QUARTER') >= 0) return 'Quarter-finals';
+      return null;
+    }
+
+    function card(html, status) {
+      var cls = 'bracket-card';
+      if (status === 'live' || status === 'half_time') cls += ' live';
+      if (status === 'finished' || status === 'walkover') cls += ' done';
+      return '<div class="' + cls + '">' + html + '</div>';
+    }
+
+    async function load() {
+      if (!sb) return;
+      var teams = {};
+      try {
+        var tr = await sb.from('teams').select('*');
+        (tr.data || []).forEach(function (t) { teams[t.id] = t.name; });
+      } catch (e) {}
+
+      // Futsal
+      var fr = await sb.from('matches').select('*');
+      var fm = (fr.data || []).filter(function (m) { return stageOf(m.group_name); });
+      renderRounds('bracketFutsal', fm, function (m) {
+        var h = teams[m.home_team_id] || 'TBD';
+        var a = teams[m.away_team_id] || 'TBD';
+        return '<div class="text-xs text-slate-500 mb-1">' + (m.group_name || '') + '</div>' +
+          '<div class="font-semibold text-sm">' + h + ' <span class="text-slate-400">' + (m.home_score ?? 0) + '</span></div>' +
+          '<div class="font-semibold text-sm">' + a + ' <span class="text-slate-400">' + (m.away_score ?? 0) + '</span></div>';
+      });
+
+      // Badminton
+      var br = await sb.from('badminton_matches').select('*');
+      var bm = (br.data || []).filter(function (m) { return stageOf(m.category); });
+      renderRounds('bracketBm', bm, function (m) {
+        return '<div class="text-xs text-slate-500 mb-1">' + (m.category || '') + '</div>' +
+          '<div class="font-semibold text-sm">' + (m.player1 || 'TBD') + ' <span class="text-slate-400">' + (m.games_p1 || 0) + '</span></div>' +
+          '<div class="font-semibold text-sm">' + (m.player2 || 'TBD') + ' <span class="text-slate-400">' + (m.games_p2 || 0) + '</span></div>';
+      });
+    }
+
+    function renderRounds(elId, matches, renderOne) {
+      var el = document.getElementById(elId);
+      var order = ['Quarter-finals', 'Semi-finals', 'Final'];
+      var by = {};
+      matches.forEach(function (m) {
+        var s = stageOf(m.group_name || m.category);
+        if (!s) return;
+        if (!by[s]) by[s] = [];
+        by[s].push(m);
+      });
+      var html = order.map(function (round) {
+        var list = by[round] || [];
+        if (!list.length) return '';
+        return '<div class="bracket-round"><h3 class="text-sm font-bold text-green-400 mb-3">' + round + '</h3>' +
+          list.map(function (m) { return card(renderOne(m), m.status); }).join('') +
+          '</div>';
+      }).join('');
+      el.innerHTML = html || '<p class="text-slate-400 text-sm">No knockout matches yet. Set group/category to QF, SF, or Final.</p>';
+    }
+
+    load();
+    setInterval(load, 20000);
+  </script>
+</body>
+</html>
