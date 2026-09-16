@@ -2,7 +2,17 @@
 (function () {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
-      navigator.serviceWorker.register('./sw.js').catch(function () {});
+      navigator.serviceWorker
+        .register('./sw.js')
+        .then(function (reg) {
+          // Force update so phones pick up notification handler
+          try {
+            reg.update();
+          } catch (e) {}
+        })
+        .catch(function (err) {
+          console.warn('SW register failed', err);
+        });
     });
   }
 
@@ -15,7 +25,6 @@
     showBanner();
   });
 
-  // iOS / browsers without beforeinstallprompt – show manual tip once
   function isIos() {
     return /iphone|ipad|ipod/i.test(navigator.userAgent);
   }
@@ -33,8 +42,8 @@
     bar.id = 'pwaBanner';
     bar.className = 'pwa-install-banner show';
     var tip = isIos()
-      ? 'Add Lex Liga to your Home Screen: tap Share → Add to Home Screen'
-      : 'Install Lex Liga for quick live scores — like an app on your phone';
+      ? 'On iPhone: Share → Add to Home Screen so live alerts can work'
+      : 'Install Lex Liga for quicker scores and better alerts';
     bar.innerHTML =
       '<p>' + tip + '</p>' +
       (isIos()
@@ -61,7 +70,6 @@
     }
   }
 
-  // Delay iOS tip so it does not block first paint
   setTimeout(function () {
     if (isIos() && !isStandalone()) showBanner();
   }, 2500);
