@@ -30,7 +30,6 @@ try {
 
 window.supabaseClient = supabase;
 
-// Separate admin passwords per sport
 window.ADMIN_PASSWORDS = {
   futsal: 'lexliga2026',
   badminton: 'badminton2026'
@@ -38,7 +37,7 @@ window.ADMIN_PASSWORDS = {
 
 const ADMIN_PASSWORD = window.ADMIN_PASSWORDS.futsal;
 
-/* Load announce bar + sound/alerts on every public page (skip admin) */
+/* Shared UI on every public page */
 (function () {
   var path = (location.pathname || '').toLowerCase();
   if (path.indexOf('admin') !== -1) return;
@@ -61,4 +60,6 @@ const ADMIN_PASSWORD = window.ADMIN_PASSWORDS.futsal;
   addCss('css/extras.css');
   addScript('js/announce.js');
   addScript('js/live-extras.js');
+  addScript('js/mobile-nav.js');
+  addScript('js/pwa-register.js');
 })();
