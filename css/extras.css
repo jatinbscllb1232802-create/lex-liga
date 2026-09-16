@@ -1,4 +1,44 @@
-/* Announcement marquee */
+/* ===== Mobile-friendly navbar ===== */
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-wrap: nowrap;
+}
+.site-nav::-webkit-scrollbar { display: none; }
+.site-nav .nav-link,
+.site-nav .sport-tab {
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.55rem;
+}
+@media (max-width: 640px) {
+  .site-header .flex.items-center.justify-between {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+  .site-wordmark {
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+  .site-nav {
+    flex: 1;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+  .sport-tabs {
+    display: inline-flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+  }
+}
+
+/* ===== Announcement marquee ===== */
 .announce-bar {
   position: sticky;
   top: 0;
@@ -6,32 +46,38 @@
   overflow: hidden;
   background: linear-gradient(90deg, #14532d, #166534, #14532d);
   border-bottom: 1px solid rgba(74, 222, 128, 0.35);
-  height: 36px;
+  height: 38px;
   display: flex;
   align-items: center;
 }
 .announce-track {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
   width: max-content;
-  animation: announce-scroll 28s linear infinite;
+  animation: announce-scroll 12s linear infinite;
   white-space: nowrap;
+  will-change: transform;
 }
 .announce-text {
-  padding: 0 2rem;
-  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 3rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   color: #ecfdf5;
+  line-height: 1;
 }
 @keyframes announce-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 body.has-announce .site-header {
-  top: 36px;
+  top: 38px;
 }
 
-/* Sound / notify floating controls */
+/* Sound / notify controls */
 .lex-extras-controls {
   position: fixed;
   left: 0.75rem;
