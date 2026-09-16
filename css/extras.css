@@ -89,12 +89,13 @@
   .nav-drawer { display: none !important; }
 }
 
-/* ===== Announcement marquee ===== */
+/* ===== Announcement marquee – full strip width ===== */
 .announce-bar {
   position: sticky;
   top: 0;
   z-index: 60;
   overflow: hidden;
+  width: 100%;
   background: linear-gradient(90deg, #14532d, #166534, #14532d);
   border-bottom: 1px solid rgba(74, 222, 128, 0.35);
   height: 38px;
@@ -105,20 +106,24 @@
   display: inline-flex;
   align-items: center;
   width: max-content;
-  animation: announce-scroll 18s linear infinite;
   white-space: nowrap;
   will-change: transform;
+  animation: announce-scroll 22s linear infinite;
 }
 .announce-text {
   display: inline-flex;
   align-items: center;
   height: 38px;
-  padding: 0 2.5rem;
+  /* Each half is at least full viewport so scroll covers the whole strip */
+  min-width: 100vw;
+  box-sizing: border-box;
+  padding: 0 3rem;
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   color: #ecfdf5;
   line-height: 1;
+  flex-shrink: 0;
 }
 @keyframes announce-scroll {
   0% { transform: translateX(0); }
