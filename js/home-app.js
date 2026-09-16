@@ -41,6 +41,31 @@ async function loadHome() {
       : '<p class="empty-state">No live matches right now. Check back during match times.</p>';
   }
 
+  // Sound + notifications
+  if (typeof window.lexWatchScores === 'function') {
+    const watch = [];
+    futsalLive.forEach(m => {
+      const home = teamName(teams, m.home_team_id);
+      const away = teamName(teams, m.away_team_id);
+      watch.push({
+        id: 'f-' + m.id,
+        label: 'Futsal live: ' + home + ' vs ' + away,
+        scoreKey: String(m.home_score) + '-' + String(m.away_score),
+        isLive: true
+      });
+    });
+    bmLive.forEach(m => {
+      const cg = m.current_game || 1;
+      watch.push({
+        id: 'b-' + m.id,
+        label: 'Badminton live: ' + (m.player1 || '') + ' vs ' + (m.player2 || ''),
+        scoreKey: String(m['g' + cg + '_p1']) + '-' + String(m['g' + cg + '_p2']) + '-' + cg,
+        isLive: true
+      });
+    });
+    window.lexWatchScores(watch);
+  }
+
   const liveCount = futsalLive.length + bmLive.length;
   const futsalFinished = futsalAll.filter(m => m.status === 'finished' || m.status === 'walkover').length;
   const bmFinished = bmAll.filter(m => m.status === 'finished').length;
