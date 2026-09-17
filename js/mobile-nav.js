@@ -1,4 +1,4 @@
-/* Lex Liga – uniform navbar + mobile hamburger on every page */
+/* Lex Liga – uniform navbar + mobile hamburger + sport watermarks */
 (function () {
   var LINKS = [
     { href: 'index.html', label: 'Home', id: 'home' },
@@ -21,7 +21,6 @@
 
     var cur = currentFile();
 
-    // Build standard inner structure
     var html =
       '<div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">' +
       '<div class="flex items-center justify-between gap-3">' +
@@ -43,7 +42,6 @@
     header.innerHTML = html;
     header.classList.add('sticky', 'top-0', 'z-50');
 
-    // Drawer
     if (!document.getElementById('navDrawer')) {
       var drawer = document.createElement('div');
       drawer.id = 'navDrawer';
@@ -78,9 +76,41 @@
     };
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', buildUniformNav);
-  } else {
+  /** Staggered repeating watermark: FUTSAL / BADMINTON */
+  function buildSportWatermark() {
+    if (document.getElementById('sportWm')) return;
+    var cur = currentFile();
+    var word = null;
+    if (cur === 'futsal.html') word = 'FUTSAL';
+    else if (cur === 'badminton.html') word = 'BADMINTON';
+    if (!word) return;
+
+    var unit = word + '  ·  ' + word + '  ·  ' + word + '  ·  ' + word + '  ·  ';
+    var rows = 10;
+    var html = '';
+    for (var i = 0; i < rows; i++) {
+      // Alternate density slightly for asymmetric feel
+      var line = i % 2 === 0 ? unit + unit : '   ' + unit + unit;
+      html += '<div class="sport-wm-row">' + line + '</div>';
+    }
+
+    var el = document.createElement('div');
+    el.id = 'sportWm';
+    el.className = 'sport-wm';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<div class="sport-wm-inner">' + html + '</div>';
+    document.body.insertBefore(el, document.body.firstChild);
+    document.body.classList.add('has-sport-wm');
+  }
+
+  function boot() {
     buildUniformNav();
+    buildSportWatermark();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
   }
 })();
