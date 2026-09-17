@@ -222,7 +222,7 @@ body.has-announce .site-header {
   border-color: rgba(34, 197, 94, 0.4);
 }
 
-/* ===== Follow the Action – 2 cards fill full width ===== */
+/* ===== Follow the Action – 2 cards ===== */
 .social-post-grid {
   display: grid !important;
   grid-template-columns: 1fr !important;
@@ -250,9 +250,7 @@ body.has-announce .site-header {
     radial-gradient(ellipse 50% 60% at 100% 100%, rgba(29, 185, 84, 0.08), transparent 50%),
     rgba(15, 23, 42, 0.85);
 }
-.playlist-section .section-eyebrow {
-  margin-bottom: 0.25rem;
-}
+.playlist-section .section-eyebrow { margin-bottom: 0.25rem; }
 .playlist-section h2 {
   font-size: 1.25rem;
   font-weight: 800;
@@ -279,4 +277,81 @@ body.has-announce .site-header {
   margin-top: 0.65rem;
   font-size: 0.7rem;
   color: #64748b;
+}
+
+/* ===== Sport page watermark (FUTSAL / BADMINTON) ===== */
+.sport-wm {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  user-select: none;
+}
+.sport-wm-inner {
+  position: absolute;
+  inset: -8% -15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: clamp(0.5rem, 2vw, 1.25rem);
+  transform: rotate(-12deg);
+}
+.sport-wm-row {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: clamp(2.75rem, 11vw, 6.5rem);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  white-space: nowrap;
+  text-transform: uppercase;
+  /* Soft gradient text like FOLLOW watermark */
+  background: linear-gradient(
+    105deg,
+    rgba(34, 197, 94, 0.22) 0%,
+    rgba(148, 163, 184, 0.14) 35%,
+    rgba(56, 189, 248, 0.2) 55%,
+    rgba(34, 197, 94, 0.18) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.9;
+}
+/* Asymmetric stagger: odd rows shift left, even shift right */
+.sport-wm-row:nth-child(odd) {
+  transform: translateX(-6%);
+}
+.sport-wm-row:nth-child(even) {
+  transform: translateX(8%);
+}
+.sport-wm-row:nth-child(3n) {
+  transform: translateX(-12%);
+  opacity: 0.75;
+}
+.sport-wm-row:nth-child(4n) {
+  transform: translateX(14%);
+}
+
+/* Keep page content above watermark */
+body.has-sport-wm .site-header,
+body.has-sport-wm .hero-shell,
+body.has-sport-wm main,
+body.has-sport-wm footer,
+body.has-sport-wm .floating-social,
+body.has-sport-wm .lex-extras-controls,
+body.has-sport-wm .announce-bar,
+body.has-sport-wm #introOverlay {
+  position: relative;
+  z-index: 1;
+}
+body.has-sport-wm .site-header {
+  z-index: 50;
+}
+body.has-sport-wm .announce-bar {
+  z-index: 60;
+}
+body.has-sport-wm #introOverlay {
+  z-index: 9999;
 }
